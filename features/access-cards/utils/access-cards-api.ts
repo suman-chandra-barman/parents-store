@@ -88,6 +88,16 @@ export async function fetchPhotoPreviewBlob(photoId: string): Promise<string> {
 }
 
 /**
+ * Get direct preview URL or cached blob URL for a photo
+ */
+export function getPhotoDirectUrl(photoId: string): string {
+  if (blobCache.has(photoId)) {
+    return blobCache.get(photoId)!;
+  }
+  return `${env.mediaBaseUrl}/watermark-engine/preview-album-photos/${photoId}`;
+}
+
+/**
  * Clear cached blob URLs if memory cleanup is needed
  */
 export function clearBlobCache() {
@@ -95,3 +105,4 @@ export function clearBlobCache() {
   blobCache.clear();
   fetchPromisesCache.clear();
 }
+

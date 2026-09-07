@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Heart, ShoppingCart, Menu, X } from "lucide-react";
+import { useFavorites } from "@/features/access-cards/hooks/useFavorites";
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
@@ -15,6 +16,7 @@ const NAV_LINKS = [
 export function Navbar() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { favoriteCount } = useFavorites();
 
   const isActive = (href: string) => {
     if (href === "/") {
@@ -58,15 +60,25 @@ export function Navbar() {
 
         {/* Right: Actions */}
         <div className="hidden sm:flex items-center gap-5">
-          {/* Language Switcher */}
-
           {/* Favorites */}
           <button
             type="button"
-            className="flex items-center gap-1.5 text-xs font-medium text-neutral-600 hover:text-neutral-900 cursor-pointer transition-colors"
+            className="relative flex items-center gap-1.5 text-xs font-medium text-neutral-600 hover:text-neutral-900 cursor-pointer transition-colors"
+            title="Favorites"
           >
-            <Heart className="size-4 stroke-[1.8]" />
-            <span>Favorites</span>
+            <div className="relative flex items-center justify-center">
+              <Heart
+                className={cn(
+                  "size-4 stroke-[1.8] transition-colors",
+                  favoriteCount > 0 ? "fill-rose-500 text-rose-500" : ""
+                )}
+              />
+              {favoriteCount > 0 && (
+                <span className="absolute -top-2 -right-2.5 min-w-4 h-4 px-1 rounded-full bg-rose-500 text-[10px] font-bold text-white flex items-center justify-center leading-none shadow-xs animate-in zoom-in-50 duration-200">
+                  {favoriteCount}
+                </span>
+              )}
+            </div>
           </button>
 
           {/* Shopping Cart */}
@@ -125,9 +137,23 @@ export function Navbar() {
           </nav>
 
           <div className="flex items-center justify-between pt-3 border-t border-neutral-100 text-xs text-neutral-600">
-            <button type="button" className="flex items-center gap-1.5 hover:text-neutral-900">
-              <Heart className="size-4" />
-              <span>Favorites</span>
+            <button
+              type="button"
+              className="flex items-center gap-1.5 hover:text-neutral-900"
+            >
+              <div className="relative flex items-center justify-center">
+                <Heart
+                  className={cn(
+                    "size-4",
+                    favoriteCount > 0 ? "fill-rose-500 text-rose-500" : ""
+                  )}
+                />
+                {favoriteCount > 0 && (
+                  <span className="absolute -top-2 -right-2.5 min-w-4 h-4 px-1 rounded-full bg-rose-500 text-[10px] font-bold text-white flex items-center justify-center leading-none shadow-xs">
+                    {favoriteCount}
+                  </span>
+                )}
+              </div>
             </button>
           </div>
         </div>
