@@ -6,7 +6,7 @@ import { useAccessCardsGallery } from "@/features/access-cards/hooks/useAccessCa
 import { useFavorites } from "@/features/access-cards/hooks/useFavorites";
 
 import { HeroSection } from "@/features/access-cards/components/HeroSection";
-import { PhotoGrid } from "@/features/access-cards/components/PhotoGrid";
+import { AccessCardPhotoGrid } from "@/features/access-cards/components/AccessCardPhotoGrid";
 import { FullscreenPhotoViewer } from "@/features/access-cards/components/FullscreenPhotoViewer";
 
 function AccessCardsContent() {
@@ -81,7 +81,7 @@ function AccessCardsContent() {
       {hasGalleryData && (
         <div id="gallery-section" className="flex-1 pb-24">
           <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-            <PhotoGrid
+            <AccessCardPhotoGrid
               photos={allPhotos}
               favoriteIds={favoriteIds}
               onToggleFavorite={toggleFavorite}
