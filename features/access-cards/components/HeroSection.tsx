@@ -76,7 +76,7 @@ export function HeroSection({
 
   return (
     <section className="relative w-full overflow-hidden bg-[#FBF9F5]">
-      <div className="h-[calc(100vh-66px)] mx-auto flex flex-col md:flex-row">
+      <div className="md:h-[calc(100vh-66px)] mx-auto flex flex-col md:flex-row">
         {/* ── LEFT: Text content ── */}
         <div className="relative z-10 flex w-full flex-col justify-center px-6 py-16 sm:px-10 md:w-[52%] md:px-16 lg:px-20">
           {/* Decorative corner shapes — contained inside left column */}
@@ -200,7 +200,7 @@ export function HeroSection({
 
         {/* ── RIGHT: Full-bleed photographer image ── */}
         <div
-          className="relative h-100 w-full md:h-auto md:w-[48%] select-none"
+          className="hidden md:block relative h-100 w-full md:h-auto md:w-[48%] select-none"
           onContextMenu={(e) => e.preventDefault()}
         >
           <Image
