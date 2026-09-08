@@ -80,7 +80,12 @@ export function PreRegistrationFormComponent({
 
   if (success) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-slate-50/50 p-4 sm:p-6 lg:p-8 dark:bg-slate-950">
+      <main
+        style={{
+          backgroundImage: "url('/images/pre-registration/cover.jpg')",
+        }}
+        className="flex min-h-screen items-center justify-center p-4 sm:p-6 lg:p-8 bg-no-repeat bg-cover"
+      >
         <PreRegistrationSuccessCard data={success} />
       </main>
     );
@@ -95,10 +100,10 @@ export function PreRegistrationFormComponent({
       }}
       className="flex min-h-screen items-center justify-center p-4 sm:p-6 lg:p-8 bg-no-repeat bg-cover"
     >
-      <div className="w-full max-w-5xl rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/50 dark:border-slate-800 dark:shadow-none overflow-hidden">
+      <div className="backdrop-blur-md bg-white/50 w-full max-w-5xl rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/50 dark:border-slate-800 dark:shadow-none overflow-hidden">
         {form ? (
           /* Two-Column Grid Layout when unlocked */
-          <div className="grid grid-cols-1 lg:grid-cols-12 min-h-150 backdrop-blur-md bg-white/50">
+          <div className="grid grid-cols-1 lg:grid-cols-12 min-h-150">
             {/* Left Column: Job & Notice Info Panel */}
             <div className="lg:col-span-5 p-6 sm:p-8 border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between space-y-6">
               <div className="space-y-6">
