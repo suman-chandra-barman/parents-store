@@ -2,13 +2,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  AlertCircle,
-  CheckCircle2,
-  Loader2,
-  User,
-  Mail,
-} from 'lucide-react';
+import { AlertCircle, CheckCircle2, Loader2, User, Mail } from 'lucide-react';
 import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import type { FieldError } from 'react-hook-form';
@@ -216,6 +210,7 @@ export function PreRegistrationFormFields({
             control={control}
             render={({ field }) => (
               <PhoneInput
+                defaultCountry="DE"
                 value={field.value ?? undefined}
                 onChange={(val) => field.onChange(toUndefinedWhenBlank(val))}
               />
