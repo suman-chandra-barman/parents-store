@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { AlertCircle, Building2, Loader2 } from 'lucide-react';
+import { AlertCircle, Building2, CalendarX2, Loader2 } from 'lucide-react';
 import type {
   PreRegistrationForm,
   PreRegistrationSuccessData,
@@ -9,12 +9,16 @@ import type {
 import { fetchPreRegistrationForm } from '../utils/pre-registration-api';
 import { PreRegistrationFormFields } from './PreRegistrationFormFields';
 import { PreRegistrationSuccessCard } from './PreRegistrationSuccessCard';
+import { inputClass } from '../utils/pre-registration-styles';
 
 const pageClass =
   'flex min-h-screen items-center justify-center bg-background p-4';
 const cardClass = 'w-full max-w-md space-y-6 rounded-lg border bg-card p-6 shadow-sm';
-const inputClass =
-  'w-full rounded-md border bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand/50';
+
+
+function isDeadlinePassed(deadlineAt: string): boolean {
+  return new Date(deadlineAt).getTime() < Date.now();
+}
 
 export function PreRegistrationFormComponent({
   urlPassword,
@@ -92,7 +96,15 @@ export function PreRegistrationFormComponent({
           </div>
         )}
 
-        {form ? (
+        {form && isDeadlinePassed(form.deadlineAt) ? (
+          <div
+            role="alert"
+            className="flex items-start gap-2 rounded-md border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-600"
+          >
+            <CalendarX2 className="mt-0.5 size-4 shrink-0" />
+            <span>Registration has closed. The deadline was {new Date(form.deadlineAt).toLocaleDateString(undefined, { dateStyle: 'long' })}.</span>
+          </div>
+        ) : form ? (
           <PreRegistrationFormFields
             preRegForm={form}
             password={password}
