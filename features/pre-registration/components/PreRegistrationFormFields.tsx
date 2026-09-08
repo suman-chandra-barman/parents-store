@@ -1,12 +1,21 @@
+/* eslint-disable react-hooks/incompatible-library */
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AlertCircle, Loader2 } from 'lucide-react';
+import {
+  AlertCircle,
+  CheckCircle2,
+  Loader2,
+  User,
+  Mail,
+} from 'lucide-react';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import type { FieldError } from 'react-hook-form';
-import type { PreRegistrationForm } from '../types/pre-registration';
-import type { PreRegistrationSuccessData } from '../types/pre-registration';
+import type {
+  PreRegistrationForm,
+  PreRegistrationSuccessData,
+} from '../types/pre-registration';
 import {
   PreRegistrationApiError,
   submitPreRegistration,
@@ -16,51 +25,26 @@ import {
   type PreRegistrationFormValues,
   type PreRegistrationSubmitValues,
 } from '../utils/pre-registration-schema';
+import { PhoneInput } from '@/components/ui/PhoneInput';
 
 type EditableField = 'name' | 'email' | 'phone' | 'group';
-
-/** Fields the backend can report validation issues for. */
 const EDITABLE_FIELDS: EditableField[] = ['name', 'email', 'phone', 'group'];
 
-const TEXT_FIELDS: ReadonlyArray<{
-  name: EditableField;
-  label: string;
-  type: 'text' | 'email' | 'tel';
-  placeholder: string;
-  optional?: boolean;
-}> = [
-  { name: 'name', label: 'Name', type: 'text', placeholder: 'John Doe' },
-  {
-    name: 'email',
-    label: 'Email',
-    type: 'email',
-    placeholder: 'john@example.com',
-    optional: true,
-  },
-  {
-    name: 'phone',
-    label: 'Phone',
-    type: 'tel',
-    placeholder: '+1234567890',
-    optional: true,
-  },
-];
-
-const inputClass =
-  'w-full rounded-md border bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand/50';
-const labelClass = 'mb-1 block text-sm font-medium';
-
-/** Optional inputs send `undefined` when left blank instead of an empty string. */
-const toUndefinedWhenBlank = (value: string) => {
+const toUndefinedWhenBlank = (value?: string) => {
+  if (!value) return undefined;
   const trimmed = value.trim();
   return trimmed === '' ? undefined : trimmed;
 };
 
-function FieldError({ error }: { error?: FieldError }) {
+function FieldErrorMessage({ error }: { error?: FieldError }) {
   if (!error) return null;
   return (
-    <p role="alert" className="mt-1 text-xs text-destructive">
-      {error.message}
+    <p
+      role="alert"
+      className="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-red-600 dark:text-red-400"
+    >
+      <AlertCircle className="size-3.5 shrink-0" />
+      <span>{error.message}</span>
     </p>
   );
 }
@@ -71,7 +55,6 @@ export function PreRegistrationFormFields({
   onSuccess,
 }: {
   preRegForm: PreRegistrationForm;
-  /** Password used to unlock the form; submitted alongside the fields. */
   password: string;
   onSuccess: (data: PreRegistrationSuccessData) => void;
 }) {
@@ -80,27 +63,36 @@ export function PreRegistrationFormFields({
   const {
     register,
     handleSubmit,
+    control,
     setError,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<PreRegistrationFormValues, unknown, PreRegistrationSubmitValues>({
     resolver: zodResolver(RegisterJobPreRegistrationFormSchema),
-    defaultValues: { password, name: '', email: undefined, phone: undefined, group: undefined },
+    defaultValues: {
+      password,
+      name: '',
+      email: undefined,
+      phone: undefined,
+      group: undefined,
+    },
   });
+
+  const selectedGroup = watch('group');
 
   const applyServerErrors = (error: PreRegistrationApiError) => {
     const unmapped: string[] = [];
-
     for (const issue of error.fieldErrors) {
       const field = issue.path[0];
       if (field && (EDITABLE_FIELDS as string[]).includes(field)) {
-        setError(field as EditableField, { type: 'server', message: issue.message });
+        setError(field as EditableField, {
+          type: 'server',
+          message: issue.message,
+        });
       } else {
         unmapped.push(issue.message);
       }
     }
-
-    // Issues that cannot target an input (or the whole request failed) are
-    // shown once at the top of the form.
     if (unmapped.length > 0) {
       setFormError(unmapped.join(' '));
     } else if (error.fieldErrors.length === 0) {
@@ -110,7 +102,6 @@ export function PreRegistrationFormFields({
 
   const onSubmit = handleSubmit(async (values) => {
     setFormError(null);
-
     try {
       const success = await submitPreRegistration(values);
       onSuccess(success);
@@ -121,7 +112,7 @@ export function PreRegistrationFormFields({
         setFormError(
           error instanceof Error
             ? error.message
-            : 'Something went wrong. Please try again.',
+            : 'An unexpected error occurred.',
         );
       }
     }
@@ -131,90 +122,159 @@ export function PreRegistrationFormFields({
     preRegForm.selectable && preRegForm.selectableGroups.length > 0;
 
   return (
-    <form onSubmit={onSubmit} noValidate className="space-y-4">
-      {/* The password unlocks the form and travels with the submission. */}
+    <form onSubmit={onSubmit} noValidate className="space-y-5">
       <input type="hidden" {...register('password')} />
 
-      <div className="space-y-1">
-        <h2 className="text-lg font-semibold">{preRegForm.title}</h2>
-        <div
-          className="prose prose-sm max-w-none text-sm text-muted-foreground"
-          dangerouslySetInnerHTML={{ __html: preRegForm.notes }}
-        />
+      <div>
+        <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">
+          Complete Registration
+        </h2>
+        <p className="text-xs text-slate-500 dark:text-slate-400">
+          Enter your contact details to generate your official access pass.
+        </p>
       </div>
-
-      {preRegForm.noticeTitle && (
-        <div className="rounded-md border border-amber-500/20 bg-amber-500/10 p-3">
-          <p className="font-medium text-amber-700">{preRegForm.noticeTitle}</p>
-          <div
-            className="prose prose-sm mt-1 max-w-none text-sm text-amber-600"
-            dangerouslySetInnerHTML={{ __html: preRegForm.noticeInformation }}
-          />
-        </div>
-      )}
 
       {formError && (
         <div
           role="alert"
-          className="flex items-start gap-2 rounded-md border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-600"
+          className="flex items-start gap-2.5 rounded-xl border border-red-200 bg-red-50 p-3.5 text-xs text-red-800 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-300"
         >
-          <AlertCircle className="mt-0.5 size-4 shrink-0" />
+          <AlertCircle className="mt-0.5 size-4 shrink-0 text-red-600 dark:text-red-400" />
           <span>{formError}</span>
         </div>
       )}
 
-      {TEXT_FIELDS.map((field) => (
-        <div key={field.name} className="space-y-1">
-          <label className={labelClass} htmlFor={field.name}>
-            {field.label}
-            {field.optional && (
-              <span className="font-normal text-muted-foreground"> (optional)</span>
-            )}
-          </label>
+      {/* Name Input */}
+      <div>
+        <label
+          htmlFor="name"
+          className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+        >
+          Full Name <span className="text-red-500">*</span>
+        </label>
+        <div className="relative mt-1.5">
+          <User className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
           <input
-            id={field.name}
-            type={field.type}
-            placeholder={field.placeholder}
-            aria-invalid={errors[field.name] ? 'true' : undefined}
-            className={inputClass}
-            {...register(
-              field.name,
-              field.optional ? { setValueAs: toUndefinedWhenBlank } : undefined,
+            id="name"
+            type="text"
+            placeholder="Jane Doe"
+            aria-invalid={errors.name ? 'true' : undefined}
+            className={`w-full rounded-xl border bg-slate-50/50 py-2.5 pl-10 pr-4 text-sm text-slate-900 transition-all focus:bg-white focus:outline-none focus:ring-4 dark:bg-slate-900 dark:text-slate-100 ${
+              errors.name
+                ? 'border-red-300 focus:border-red-500 focus:ring-red-500/10'
+                : 'border-slate-200 focus:border-brand focus:ring-brand/10 dark:border-slate-800'
+            }`}
+            {...register('name')}
+          />
+        </div>
+        <FieldErrorMessage error={errors.name} />
+      </div>
+
+      {/* Email Input */}
+      <div>
+        <div className="flex items-center justify-between">
+          <label
+            htmlFor="email"
+            className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+          >
+            Email Address
+          </label>
+          <span className="text-[11px] text-slate-400">Optional</span>
+        </div>
+        <div className="relative mt-1.5">
+          <Mail className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+          <input
+            id="email"
+            type="email"
+            placeholder="jane@example.com"
+            aria-invalid={errors.email ? 'true' : undefined}
+            className={`w-full rounded-xl border bg-slate-50/50 py-2.5 pl-10 pr-4 text-sm text-slate-900 transition-all focus:bg-white focus:outline-none focus:ring-4 dark:bg-slate-900 dark:text-slate-100 ${
+              errors.email
+                ? 'border-red-300 focus:border-red-500 focus:ring-red-500/10'
+                : 'border-slate-200 focus:border-brand focus:ring-brand/10 dark:border-slate-800'
+            }`}
+            {...register('email', { setValueAs: toUndefinedWhenBlank })}
+          />
+        </div>
+        <FieldErrorMessage error={errors.email} />
+      </div>
+
+      {/* Phone Input */}
+      <div>
+        <div className="flex items-center justify-between">
+          <label
+            htmlFor="phone"
+            className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+          >
+            Phone Number
+          </label>
+          <span className="text-[11px] text-slate-400">Optional</span>
+        </div>
+        <div className="mt-1.5">
+          <Controller
+            name="phone"
+            control={control}
+            render={({ field }) => (
+              <PhoneInput
+                value={field.value ?? undefined}
+                onChange={(val) => field.onChange(toUndefinedWhenBlank(val))}
+              />
             )}
           />
-          <FieldError error={errors[field.name]} />
         </div>
-      ))}
+        <FieldErrorMessage error={errors.phone} />
+      </div>
 
+      {/* Group Radio Cards */}
       {hasGroupChoices && (
-        <div className="space-y-1">
-          <label className={labelClass} htmlFor="group">
-            Group
-          </label>
-          <select
-            id="group"
-            aria-invalid={errors.group ? 'true' : undefined}
-            className={inputClass}
-            {...register('group', { setValueAs: toUndefinedWhenBlank })}
-          >
-            <option value="">Select your group</option>
-            {preRegForm.selectableGroups.map((group) => (
-              <option key={group} value={group}>
-                {group}
-              </option>
-            ))}
-          </select>
-          <FieldError error={errors.group} />
-        </div>
+        <fieldset className="space-y-2 pt-1">
+          <legend className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+            Select Group Option
+          </legend>
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+            {preRegForm.selectableGroups.map((group) => {
+              const isChecked = selectedGroup === group;
+              return (
+                <label
+                  key={group}
+                  className={`relative flex cursor-pointer items-center justify-between rounded-xl border p-3 transition-all ${
+                    isChecked
+                      ? 'border-brand bg-brand/5 ring-2 ring-brand/20 dark:bg-brand/10'
+                      : 'border-slate-200 bg-slate-50/50 hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900/50'
+                  }`}
+                >
+                  <span className="text-xs font-semibold text-slate-900 dark:text-slate-100">
+                    {group}
+                  </span>
+                  <input
+                    type="radio"
+                    value={group}
+                    className="sr-only"
+                    {...register('group', { setValueAs: toUndefinedWhenBlank })}
+                  />
+                  {isChecked && <CheckCircle2 className="size-4 text-brand" />}
+                </label>
+              );
+            })}
+          </div>
+          <FieldErrorMessage error={errors.group} />
+        </fieldset>
       )}
 
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="flex w-full items-center justify-center gap-2 rounded-md bg-brand px-4 py-2 text-white transition-colors hover:bg-brand/90 disabled:opacity-50"
-      >
-        {isSubmitting && <Loader2 className="size-4 animate-spin" />}
-        {isSubmitting ? 'Submitting…' : 'Submit Registration'}
+      <button className="w-fit inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-brand px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/25 transition-all hover:bg-brand/90 focus:outline-none focus:ring-4 focus:ring-brand/20 disabled:opacity-50 mt-2 relative overflow-hidden group">
+        <span className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></span>
+        <span className="relative">
+          {isSubmitting ? (
+            <>
+              <Loader2 className="size-4 animate-spin" />
+              Submitting...
+            </>
+          ) : (
+            <>
+              <span>Submit Registration</span>
+            </>
+          )}
+        </span>
       </button>
     </form>
   );
