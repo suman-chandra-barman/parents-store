@@ -49,9 +49,22 @@ export interface PreRegistrationSubmitResponse {
   };
 }
 
+export interface PreRegistrationValidationIssue {
+  code: string;
+  path: string[];
+  message: string;
+}
+
 export interface PreRegistrationFormError {
   statusCode: number;
   error: string;
   message: string;
   traceId: string;
+  errors?: PreRegistrationValidationIssue[];
+}
+
+export interface PreRegistrationSuccessData {
+  accessCardPassword: string;
+  group: string;
+  redirectLink: string;
 }
