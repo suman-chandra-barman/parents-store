@@ -1,26 +1,30 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { Heart, ShoppingCart, Menu, X } from "lucide-react";
-import { useFavorites } from "@/features/access-cards/hooks/useFavorites";
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
+import { Heart, ShoppingCart, Menu, X } from 'lucide-react';
+import { useFavorites } from '@/features/access-cards/hooks/useFavorites';
+import { useTenantStore } from '@/stores/useTenantStore';
+import Image from 'next/image';
 
 const NAV_LINKS = [
-  { label: "Home", href: "/" },
-  { label: "Products", href: "/products" },
-  { label: "Gift Voucher", href: "/gift-voucher" },
+  { label: 'Home', href: '/' },
+  { label: 'Products', href: '/products' },
+  { label: 'Gift Voucher', href: '/gift-voucher' },
 ] as const;
 
 export function Navbar() {
+  const { tenant } = useTenantStore();
+
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { favoriteCount } = useFavorites();
 
   const isActive = (href: string) => {
-    if (href === "/") {
-      return pathname === "/" || pathname.startsWith("/photo-galleries");
+    if (href === '/') {
+      return pathname === '/' || pathname.startsWith('/photo-galleries');
     }
     return pathname.startsWith(href);
   };
@@ -31,14 +35,27 @@ export function Navbar() {
         {/* Left: Brand Logo */}
         <div className="shrink-0">
           <Link href="/" className="flex items-center justify-center py-2">
-            <span className="font-bold text-lg tracking-tight text-brand">
-              Lumiphoto
-            </span>
+            {tenant?.logo ? (
+              <Image
+                src={tenant.logo.url}
+                alt={`Logo of ${tenant.name}`}
+                width={384}
+                height={135}
+                className="w-auto h-10 object-contain"
+              />
+            ) : (
+              <span className="font-bold text-lg tracking-tight text-brand">
+                {tenant?.name}
+              </span>
+            )}
           </Link>
         </div>
 
         {/* Center: Navigation Links (Desktop) */}
-        <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
+        <nav
+          className="hidden md:flex items-center gap-1"
+          aria-label="Main navigation"
+        >
           {NAV_LINKS.map((link) => {
             const active = isActive(link.href);
             return (
@@ -46,10 +63,10 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "px-5 py-2 rounded-lg text-xs font-semibold transition-all",
+                  'px-5 py-2 rounded-lg text-xs font-semibold transition-all',
                   active
-                    ? "bg-[#2060b0] text-white shadow-sm hover:bg-[#1a4f94]"
-                    : "text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100"
+                    ? 'bg-[#2060b0] text-white shadow-sm hover:bg-[#1a4f94]'
+                    : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100',
                 )}
               >
                 {link.label}
@@ -69,8 +86,8 @@ export function Navbar() {
             <div className="relative flex items-center justify-center">
               <Heart
                 className={cn(
-                  "size-4 stroke-[1.8] transition-colors",
-                  favoriteCount > 0 ? "fill-rose-500 text-rose-500" : ""
+                  'size-4 stroke-[1.8] transition-colors',
+                  favoriteCount > 0 ? 'fill-rose-500 text-rose-500' : '',
                 )}
               />
               {favoriteCount > 0 && (
@@ -107,7 +124,11 @@ export function Navbar() {
             className="p-1.5 text-neutral-600 hover:text-neutral-900"
             aria-label="Toggle Menu"
           >
-            {mobileMenuOpen ? <X className="size-6" /> : <Menu className="size-6" />}
+            {mobileMenuOpen ? (
+              <X className="size-6" />
+            ) : (
+              <Menu className="size-6" />
+            )}
           </button>
         </div>
       </div>
@@ -124,10 +145,10 @@ export function Navbar() {
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
                   className={cn(
-                    "w-full px-4 py-2.5 rounded-lg text-xs font-semibold transition-colors",
+                    'w-full px-4 py-2.5 rounded-lg text-xs font-semibold transition-colors',
                     active
-                      ? "bg-[#2060b0] text-white"
-                      : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200"
+                      ? 'bg-[#2060b0] text-white'
+                      : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200',
                   )}
                 >
                   {link.label}
@@ -144,8 +165,8 @@ export function Navbar() {
               <div className="relative flex items-center justify-center">
                 <Heart
                   className={cn(
-                    "size-4",
-                    favoriteCount > 0 ? "fill-rose-500 text-rose-500" : ""
+                    'size-4',
+                    favoriteCount > 0 ? 'fill-rose-500 text-rose-500' : '',
                   )}
                 />
                 {favoriteCount > 0 && (
