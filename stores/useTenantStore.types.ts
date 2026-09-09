@@ -12,6 +12,8 @@ export interface Tenant {
   currentPeriodEnd: string | null;
   logoId: string | null;
   logo: Media | null;
+  heroImageId: string | null;
+  heroImage: Media | null;
   primaryColor: string | null;
   customDomain: string | null;
   createdAt: string;

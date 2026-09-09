@@ -4,6 +4,7 @@ import React, { useRef } from "react";
 import Image from "next/image";
 import { X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTenantStore } from "@/stores/useTenantStore";
 
 interface HeroSectionProps {
   title?: string;
@@ -24,6 +25,8 @@ export function HeroSection({
   error,
   onViewGallery,
 }: HeroSectionProps) {
+  const tenant = useTenantStore(({tenant})=>tenant);
+
   const inputRef = useRef<HTMLInputElement>(null);
 
   const addCode = (value: string) => {
@@ -204,7 +207,7 @@ export function HeroSection({
           onContextMenu={(e) => e.preventDefault()}
         >
           <Image
-            src="/hero-section.png"
+            src={tenant?.heroImage ? tenant.heroImage?.url : "/hero-section.png"}
             alt="Photographer looking through a camera on a tripod"
             fill
             priority
