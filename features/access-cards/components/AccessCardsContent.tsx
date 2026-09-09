@@ -8,8 +8,11 @@ import { useFavorites } from "@/features/access-cards/hooks/useFavorites";
 import { HeroSection } from "@/features/access-cards/components/HeroSection";
 import { AccessCardPhotoGrid } from "@/features/access-cards/components/AccessCardPhotoGrid";
 import { FullscreenPhotoViewer } from "@/features/access-cards/components/FullscreenPhotoViewer";
+import { useTenantStore } from "@/stores/useTenantStore";
 
 function AccessCardsContent() {
+  const tenant = useTenantStore(({tenant})=> tenant);
+
   const {
     isLoading,
     error,
@@ -69,7 +72,7 @@ function AccessCardsContent() {
       {/* Hero Section */}
       <HeroSection
         title="Photo Gallery"
-        subtitle="LUMIPHOTO"
+        subtitle={tenant?.name ?? "LUMIPHOTO"}
         accessCodes={accessCodes}
         onAccessCodesChange={setAccessCodes}
         isLoading={isLoading}
