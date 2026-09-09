@@ -2,6 +2,7 @@
 
 import React, { useRef } from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -16,15 +17,19 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({
-  title = "Photo Gallery",
-  subtitle = "LUMIPHOTO",
+  title,
+  subtitle,
   accessCodes,
   onAccessCodesChange,
   isLoading = false,
   error,
   onViewGallery,
 }: HeroSectionProps) {
+  const t = useTranslations("HeroSection");
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const displayTitle = title ?? t("title");
+  const displaySubtitle = subtitle ?? t("subtitle");
 
   const addCode = (value: string) => {
     const trimmed = value.trim().toUpperCase();
@@ -92,23 +97,23 @@ export function HeroSection({
           <div className="relative">
             {/* LUMIPHOTO eyebrow */}
             <p className="text-xs font-medium tracking-[0.25em] text-neutral-500">
-              {subtitle}
+              {displaySubtitle}
             </p>
 
             {/* Heading */}
             <h1 className="mt-6 text-5xl font-normal leading-[1.05] text-neutral-900 sm:text-6xl lg:text-[64px]">
-              {title}
+              {displayTitle}
             </h1>
 
             {/* Date / subtext */}
             <p className="mt-5 text-xs font-medium tracking-[0.2em] text-neutral-400">
-              SHOTS DETAILS
+              {t("shotsDetails")}
             </p>
 
             {/* ── Access Card section ── */}
             <div className="mt-8 space-y-2">
               <p className="text-[11px] font-semibold tracking-[0.18em] text-neutral-600 uppercase">
-                WITH ACCESS CARD
+                {t("withAccessCard")}
               </p>
 
               {/* Tag-based code input */}
@@ -137,7 +142,7 @@ export function HeroSection({
                         removeCode(code);
                       }}
                       className="flex items-center text-white/70 hover:text-white"
-                      aria-label={`Remove ${code}`}
+                      aria-label={t("removeCode", { code })}
                     >
                       <X size={10} />
                     </button>
@@ -151,7 +156,7 @@ export function HeroSection({
                   onKeyDown={handleKeyDown}
                   onBlur={handleBlur}
                   placeholder={
-                    accessCodes.length === 0 ? "ENTER CODE" : "Add another..."
+                    accessCodes.length === 0 ? t("enterCode") : t("addAnother")
                   }
                   disabled={isLoading}
                   className="flex-1 bg-transparent text-center text-xs font-mono text-neutral-700 placeholder:text-neutral-400 focus:outline-none disabled:opacity-50"
@@ -174,8 +179,9 @@ export function HeroSection({
               {/* Multi-code hint */}
               {accessCodes.length > 0 && (
                 <p className="text-[10px] text-neutral-400">
-                  Press <strong>Enter</strong> or <strong>Space</strong> to add
-                  another code
+                  {t.rich("multiCodeHint", {
+                    bold: (chunks) => <strong>{chunks}</strong>,
+                  })}
                 </p>
               )}
             </div>
@@ -189,10 +195,10 @@ export function HeroSection({
               {isLoading ? (
                 <>
                   <Loader2 size={13} className="animate-spin" />
-                  <span>LOADING...</span>
+                  <span>{t("loading")}</span>
                 </>
               ) : (
-                "VIEW GALLERY"
+                t("viewGallery")
               )}
             </Button>
           </div>
@@ -205,7 +211,7 @@ export function HeroSection({
         >
           <Image
             src="/hero-section.png"
-            alt="Photographer looking through a camera on a tripod"
+            alt={t("imageAlt")}
             fill
             priority
             draggable={false}

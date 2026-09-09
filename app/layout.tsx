@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { Roboto, Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { Toaster } from "sonner";
-import { Navbar } from "@/components/layout/Navbar";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -36,8 +34,6 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
-        <Toaster position="top-right" richColors closeButton />
-        <Navbar />
         {children}
       </body>
     </html>

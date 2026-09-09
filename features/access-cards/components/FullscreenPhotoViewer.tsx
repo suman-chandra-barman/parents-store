@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { PhotoItem } from "../types/access-cards";
 import { fetchPhotoPreviewBlob } from "../utils/access-cards-api";
 import {
@@ -35,6 +36,7 @@ export function FullscreenPhotoViewer({
   favoriteIds = [],
   onToggleFavorite,
 }: FullscreenPhotoViewerProps) {
+  const t = useTranslations("FullscreenViewer");
   const currentPhoto = isOpen && currentIndex >= 0 ? photos[currentIndex] : null;
   const [blobUrl, setBlobUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -143,7 +145,7 @@ export function FullscreenPhotoViewer({
                   ? "bg-rose-500 text-white scale-105 shadow-rose-500/30"
                   : "bg-white/10 hover:bg-white/20 text-white"
               )}
-              title={isFavorited ? "Remove from favorites" : "Add to favorites"}
+              title={isFavorited ? t("removeFromFavorites") : t("addToFavorites")}
             >
               <Heart
                 className={cn("size-4.5", isFavorited ? "fill-white" : "")}
@@ -156,7 +158,7 @@ export function FullscreenPhotoViewer({
             type="button"
             onClick={toggleFullscreen}
             className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
-            title="Toggle Fullscreen"
+            title={t("toggleFullscreen")}
           >
             {isFullscreen ? (
               <Minimize2 className="size-4.5" />
@@ -170,7 +172,7 @@ export function FullscreenPhotoViewer({
             type="button"
             onClick={onClose}
             className="p-2 rounded-xl bg-white/10 hover:bg-red-500 text-white transition-colors cursor-pointer"
-            title="Close (Esc)"
+            title={t("close")}
           >
             <X className="size-4.5" />
           </button>
@@ -185,7 +187,7 @@ export function FullscreenPhotoViewer({
             type="button"
             onClick={handlePrev}
             className="absolute left-3 sm:left-6 z-20 p-3 rounded-full bg-black/50 hover:bg-white/20 text-white border border-white/10 backdrop-blur-md transition-transform hover:scale-110 cursor-pointer"
-            title="Previous (←)"
+            title={t("previous")}
           >
             <ChevronLeft className="size-6" />
           </button>
@@ -196,14 +198,14 @@ export function FullscreenPhotoViewer({
           {loading && (
             <div className="flex flex-col items-center justify-center gap-2">
               <Loader2 className="size-8 text-brand animate-spin" />
-              <span className="text-xs font-mono text-zinc-400">Loading photo...</span>
+              <span className="text-xs font-mono text-zinc-400">{t("loading")}</span>
             </div>
           )}
 
           {error && (
             <div className="flex flex-col items-center justify-center gap-2 text-center p-6 bg-zinc-900/80 rounded-2xl border border-red-500/20">
               <ImageOff className="size-8 text-red-400" />
-              <span className="text-xs text-red-400 font-medium">Failed to load photo</span>
+              <span className="text-xs text-red-400 font-medium">{t("error")}</span>
             </div>
           )}
 
@@ -231,7 +233,7 @@ export function FullscreenPhotoViewer({
             type="button"
             onClick={handleNext}
             className="absolute right-3 sm:right-6 z-20 p-3 rounded-full bg-black/50 hover:bg-white/20 text-white border border-white/10 backdrop-blur-md transition-transform hover:scale-110 cursor-pointer"
-            title="Next (→)"
+            title={t("next")}
           >
             <ChevronRight className="size-6" />
           </button>

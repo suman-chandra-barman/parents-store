@@ -1,5 +1,8 @@
+"use client";
+
 import React from "react";
 import { Images } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface PhotoGridEmptyStateProps {
   title?: string;
@@ -7,17 +10,21 @@ interface PhotoGridEmptyStateProps {
 }
 
 export function PhotoGridEmptyState({
-  title = "No photos found",
-  description = "There are no photos available in this gallery.",
+  title,
+  description,
 }: PhotoGridEmptyStateProps) {
+  const t = useTranslations("PhotoGridEmpty");
+  const displayTitle = title ?? t("title");
+  const displayDescription = description ?? t("description");
+
   return (
     <div className="flex flex-col items-center justify-center p-16 text-center bg-card rounded-2xl border border-border/50 shadow-xs">
       <div className="p-3 rounded-full bg-muted text-muted-foreground mb-3">
         <Images className="size-6" />
       </div>
-      <h4 className="text-sm font-semibold text-foreground">{title}</h4>
+      <h4 className="text-sm font-semibold text-foreground">{displayTitle}</h4>
       <p className="text-xs text-muted-foreground mt-1 max-w-xs">
-        {description}
+        {displayDescription}
       </p>
     </div>
   );

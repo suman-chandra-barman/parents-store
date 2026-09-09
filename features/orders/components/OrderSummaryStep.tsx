@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useTranslations } from "next-intl";
 import { OrderItemState } from "./OrderItemsStep";
 import { PriceListFormatItem } from "../types/orders";
 import { OrderCustomerFormData } from "../utils/order-schema";
@@ -13,11 +14,13 @@ interface OrderSummaryStepProps {
 }
 
 export function OrderSummaryStep({ items, formats, customerData }: OrderSummaryStepProps) {
+  const t = useTranslations("Orders");
+
   return (
     <div className="space-y-5 text-xs">
       <div className="bg-brand/5 border border-brand/20 p-4 rounded-2xl space-y-3">
         <h4 className="font-bold text-brand text-sm flex items-center gap-1.5">
-          <Sparkles className="size-4" /> Order Summary Review
+          <Sparkles className="size-4" /> {t("orderSummaryReview")}
         </h4>
 
         <div className="space-y-2 divide-y divide-border">
@@ -28,10 +31,13 @@ export function OrderSummaryStep({ items, formats, customerData }: OrderSummaryS
               <div key={idx} className="pt-2 flex justify-between items-start">
                 <div>
                   <div className="font-semibold text-foreground">
-                    {fmt?.title || "Paper Format"} (x{item.quantity})
+                    {fmt?.title || t("paperFormat")} (x{item.quantity})
                   </div>
                   <div className="text-xs text-muted-foreground font-mono mt-0.5">
-                    Photos: {item.photoIds.length} assigned
+                    {t("assignedPhotos", {
+                      count: item.photoIds.length,
+                      max: item.photoIds.length,
+                    })}
                   </div>
                 </div>
                 <div className="font-bold text-foreground">
@@ -45,7 +51,7 @@ export function OrderSummaryStep({ items, formats, customerData }: OrderSummaryS
 
       <div className="bg-muted/40 border border-border p-4 rounded-2xl space-y-2">
         <h5 className="font-semibold text-foreground flex items-center gap-1">
-          <MapPin className="size-3.5 text-brand" /> Billing & Shipping Address
+          <MapPin className="size-3.5 text-brand" /> {t("billingShippingAddress")}
         </h5>
         <p className="text-muted-foreground leading-relaxed">
           <strong className="text-foreground">
@@ -64,7 +70,7 @@ export function OrderSummaryStep({ items, formats, customerData }: OrderSummaryS
 
       {customerData.customerNotes && (
         <div className="bg-muted/40 border border-border p-3 rounded-xl text-muted-foreground">
-          <strong className="text-foreground">Notes:</strong> {customerData.customerNotes}
+          <strong className="text-foreground">{t("notes")}</strong> {customerData.customerNotes}
         </div>
       )}
     </div>

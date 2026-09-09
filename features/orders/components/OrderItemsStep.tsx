@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useTranslations } from "next-intl";
 import { PriceListFormatItem } from "../types/orders";
 import { Button } from "@/components/ui/button";
 import { Layers, Trash2, Check, Plus, Package } from "lucide-react";
@@ -42,16 +43,18 @@ export function OrderItemsStep({
   onAddItem,
   onRemoveItem,
 }: OrderItemsStepProps) {
+  const t = useTranslations("Orders");
+
   return (
     <div className="space-y-6">
       {isLoadingFormats ? (
         <div className="p-8 text-center text-xs text-muted-foreground animate-pulse space-y-2">
           <Package className="size-8 mx-auto text-brand animate-bounce" />
-          <p>Loading available paper formats & packages...</p>
+          <p>{t("loadingFormats")}</p>
         </div>
       ) : formats.length === 0 ? (
         <div className="p-6 bg-muted/40 rounded-xl text-center text-xs text-muted-foreground border border-border">
-          No format items found. Default format options will be assigned.
+          {t("noFormats")}
         </div>
       ) : null}
 
@@ -68,23 +71,23 @@ export function OrderItemsStep({
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-brand uppercase tracking-wider flex items-center gap-1.5">
-                  <Layers className="size-3.5" /> Order Item #{itemIdx + 1}
+                  <Layers className="size-3.5" /> {t("orderItem", { index: itemIdx + 1 })}
                 </span>
 
                 {items.length > 1 && (
                   <button
                     type="button"
                     onClick={() => onRemoveItem(itemIdx)}
-                    className="text-xs text-destructive hover:underline flex items-center gap-1"
+                    className="text-xs text-destructive hover:underline flex items-center gap-1 cursor-pointer"
                   >
-                    <Trash2 className="size-3.5" /> Remove
+                    <Trash2 className="size-3.5" /> {t("removeItem")}
                   </button>
                 )}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="sm:col-span-2 space-y-1">
-                  <label className={labelClass}>Paper Format / Package</label>
+                  <label className={labelClass}>{t("paperFormat")}</label>
                   <select
                     value={item.formatId}
                     onChange={(e) => onFormatChange(itemIdx, e.target.value)}
@@ -99,7 +102,7 @@ export function OrderItemsStep({
                 </div>
 
                 <div className="space-y-1">
-                  <label className={labelClass}>Quantity</label>
+                  <label className={labelClass}>{t("quantity")}</label>
                   <input
                     type="number"
                     min={1}
@@ -114,10 +117,16 @@ export function OrderItemsStep({
               <div className="pt-2 border-t border-border/60">
                 <div className="flex items-center justify-between text-xs mb-2">
                   <span className="font-semibold text-foreground">
-                    Assigned Photos ({item.photoIds.length} / {maxAllowed} max)
+                    {t("assignedPhotos", {
+                      count: item.photoIds.length,
+                      max: maxAllowed,
+                    })}
                   </span>
                   <span className="text-xs text-muted-foreground">
-                    Format Price: <span className="font-bold text-brand">€{(Number(unitPrice) * item.quantity).toFixed(2)}</span>
+                    {t("formatPrice")}{" "}
+                    <span className="font-bold text-brand">
+                      €{(Number(unitPrice) * item.quantity).toFixed(2)}
+                    </span>
                   </span>
                 </div>
 
@@ -129,7 +138,7 @@ export function OrderItemsStep({
                         key={photoId}
                         type="button"
                         onClick={() => onTogglePhotoForItem(itemIdx, photoId)}
-                        className={`px-2.5 py-1 rounded-lg text-xs font-mono transition-all flex items-center gap-1 border ${
+                        className={`px-2.5 py-1 rounded-lg text-xs font-mono transition-all flex items-center gap-1 border cursor-pointer ${
                           isSelected
                             ? "bg-brand text-white border-brand shadow-xs font-semibold"
                             : "bg-background text-muted-foreground border-border hover:border-brand/40"
@@ -152,10 +161,10 @@ export function OrderItemsStep({
         variant="outline"
         size="sm"
         onClick={onAddItem}
-        className="w-full border-dashed border-border hover:border-brand text-brand rounded-xl"
+        className="w-full border-dashed border-border hover:border-brand text-brand rounded-xl cursor-pointer"
       >
         <Plus className="size-4 mr-1.5" />
-        Add Another Format Item
+        {t("addAnotherFormat")}
       </Button>
     </div>
   );

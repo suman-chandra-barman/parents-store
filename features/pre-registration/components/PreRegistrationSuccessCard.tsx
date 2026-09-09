@@ -2,6 +2,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   Check,
   Download,
@@ -18,6 +19,7 @@ export function PreRegistrationSuccessCard({
 }: {
   data: PreRegistrationSuccessData;
 }) {
+  const t = useTranslations('PreRegistration');
   const [isDownloading, setIsDownloading] = useState(false);
 
   // Construct QR code image URL dynamically from props/data
@@ -56,11 +58,10 @@ export function PreRegistrationSuccessCard({
           <Check className="size-7 stroke-[2.5]" />
         </div>
         <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-          Registration Complete!
+          {t('successTitle')}
         </h2>
         <p className="text-xs text-slate-500 dark:text-slate-400">
-          Your access pass QR code has been generated. Scan or download it for
-          event access.
+          {t('successSubtitle')}
         </p>
       </div>
 
@@ -68,10 +69,10 @@ export function PreRegistrationSuccessCard({
       <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-5 space-y-4 dark:border-slate-800 dark:bg-slate-800/40">
         <div className="flex items-center justify-between text-xs">
           <span className="flex items-center gap-1.5 font-medium text-slate-500 dark:text-slate-400">
-            <QrCode className="size-3.5" /> Access Pass QR Code
+            <QrCode className="size-3.5" /> {t('accessPassQr')}
           </span>
           <span className="rounded bg-emerald-100 px-2 py-0.5 font-mono text-[10px] font-bold text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
-            ACTIVE
+            {t('active')}
           </span>
         </div>
 
@@ -97,16 +98,16 @@ export function PreRegistrationSuccessCard({
           ) : (
             <Download className="size-3.5" />
           )}
-          <span>{isDownloading ? 'Downloading...' : 'Download QR Code'}</span>
+          <span>{isDownloading ? t('downloading') : t('downloadQr')}</span>
         </button>
 
         {/* Metadata Footer */}
         <div className="flex items-center justify-between pt-2 text-xs border-t border-slate-200/60 dark:border-slate-700/60">
           <span className="flex items-center gap-1.5 font-medium text-slate-500 dark:text-slate-400">
-            <Users className="size-3.5" /> Group
+            <Users className="size-3.5" /> {t('group')}
           </span>
           <span className="font-semibold text-slate-800 dark:text-slate-200">
-            {data.group || 'None Assigned'}
+            {data.group || t('noneAssigned')}
           </span>
         </div>
       </div>
@@ -119,7 +120,7 @@ export function PreRegistrationSuccessCard({
           rel="noopener noreferrer"
           className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/25 transition-all hover:bg-brand/90 focus:outline-none focus:ring-4 focus:ring-brand/20"
         >
-          <span>Continue to Portal</span>
+          <span>{t('continueToPortal')}</span>
           <ExternalLink className="size-4" />
         </a>
       )}

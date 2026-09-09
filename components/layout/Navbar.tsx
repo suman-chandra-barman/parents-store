@@ -3,24 +3,33 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Heart, ShoppingCart, Menu, X } from "lucide-react";
 import { useFavorites } from "@/features/access-cards/hooks/useFavorites";
-
-const NAV_LINKS = [
-  { label: "Home", href: "/" },
-  { label: "Products", href: "/products" },
-  { label: "Gift Voucher", href: "/gift-voucher" },
-] as const;
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 export function Navbar() {
   const pathname = usePathname();
+  const locale = useLocale();
+  const t = useTranslations("Navbar");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { favoriteCount } = useFavorites();
 
+  const NAV_LINKS = [
+    { label: t("home"), href: `/${locale}` },
+    { label: t("products"), href: `/${locale}/products` },
+    { label: t("giftVoucher"), href: `/${locale}/gift-voucher` },
+  ];
+
   const isActive = (href: string) => {
-    if (href === "/") {
-      return pathname === "/" || pathname.startsWith("/photo-galleries");
+    if (href === `/${locale}` || href === "/") {
+      return (
+        pathname === `/${locale}` ||
+        pathname === "/" ||
+        pathname.startsWith(`/${locale}/photo-galleries`) ||
+        pathname.startsWith("/photo-galleries")
+      );
     }
     return pathname.startsWith(href);
   };
@@ -30,7 +39,7 @@ export function Navbar() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Left: Brand Logo */}
         <div className="shrink-0">
-          <Link href="/" className="flex items-center justify-center py-2">
+          <Link href={`/${locale}`} className="flex items-center justify-center py-2">
             <span className="font-bold text-lg tracking-tight text-brand">
               Lumiphoto
             </span>
@@ -59,12 +68,16 @@ export function Navbar() {
         </nav>
 
         {/* Right: Actions */}
-        <div className="hidden sm:flex items-center gap-5">
+        <div className="hidden sm:flex items-center gap-3">
+          {/* Language Switcher */}
+          <LanguageSwitcher />
+
           {/* Favorites */}
           <button
             type="button"
-            className="relative flex items-center gap-1.5 text-xs font-medium text-neutral-600 hover:text-neutral-900 cursor-pointer transition-colors"
-            title="Favorites"
+            className="relative flex items-center gap-1.5 text-xs font-medium text-neutral-600 hover:text-neutral-900 cursor-pointer transition-colors p-1.5"
+            title={t("favorites")}
+            aria-label={t("favorites")}
           >
             <div className="relative flex items-center justify-center">
               <Heart
@@ -84,19 +97,22 @@ export function Navbar() {
           {/* Shopping Cart */}
           <button
             type="button"
-            className="relative p-1 text-neutral-700 hover:text-neutral-900 cursor-pointer transition-colors"
-            aria-label="Shopping Cart"
+            className="relative p-1.5 text-neutral-700 hover:text-neutral-900 cursor-pointer transition-colors"
+            aria-label={t("shoppingCart")}
+            title={t("shoppingCart")}
           >
             <ShoppingCart className="size-5 stroke-[1.8]" />
           </button>
         </div>
 
-        {/* Mobile: Hamburger */}
-        <div className="flex md:hidden items-center gap-3">
+        {/* Mobile: Hamburger & Actions */}
+        <div className="flex md:hidden items-center gap-2">
+          <LanguageSwitcher />
+
           <button
             type="button"
             className="relative p-1 text-neutral-700 hover:text-neutral-900"
-            aria-label="Shopping Cart"
+            aria-label={t("shoppingCart")}
           >
             <ShoppingCart className="size-5" />
           </button>
@@ -105,7 +121,7 @@ export function Navbar() {
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="p-1.5 text-neutral-600 hover:text-neutral-900"
-            aria-label="Toggle Menu"
+            aria-label={t("toggleMenu")}
           >
             {mobileMenuOpen ? <X className="size-6" /> : <Menu className="size-6" />}
           </button>
@@ -154,6 +170,7 @@ export function Navbar() {
                   </span>
                 )}
               </div>
+              <span>{t("favorites")}</span>
             </button>
           </div>
         </div>

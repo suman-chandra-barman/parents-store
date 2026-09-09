@@ -1,8 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
-  AlertTriangle,
   Building2,
   Calendar,
   Clock,
@@ -10,7 +10,6 @@ import {
   Loader2,
   ShieldAlert,
   Info,
-  CheckCircle2,
   FileText,
 } from 'lucide-react';
 import type {
@@ -41,6 +40,7 @@ export function PreRegistrationFormComponent({
 }: {
   urlPassword: string;
 }) {
+  const t = useTranslations('PreRegistration');
   const [password, setPassword] = useState(urlPassword);
   const [isFetching, setIsFetching] = useState(() => Boolean(urlPassword));
   const [error, setError] = useState<string | null>(null);
@@ -70,7 +70,7 @@ export function PreRegistrationFormComponent({
   const handleFetch = (event: React.FormEvent) => {
     event.preventDefault();
     if (!password.trim()) {
-      setError('Password is required to access the form.');
+      setError(t('passwordRequired'));
       return;
     }
     setError(null);
@@ -114,7 +114,7 @@ export function PreRegistrationFormComponent({
                   </div>
                   <div>
                     <span className="text-xs font-bold uppercase tracking-wider text-brand">
-                      Pre-Registration
+                      {t('title')}
                     </span>
                     <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
                       {form.title}
@@ -132,10 +132,10 @@ export function PreRegistrationFormComponent({
                 >
                   <span className="flex items-center gap-2">
                     <Clock className="size-4 shrink-0 text-slate-400" />
-                    {isExpired ? 'Status' : 'Deadline'}
+                    {isExpired ? t('status') : t('deadline')}
                   </span>
                   <span className="font-semibold">
-                    {isExpired ? 'Closed' : formatDate(form.deadlineAt)}
+                    {isExpired ? t('closed') : formatDate(form.deadlineAt)}
                   </span>
                 </div>
 
@@ -143,7 +143,7 @@ export function PreRegistrationFormComponent({
                 {form.notes && (
                   <div className="space-y-2">
                     <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                      <FileText className="size-3.5" /> Details & Information
+                      <FileText className="size-3.5" /> {t('detailsAndInfo')}
                     </h3>
                     <div className="rounded-xl bg-white p-4 border border-slate-200/80 shadow-sm dark:bg-slate-800/40 dark:border-slate-800">
                       <div
@@ -177,7 +177,7 @@ export function PreRegistrationFormComponent({
             </div>
 
             {/* Right Column: Form Fields Panel */}
-            <div className="lg:col-span-7 p-6 sm:p-8 lg:p-10 flex flex-col justify-center0">
+            <div className="lg:col-span-7 p-6 sm:p-8 lg:p-10 flex flex-col justify-center">
               {error && (
                 <div
                   role="alert"
@@ -185,7 +185,7 @@ export function PreRegistrationFormComponent({
                 >
                   <ShieldAlert className="mt-0.5 size-5 shrink-0 text-red-600 dark:text-red-400" />
                   <div>
-                    <p className="font-semibold">Submission Error</p>
+                    <p className="font-semibold">{t('submissionError')}</p>
                     <p className="text-xs mt-0.5">{error}</p>
                   </div>
                 </div>
@@ -197,10 +197,9 @@ export function PreRegistrationFormComponent({
                   className="rounded-xl border border-amber-200 bg-amber-50/50 p-6 text-center text-sm text-amber-800 dark:border-amber-900/50 dark:bg-amber-950/20 dark:text-amber-300"
                 >
                   <Calendar className="mx-auto mb-3 size-10 text-amber-600 dark:text-amber-400" />
-                  <h3 className="text-base font-bold">Registration Closed</h3>
+                  <h3 className="text-base font-bold">{t('registrationClosed')}</h3>
                   <p className="mt-1 text-xs text-amber-700 dark:text-amber-400">
-                    This pre-registration form is no longer accepting new
-                    submissions as the deadline has passed.
+                    {t('registrationClosedDesc')}
                   </p>
                 </div>
               ) : (
@@ -220,10 +219,10 @@ export function PreRegistrationFormComponent({
                 <Building2 className="size-6 text-brand" />
               </div>
               <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-                Pre-Registration
+                {t('title')}
               </h1>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Please enter your access password to view the form.
+                {t('enterPasswordPrompt')}
               </p>
             </header>
 
@@ -234,7 +233,7 @@ export function PreRegistrationFormComponent({
               >
                 <ShieldAlert className="mt-0.5 size-5 shrink-0 text-red-600 dark:text-red-400" />
                 <div className="text-xs">
-                  <p className="font-semibold">Access Error</p>
+                  <p className="font-semibold">{t('accessError')}</p>
                   <p>{error}</p>
                 </div>
               </div>
@@ -246,7 +245,7 @@ export function PreRegistrationFormComponent({
                   htmlFor="password"
                   className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
                 >
-                  Password
+                  {t('password')}
                 </label>
                 <div className="relative">
                   <Lock className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
@@ -254,7 +253,7 @@ export function PreRegistrationFormComponent({
                     id="password"
                     type="password"
                     autoComplete="current-password"
-                    placeholder="••••••••••••"
+                    placeholder={t('passwordPlaceholder')}
                     value={password}
                     onChange={(e) => {
                       setPassword(e.target.value);
@@ -273,7 +272,7 @@ export function PreRegistrationFormComponent({
                 {isFetching ? (
                   <Loader2 className="size-4 animate-spin" />
                 ) : (
-                  'Unlock Form'
+                  t('unlockForm')
                 )}
               </button>
             </form>

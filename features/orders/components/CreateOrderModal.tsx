@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 import { X, ShoppingBag, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { fetchPriceList, fetchAllPriceLists, submitCreateOrder } from "../utils/orders-api";
@@ -40,6 +41,7 @@ export function CreateOrderModal({
   priceListId,
   onOrderCreated,
 }: CreateOrderModalProps) {
+  const t = useTranslations("Orders");
   const [activeStep, setActiveStep] = useState<1 | 2 | 3>(1);
   const [formats, setFormats] = useState<PriceListFormatItem[]>([]);
   const [isLoadingFormats, setIsLoadingFormats] = useState<boolean>(false);
@@ -156,17 +158,17 @@ export function CreateOrderModal({
 
   const validateStep1 = (): boolean => {
     if (items.length === 0) {
-      setError("Please add at least 1 order item.");
+      setError(t("validationErrorItems"));
       return false;
     }
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
       if (!item.formatId) {
-        setError(`Please select a paper format for Item #${i + 1}.`);
+        setError(t("validationErrorFormat", { index: i + 1 }));
         return false;
       }
       if (!item.photoIds || item.photoIds.length === 0) {
-        setError(`Please select at least 1 photo for Item #${i + 1}.`);
+        setError(t("validationErrorPhotos", { index: i + 1 }));
         return false;
       }
     }
@@ -254,10 +256,10 @@ export function CreateOrderModal({
             </div>
             <div>
               <h3 className="text-base font-bold text-foreground">
-                Create Photo Print Order
+                {t("createOrder")}
               </h3>
               <p className="text-xs text-muted-foreground">
-                Select format options and enter billing details to place your order
+                {t("createOrderSubtitle")}
               </p>
             </div>
           </div>
@@ -282,7 +284,7 @@ export function CreateOrderModal({
                 : "text-muted-foreground"
             }`}
           >
-            1. Formats & Photos
+            {t("step1")}
           </div>
           <div
             className={`py-2.5 border-r border-border transition-colors ${
@@ -293,7 +295,7 @@ export function CreateOrderModal({
                 : "text-muted-foreground"
             }`}
           >
-            2. Customer & Address
+            {t("step2")}
           </div>
           <div
             className={`py-2.5 transition-colors ${
@@ -302,7 +304,7 @@ export function CreateOrderModal({
                 : "text-muted-foreground"
             }`}
           >
-            3. Review & Submit
+            {t("step3")}
           </div>
         </div>
 
@@ -370,7 +372,7 @@ export function CreateOrderModal({
               className="rounded-xl"
             >
               <ChevronLeft className="size-4 mr-1" />
-              Back
+              {t("back")}
             </Button>
           ) : (
             <div />
@@ -384,7 +386,7 @@ export function CreateOrderModal({
               onClick={handleNextStep}
               className="rounded-xl font-semibold px-5"
             >
-              Next Step
+              {t("nextStep")}
               <ChevronRight className="size-4 ml-1" />
             </Button>
           ) : (
@@ -397,7 +399,7 @@ export function CreateOrderModal({
               disabled={isSubmitting}
               className="rounded-xl font-semibold px-6 shadow-lg shadow-brand/25"
             >
-              Submit Order
+              {t("submitOrder")}
             </Button>
           )}
         </div>

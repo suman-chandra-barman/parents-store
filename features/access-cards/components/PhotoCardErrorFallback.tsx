@@ -1,5 +1,8 @@
+"use client";
+
 import React from "react";
 import { ImageOff, RefreshCw } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface PhotoCardErrorFallbackProps {
   onRetry: () => void;
@@ -8,12 +11,15 @@ interface PhotoCardErrorFallbackProps {
 
 export function PhotoCardErrorFallback({
   onRetry,
-  message = "Failed to load preview",
+  message,
 }: PhotoCardErrorFallbackProps) {
+  const t = useTranslations("PhotoCard");
+  const displayMessage = message ?? t("failedToLoad");
+
   return (
     <div className="w-full aspect-4/3 bg-destructive/5 flex flex-col items-center justify-center p-4 text-center">
       <ImageOff className="size-6 text-destructive mb-2" />
-      <span className="text-xs text-destructive font-medium">{message}</span>
+      <span className="text-xs text-destructive font-medium">{displayMessage}</span>
       <button
         type="button"
         onClick={(e) => {
@@ -22,7 +28,7 @@ export function PhotoCardErrorFallback({
         }}
         className="mt-2 text-xs flex items-center gap-1 text-brand underline font-medium cursor-pointer"
       >
-        <RefreshCw className="size-3" /> Retry
+        <RefreshCw className="size-3" /> {t("retry")}
       </button>
     </div>
   );

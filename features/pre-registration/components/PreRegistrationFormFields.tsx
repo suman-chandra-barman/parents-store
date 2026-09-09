@@ -6,6 +6,7 @@ import { AlertCircle, CheckCircle2, Loader2, User, Mail } from 'lucide-react';
 import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import type { FieldError } from 'react-hook-form';
+import { useTranslations } from 'next-intl';
 import type {
   PreRegistrationForm,
   PreRegistrationSuccessData,
@@ -52,6 +53,7 @@ export function PreRegistrationFormFields({
   password: string;
   onSuccess: (data: PreRegistrationSuccessData) => void;
 }) {
+  const t = useTranslations('PreRegistration');
   const [formError, setFormError] = useState<string | null>(null);
 
   const {
@@ -121,10 +123,10 @@ export function PreRegistrationFormFields({
 
       <div>
         <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">
-          Complete Registration
+          {t('completeRegistration')}
         </h2>
         <p className="text-xs text-slate-500 dark:text-slate-400">
-          Enter your contact details to generate your official access pass.
+          {t('contactDetailsDesc')}
         </p>
       </div>
 
@@ -144,14 +146,14 @@ export function PreRegistrationFormFields({
           htmlFor="name"
           className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
         >
-          Full Name <span className="text-red-500">*</span>
+          {t('fullName')} <span className="text-red-500">*</span>
         </label>
         <div className="relative mt-1.5">
           <User className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
           <input
             id="name"
             type="text"
-            placeholder="Jane Doe"
+            placeholder={t('fullNamePlaceholder')}
             aria-invalid={errors.name ? 'true' : undefined}
             className={`w-full rounded-xl border bg-slate-50/50 py-2.5 pl-10 pr-4 text-sm text-slate-900 transition-all focus:bg-white focus:outline-none focus:ring-4 dark:bg-slate-900 dark:text-slate-100 ${
               errors.name
@@ -171,16 +173,16 @@ export function PreRegistrationFormFields({
             htmlFor="email"
             className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
           >
-            Email Address
+            {t('emailAddress')}
           </label>
-          <span className="text-[11px] text-slate-400">Optional</span>
+          <span className="text-[11px] text-slate-400">{t('optional')}</span>
         </div>
         <div className="relative mt-1.5">
           <Mail className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
           <input
             id="email"
             type="email"
-            placeholder="jane@example.com"
+            placeholder={t('emailPlaceholder')}
             aria-invalid={errors.email ? 'true' : undefined}
             className={`w-full rounded-xl border bg-slate-50/50 py-2.5 pl-10 pr-4 text-sm text-slate-900 transition-all focus:bg-white focus:outline-none focus:ring-4 dark:bg-slate-900 dark:text-slate-100 ${
               errors.email
@@ -200,9 +202,9 @@ export function PreRegistrationFormFields({
             htmlFor="phone"
             className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
           >
-            Phone Number
+            {t('phoneNumber')}
           </label>
-          <span className="text-[11px] text-slate-400">Optional</span>
+          <span className="text-[11px] text-slate-400">{t('optional')}</span>
         </div>
         <div className="mt-1.5">
           <Controller
@@ -224,7 +226,7 @@ export function PreRegistrationFormFields({
       {hasGroupChoices && (
         <fieldset className="space-y-2 pt-1">
           <legend className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-            Select Group Option
+            {t('selectGroup')}
           </legend>
           <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
             {preRegForm.selectableGroups.map((group) => {
@@ -262,11 +264,11 @@ export function PreRegistrationFormFields({
           {isSubmitting ? (
             <>
               <Loader2 className="size-4 animate-spin" />
-              Submitting...
+              {t('submitting')}
             </>
           ) : (
             <>
-              <span>Submit Registration</span>
+              <span>{t('submit')}</span>
             </>
           )}
         </span>

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Heart, Layers } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PhotoItem } from "../types/access-cards";
@@ -23,6 +24,7 @@ export function PhotoCardItem({
   onToggleFavorite,
   onSelect,
 }: PhotoCardItemProps) {
+  const t = useTranslations("PhotoCard");
   const [blobUrl, setBlobUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
@@ -58,7 +60,6 @@ export function PhotoCardItem({
     setRetryCount((prev) => prev + 1);
   };
 
-  const rotation = photo.rotationAngle || 0;
   const albumName = photo.album?.name || "Photo";
 
   return (
@@ -72,7 +73,7 @@ export function PhotoCardItem({
         <div className="w-full aspect-4/3 bg-muted/60 animate-pulse flex flex-col items-center justify-center gap-2">
           <Layers className="size-7 text-brand/30 animate-bounce" />
           <span className="text-xs text-muted-foreground font-mono">
-            Loading...
+            {t("loading")}
           </span>
         </div>
       )}
@@ -86,18 +87,9 @@ export function PhotoCardItem({
           <Image
             src={blobUrl}
             alt={albumName}
-            unoptimized
             width={0}
             height={0}
             sizes="100vw"
-            draggable={false}
-            onContextMenu={(e) => e.preventDefault()}
-            onDragStart={(e) => e.preventDefault()}
-            style={{
-              width: "100%",
-              height: "auto",
-              transform: rotation !== 0 ? `rotate(${rotation}deg)` : undefined,
-            }}
             className="w-full h-auto block object-cover transition-transform duration-500 ease-out group-hover:scale-105 pointer-events-none"
           />
 
@@ -111,19 +103,23 @@ export function PhotoCardItem({
                   e.preventDefault();
                   onToggleFavorite(photo.id);
                 }}
-                title={isFavorited ? "Remove from favorites" : "Add to favorites"}
-                aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
+                title={
+                  isFavorited ? t("removeFromFavorites") : t("addToFavorites")
+                }
+                aria-label={
+                  isFavorited ? t("removeFromFavorites") : t("addToFavorites")
+                }
                 className={cn(
                   "size-8 rounded-xl flex items-center justify-center transition-all shadow-md cursor-pointer",
                   isFavorited
                     ? "bg-rose-500 text-white scale-110 shadow-rose-500/40"
-                    : "bg-black/50 text-white/80 hover:text-rose-400 hover:bg-black/70 backdrop-blur-md opacity-80 group-hover:opacity-100"
+                    : "bg-black/50 text-white/80 hover:text-rose-400 hover:bg-black/70 backdrop-blur-md opacity-80 group-hover:opacity-100",
                 )}
               >
                 <Heart
                   className={cn(
                     "size-4 transition-transform active:scale-125",
-                    isFavorited ? "fill-white text-white" : ""
+                    isFavorited ? "fill-white text-white" : "",
                   )}
                 />
               </button>
