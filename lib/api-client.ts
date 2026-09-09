@@ -9,7 +9,7 @@ export const apiClient = axios.create({
 apiClient.interceptors.request.use((config) => {
   const { tenant } = useTenantStore.getState();
 
-  const tenantIdentifier = tenant?.slug || extractSlugFromHostname();
+  const tenantIdentifier = tenant?.id;
 
   if (tenantIdentifier) {
     config.headers['X-Tenant-ID'] = tenantIdentifier;
@@ -17,9 +17,3 @@ apiClient.interceptors.request.use((config) => {
 
   return config;
 });
-
-function extractSlugFromHostname(): string | null {
-  const hostname = window.location.hostname;
-  const parts = hostname.split('.');
-  return parts.length > 2 && parts[0] !== 'www' ? parts[0] : null;
-}
