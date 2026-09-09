@@ -1,7 +1,7 @@
 import { Media } from '@/common/types';
 import type { TenantPlan, TenantStatus } from '../common/enum';
 
-export interface TenantData {
+export interface Tenant {
   id: string;
   slug: string;
   name: string;
@@ -20,12 +20,12 @@ export interface TenantData {
 }
 
 export interface TenantState {
-  tenant: TenantData | null;
+  tenant: Tenant | null;
   isLoading: boolean;
   error: string | null;
 
   // Actions
-  setTenant: (tenant: TenantData) => void;
+  setTenant: (tenant: Tenant) => void;
   fetchTenant: (slug: string) => Promise<void>;
   resetTenant: () => void;
 }

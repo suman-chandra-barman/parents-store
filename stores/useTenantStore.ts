@@ -1,34 +1,60 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from 'zustand';
-import { ApiResponse } from '@/common/types';
-import type { TenantState } from './useTenantStore.types';
+import type { Tenant, TenantState } from './useTenantStore.types';
 import { env } from '@/config/env';
+import { ApiResponse } from '@/common/types';
 
 export const useTenantStore = create<TenantState>((set) => ({
   tenant: null,
   isLoading: false,
   error: null,
 
-  setTenant: (tenant) => set({ tenant, isLoading: false, error: null }),
+  setTenant: (tenant) =>
+    set({
+      tenant,
+      isLoading: false,
+      error: null,
+    }),
 
   fetchTenant: async (slug: string) => {
-    set({ isLoading: true, error: null });
-    try {
-      const response = await fetch(`${env.baseUrl}/tenants/by-url/${slug}`);
-      const result: ApiResponse = await response.json();
+    set({
+      isLoading: true,
+      error: null,
+    });
 
-      if (result.success && result.data) {
-        set({ tenant: result.data, isLoading: false });
-      } else {
-        set({
-          error: result.message || 'Failed to retrieve tenant',
-          isLoading: false,
-        });
-      }
-    } catch (err: any) {
-      set({ error: err.message || 'Network error', isLoading: false });
+    try {
+      const tenant = await fetchTenant(slug);
+
+      set({
+        tenant,
+        isLoading: false,
+        error: null,
+      });
+    } catch (error) {
+      set({
+        tenant: null,
+        isLoading: false,
+        error:
+          error instanceof Error ? error.message : 'Failed to retrieve tenant',
+      });
     }
   },
 
-  resetTenant: () => set({ tenant: null, isLoading: false, error: null }),
+  resetTenant: () =>
+    set({
+      tenant: null,
+      isLoading: false,
+      error: null,
+    }),
 }));
+
+export async function fetchTenant(slug: string): Promise<Tenant> {
+  const response = await fetch(`${env.baseUrl}/tenants/by-url/${slug}`);
+
+  const result: ApiResponse<Tenant> = await response.json();
+
+  if (!response.ok || !result.success || !result.data) {
+    throw new Error(result.message || 'Failed to retrieve tenant');
+  }
+
+  return result.data;
+}
