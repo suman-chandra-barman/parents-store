@@ -256,7 +256,7 @@ export function PreRegistrationFormFields({
         </fieldset>
       )}
 
-      <button className="w-fit inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-brand px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/25 transition-all hover:bg-brand/90 focus:outline-none focus:ring-4 focus:ring-brand/20 disabled:opacity-50 mt-2 relative overflow-hidden group">
+      <button className="w-fit inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-brand hover:opacity-70 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/25 transition-all hover:bg-brand/90 focus:outline-none focus:ring-4 focus:ring-brand/20 disabled:opacity-50 mt-2 relative overflow-hidden group">
         <span className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></span>
         <span className="relative">
           {isSubmitting ? (

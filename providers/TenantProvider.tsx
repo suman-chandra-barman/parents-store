@@ -12,6 +12,13 @@ export const TenantProvider = ({ children }: { children: React.ReactNode }) => {
     fetchTenant(hostname);
   }, [fetchTenant]);
 
+  useEffect(() => {
+    document.documentElement.style.setProperty(
+      '--brand',
+      tenant?.primaryColor ?? '#2060b0',
+    );
+  }, [tenant?.primaryColor]);
+
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center bg-background text-foreground">

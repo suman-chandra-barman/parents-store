@@ -65,7 +65,7 @@ export function Navbar() {
                 className={cn(
                   'px-5 py-2 rounded-lg text-xs font-semibold transition-all',
                   active
-                    ? 'bg-[#2060b0] text-white shadow-sm hover:bg-[#1a4f94]'
+                    ? 'bg-brand text-white shadow-sm hover:opacity-70'
                     : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100',
                 )}
               >
@@ -147,7 +147,7 @@ export function Navbar() {
                   className={cn(
                     'w-full px-4 py-2.5 rounded-lg text-xs font-semibold transition-colors',
                     active
-                      ? 'bg-[#2060b0] text-white'
+                      ? 'bg-brand text-white'
                       : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200',
                   )}
                 >

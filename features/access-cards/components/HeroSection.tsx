@@ -126,7 +126,7 @@ export function HeroSection({
                 {accessCodes.map((code) => (
                   <span
                     key={code}
-                    className="inline-flex items-center gap-1 rounded-sm bg-[#2F5DA8] px-2 py-0.5 text-[11px] font-semibold text-white"
+                    className="inline-flex items-center gap-1 rounded-sm bg-brand hover:opacity-70 px-2 py-0.5 text-[11px] font-semibold text-white"
                     style={{ letterSpacing: "0.06em" }}
                   >
                     {code}
@@ -184,7 +184,7 @@ export function HeroSection({
             <Button
               onClick={handleViewGallery}
               disabled={!hasAnyCodes || isLoading}
-              className="mt-8 h-12 w-fit rounded-none bg-[#2F5DA8] px-8 text-xs font-semibold tracking-[0.2em] text-white hover:bg-[#274d8c] disabled:opacity-60 disabled:cursor-not-allowed"
+              className="mt-8 h-12 w-fit rounded-none bg-brand hover:opacity-70 px-8 text-xs font-semibold tracking-[0.2em] text-white hover:bg-[#274d8c] disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <>
