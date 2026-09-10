@@ -11,8 +11,11 @@ import { FullscreenPhotoViewer } from "@/features/access-cards/components/Fullsc
 
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
+import { useTenantStore } from "@/stores/useTenantStore";
 
 function AccessCardsContent() {
+  const tenant = useTenantStore(({tenant})=> tenant);
+
   const router = useRouter();
   const locale = useLocale();
   const {
@@ -77,7 +80,7 @@ function AccessCardsContent() {
       {/* Hero Section */}
       <HeroSection
         title="Photo Gallery"
-        subtitle="LUMIPHOTO"
+        subtitle={tenant?.name ?? "LUMIPHOTO"}
         accessCodes={accessCodes}
         onAccessCodesChange={setAccessCodes}
         isLoading={isLoading}
