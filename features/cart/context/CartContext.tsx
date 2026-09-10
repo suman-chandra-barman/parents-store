@@ -3,20 +3,16 @@
 import React, {
   createContext,
   useState,
-  useEffect,
-  useCallback,
   useMemo,
+  useCallback,
   ReactNode,
 } from "react";
 import { toast } from "sonner";
 import { CartData, AddCartItemPayload, CartResponse } from "../types/cart";
-import {
-  getOrCreateCartSessionId,
-  addItemToCart,
-  fetchCart,
-} from "../utils/cart-api";
-
+import { getOrCreateCartSessionId } from "../utils/cart-api";
+import { useGetCartQuery, useAddToCartMutation } from "../api/cartApi";
 import { useTenantStore } from "@/stores/useTenantStore";
+import { parseErrorMessage } from "@/utils/parseErrorMessage";
 
 export interface CartContextValue {
   sessionId: string;
@@ -34,47 +30,25 @@ export const CartContext = createContext<CartContextValue | undefined>(
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const tenant = useTenantStore((state) => state.tenant);
-  const [sessionId, setSessionId] = useState<string>(() => {
+  const [sessionId] = useState<string>(() => {
     return getOrCreateCartSessionId();
   });
-  const [cart, setCart] = useState<CartData | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isAdding, setIsAdding] = useState<boolean>(false);
 
-  // Fetch initial cart state if session ID exists
+  const {
+    data: cartResponse,
+    isLoading,
+    refetch,
+  } = useGetCartQuery(sessionId, {
+    skip: !sessionId || !tenant?.id,
+  });
+
+  const [addToCartMutation, { isLoading: isAdding }] = useAddToCartMutation();
+
+  const cart = cartResponse?.data || null;
+
   const refreshCart = useCallback(async () => {
-    if (!sessionId || !tenant?.id) return;
-    setIsLoading(true);
-    try {
-      const response = await fetchCart(sessionId);
-      if (response?.data) {
-        setCart(response.data);
-      }
-    } catch (error) {
-      console.error("Cart refresh failed:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [sessionId, tenant?.id]);
-
-  useEffect(() => {
-    if (!sessionId || !tenant?.id) return;
-    let isMounted = true;
-
-    fetchCart(sessionId)
-      .then((response) => {
-        if (isMounted && response?.data) {
-          setCart(response.data);
-        }
-      })
-      .catch((err) => {
-        console.error("Cart load failed:", err);
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [sessionId, tenant?.id]);
+    await refetch();
+  }, [refetch]);
 
   const addToCart = useCallback(
     async (payload: AddCartItemPayload): Promise<CartResponse> => {
@@ -87,35 +61,25 @@ export function CartProvider({ children }: { children: ReactNode }) {
         throw new Error(msg);
       }
 
-      let activeSessionId = sessionId;
-      if (!activeSessionId) {
-        activeSessionId = getOrCreateCartSessionId();
-        setSessionId(activeSessionId);
-      }
+      const activeSessionId = sessionId || getOrCreateCartSessionId();
 
-      setIsAdding(true);
       try {
-        const response = await addItemToCart(
-          activeSessionId,
+        const response = await addToCartMutation({
+          sessionId: activeSessionId,
           payload,
-        );
-        if (response?.data) {
-          setCart(response.data);
-        }
+        }).unwrap();
         toast.success("Added to cart successfully 🛒");
         return response;
       } catch (error: unknown) {
-        const message =
-          error instanceof Error
-            ? error.message
-            : "Failed to add item to cart. Please try again.";
+        const message = parseErrorMessage(
+          error,
+          "Failed to add item to cart. Please try again."
+        );
         toast.error(message);
         throw error;
-      } finally {
-        setIsAdding(false);
       }
     },
-    [sessionId, tenant?.id]
+    [tenant?.id, sessionId, addToCartMutation]
   );
 
   const itemCount = useMemo(() => {
@@ -133,7 +97,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       addToCart,
       refreshCart,
     }),
-    [sessionId, cart, itemCount, isLoading, isAdding, addToCart, refreshCart],
+    [sessionId, cart, itemCount, isLoading, isAdding, addToCart, refreshCart]
   );
 
   return (

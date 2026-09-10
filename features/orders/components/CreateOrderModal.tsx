@@ -1,12 +1,17 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { X, ShoppingBag, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { fetchPriceList, fetchAllPriceLists, submitCreateOrder } from "../utils/orders-api";
+import {
+  useGetPriceListQuery,
+  useGetAllPriceListsQuery,
+  useCreateOrderMutation,
+} from "../api/ordersApi";
+import { parseErrorMessage } from "@/utils/parseErrorMessage";
 import { orderCustomerSchema, OrderCustomerFormData } from "../utils/order-schema";
 import { PriceListFormatItem, OrderCreatedData, CreateOrderPayload } from "../types/orders";
 import { OrderItemsStep, OrderItemState } from "./OrderItemsStep";
@@ -43,23 +48,30 @@ export function CreateOrderModal({
 }: CreateOrderModalProps) {
   const t = useTranslations("Orders");
   const [activeStep, setActiveStep] = useState<1 | 2 | 3>(1);
-  const [formats, setFormats] = useState<PriceListFormatItem[]>([]);
-  const [isLoadingFormats, setIsLoadingFormats] = useState<boolean>(false);
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [items, setItems] = useState<OrderItemState[]>([]);
 
-  // Reset form state each time the modal opens. Adjusting state during render
-  // (instead of inside an effect) avoids cascading renders and the
-  // set-state-in-effect lint rule.
-  const [wasOpen, setWasOpen] = useState(open);
-  if (open !== wasOpen) {
-    setWasOpen(open);
-    if (open) {
-      setIsLoadingFormats(true);
-      setError(null);
-    }
-  }
+  // Fetch price lists using RTK Query
+  const {
+    data: singlePriceListFormats = [],
+    isLoading: isLoadingSingle,
+  } = useGetPriceListQuery(priceListId || "", {
+    skip: !open || !priceListId,
+  });
+
+  const {
+    data: allPriceListsFormats = [],
+    isLoading: isLoadingAll,
+  } = useGetAllPriceListsQuery(undefined, {
+    skip: !open || Boolean(priceListId),
+  });
+
+  const formats = priceListId
+    ? singlePriceListFormats
+    : allPriceListsFormats;
+  const isLoadingFormats = priceListId ? isLoadingSingle : isLoadingAll;
+
+  const [createOrderMutation, { isLoading: isSubmitting }] =
+    useCreateOrderMutation();
 
   const shippingForm = useForm<OrderCustomerFormData>({
     resolver: zodResolver(orderCustomerSchema),
@@ -80,44 +92,66 @@ export function CreateOrderModal({
     },
   });
 
-  useEffect(() => {
-    if (!open) return;
+  const [items, setItems] = useState<OrderItemState[]>(() => {
+    if (formats.length === 0) return [];
+    const firstFormat = formats[0];
+    const defaultFormatId = firstFormat?.id || "";
+    const maxPhotos = getMaxPhotosForFormat(firstFormat);
+    const initialPhotoIds = selectedPhotoIds.slice(0, maxPhotos);
+    return [
+      {
+        formatId: defaultFormatId,
+        quantity: 1,
+        photoIds:
+          initialPhotoIds.length > 0 ? initialPhotoIds : selectedPhotoIds,
+      },
+    ];
+  });
 
-    let isMounted = true;
+  // Reset or adjust state during render when modal opens or formats load
+  const [prevOpen, setPrevOpen] = useState(open);
+  const [prevFormats, setPrevFormats] = useState(formats);
 
-    const loadFormats = async () => {
-      let fetchedFormats: PriceListFormatItem[] = [];
-      if (priceListId) {
-        fetchedFormats = await fetchPriceList(priceListId);
-      }
-      if (fetchedFormats.length === 0) {
-        fetchedFormats = await fetchAllPriceLists();
-      }
-
-      if (isMounted) {
-        setFormats(fetchedFormats);
-        setIsLoadingFormats(false);
-
-        const firstFormat = fetchedFormats[0];
+  if (open !== prevOpen) {
+    setPrevOpen(open);
+    if (open) {
+      setActiveStep(1);
+      setError(null);
+      if (formats.length > 0) {
+        const firstFormat = formats[0];
         const defaultFormatId = firstFormat?.id || "";
         const maxPhotos = getMaxPhotosForFormat(firstFormat);
         const initialPhotoIds = selectedPhotoIds.slice(0, maxPhotos);
-
         setItems([
           {
             formatId: defaultFormatId,
             quantity: 1,
-            photoIds: initialPhotoIds.length > 0 ? initialPhotoIds : selectedPhotoIds,
+            photoIds:
+              initialPhotoIds.length > 0 ? initialPhotoIds : selectedPhotoIds,
           },
         ]);
+      } else {
+        setItems([]);
       }
-    };
+    }
+  } else if (formats !== prevFormats) {
+    setPrevFormats(formats);
+    if (formats.length > 0 && items.length === 0) {
+      const firstFormat = formats[0];
+      const defaultFormatId = firstFormat?.id || "";
+      const maxPhotos = getMaxPhotosForFormat(firstFormat);
+      const initialPhotoIds = selectedPhotoIds.slice(0, maxPhotos);
 
-    loadFormats();
-    return () => {
-      isMounted = false;
-    };
-  }, [open, priceListId, selectedPhotoIds]);
+      setItems([
+        {
+          formatId: defaultFormatId,
+          quantity: 1,
+          photoIds:
+            initialPhotoIds.length > 0 ? initialPhotoIds : selectedPhotoIds,
+        },
+      ]);
+    }
+  }
 
   const handleFormatChange = (itemIdx: number, newFormatId: string) => {
     const selectedFormat = formats.find((f) => f.id === newFormatId);
@@ -196,7 +230,6 @@ export function CreateOrderModal({
 
   const handleSubmitOrder = async () => {
     const customerData = shippingForm.getValues();
-    setIsSubmitting(true);
     setError(null);
 
     const payload: CreateOrderPayload = {
@@ -225,8 +258,7 @@ export function CreateOrderModal({
     };
 
     try {
-      const response = await submitCreateOrder(payload);
-      setIsSubmitting(false);
+      const response = await createOrderMutation(payload).unwrap();
 
       if (response.data) {
         onOrderCreated(response.data);
@@ -239,8 +271,7 @@ export function CreateOrderModal({
       }
     } catch (err: unknown) {
       console.error("Order creation error:", err);
-      setIsSubmitting(false);
-      setError(err instanceof Error ? err.message : "Failed to create order. Please try again.");
+      setError(parseErrorMessage(err, "Failed to create order. Please try again."));
     }
   };
 

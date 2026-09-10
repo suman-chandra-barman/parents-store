@@ -1,75 +1,61 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { AccessCardsResponse } from "../types/access-cards";
-import { fetchAccessCardsGallery } from "../utils/access-cards-api";
-
+import { useState, useCallback } from "react";
+import { useGetAccessCardsGalleryQuery } from "../api/accessCardsApi";
+import { parseErrorMessage } from "@/utils/parseErrorMessage";
 import { useTenantStore } from "@/stores/useTenantStore";
 
 const STORAGE_KEY = "access_card_password";
 
 export function useAccessCardsGallery() {
   const tenant = useTenantStore((state) => state.tenant);
-  const [password, setPassword] = useState<string>("");
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [galleryResponse, setGalleryResponse] =
-    useState<AccessCardsResponse | null>(null);
+  const [password, setPassword] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      return sessionStorage.getItem(STORAGE_KEY) || "";
+    }
+    return "";
+  });
+
+  const {
+    data: galleryResponse = null,
+    isLoading,
+    isFetching,
+    error: queryError,
+    refetch,
+  } = useGetAccessCardsGalleryQuery(password, {
+    skip: !password || !tenant?.id,
+  });
 
   const handleAuthenticate = useCallback(async (inputPassword: string) => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const data = await fetchAccessCardsGallery(inputPassword);
-      setGalleryResponse(data);
-      setPassword(inputPassword);
-      setIsAuthenticated(true);
-      if (typeof window !== "undefined") {
-        sessionStorage.setItem(STORAGE_KEY, inputPassword);
-      }
-    } catch (err: unknown) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : "Failed to authenticate with the provided password.";
-      setError(message);
-      setIsAuthenticated(false);
-    } finally {
-      setIsLoading(false);
+    const trimmed = inputPassword.trim();
+    setPassword(trimmed);
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem(STORAGE_KEY, trimmed);
     }
   }, []);
 
-  useEffect(() => {
-    if (typeof window !== "undefined" && tenant?.id) {
-      const storedPass = sessionStorage.getItem(STORAGE_KEY);
-      if (storedPass) {
-        handleAuthenticate(storedPass);
-      }
-    }
-  }, [handleAuthenticate, tenant?.id]);
-
-  const handleRefresh = async () => {
+  const handleRefresh = useCallback(async () => {
     if (!password) return;
-    setIsRefreshing(true);
     try {
-      const data = await fetchAccessCardsGallery(password);
-      setGalleryResponse(data);
+      await refetch();
     } catch (err: unknown) {
       console.error("Refresh error:", err);
-    } finally {
-      setIsRefreshing(false);
     }
-  };
+  }, [password, refetch]);
+
+  const errorMessage = queryError
+    ? parseErrorMessage(
+        queryError,
+        "Failed to authenticate with the provided password."
+      )
+    : null;
 
   return {
     password,
-    isAuthenticated,
-    isLoading,
-    isRefreshing,
-    error,
+    isAuthenticated: Boolean(galleryResponse?.data),
+    isLoading: isLoading || isFetching,
+    isRefreshing: isFetching,
+    error: errorMessage,
     galleryResponse,
     handleAuthenticate,
     handleRefresh,

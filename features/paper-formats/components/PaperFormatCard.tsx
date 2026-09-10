@@ -3,20 +3,30 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { Minus, Plus, ShoppingBag, Loader2, Frame } from "lucide-react";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { PaperFormatItem } from "../types/paper-formats";
+import { useAddToCartMutation } from "@/features/cart/api/cartApi";
+import { getOrCreateCartSessionId } from "@/features/cart/utils/cart-api";
+import { parseErrorMessage } from "@/utils/parseErrorMessage";
 
 export interface PaperFormatCardProps {
   format: PaperFormatItem;
-  onAddToCart: (formatId: string, quantity: number) => Promise<void>;
+  photoId?: string;
+  onAddToCart?: (formatId: string, quantity: number) => Promise<void>;
 }
 
 export function PaperFormatCard({
   format,
+  photoId,
   onAddToCart,
 }: PaperFormatCardProps) {
   const [quantity, setQuantity] = useState<number>(1);
-  const [isAdding, setIsAdding] = useState<boolean>(false);
+  const [isLocalAdding, setIsLocalAdding] = useState<boolean>(false);
+  const [addToCartMutation, { isLoading: isMutationLoading }] =
+    useAddToCartMutation();
+
+  const isAdding = isLocalAdding || isMutationLoading;
 
   const priceObj =
     format.prices?.find((p) => p.isDefault) || format.prices?.[0];
@@ -37,11 +47,35 @@ export function PaperFormatCard({
   };
 
   const handleAdd = async () => {
-    setIsAdding(true);
+    if (onAddToCart) {
+      setIsLocalAdding(true);
+      try {
+        await onAddToCart(format.id, quantity);
+      } finally {
+        setIsLocalAdding(false);
+      }
+      return;
+    }
+
+    if (!photoId) {
+      toast.error("Please select a photo before adding to cart");
+      return;
+    }
+
+    const sessionId = getOrCreateCartSessionId();
     try {
-      await onAddToCart(format.id, quantity);
-    } finally {
-      setIsAdding(false);
+      await addToCartMutation({
+        sessionId,
+        payload: {
+          kind: "PHOTO",
+          formatId: format.id,
+          quantity,
+          photoIds: [photoId],
+        },
+      }).unwrap();
+      toast.success("Added to cart successfully 🛒");
+    } catch (err: unknown) {
+      toast.error(parseErrorMessage(err, "Failed to add to cart"));
     }
   };
 

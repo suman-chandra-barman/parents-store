@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import { Navbar } from "@/components/layout/Navbar";
 import { CartProvider } from "@/features/cart/context/CartContext";
 import { TenantProvider } from "@/providers/TenantProvider";
+import StoreProvider from "@/providers/StoreProvider";
 
 export default async function LocaleLayout({
   children,
@@ -14,13 +15,15 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider messages={messages}>
-      <TenantProvider>
-        <CartProvider>
-          <Toaster position="top-right" richColors closeButton />
-          <Navbar />
-          {children}
-        </CartProvider>
-      </TenantProvider>
+      <StoreProvider>
+        <TenantProvider>
+          <CartProvider>
+            <Toaster position="top-right" richColors closeButton />
+            <Navbar />
+            {children}
+          </CartProvider>
+        </TenantProvider>
+      </StoreProvider>
     </NextIntlClientProvider>
   );
 }

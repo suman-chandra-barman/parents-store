@@ -16,7 +16,8 @@ import type {
   PreRegistrationForm,
   PreRegistrationSuccessData,
 } from '../types/pre-registration';
-import { fetchPreRegistrationForm } from '../utils/pre-registration-api';
+import { useLazyGetPreRegistrationFormQuery } from '../api/preRegistrationApi';
+import { parseErrorMessage } from '@/utils/parseErrorMessage';
 import { PreRegistrationFormFields } from './PreRegistrationFormFields';
 import { PreRegistrationSuccessCard } from './PreRegistrationSuccessCard';
 
@@ -42,26 +43,31 @@ export function PreRegistrationFormComponent({
 }) {
   const t = useTranslations('PreRegistration');
   const [password, setPassword] = useState(urlPassword);
-  const [isFetching, setIsFetching] = useState(() => Boolean(urlPassword));
   const [error, setError] = useState<string | null>(null);
   const [form, setForm] = useState<PreRegistrationForm | null>(null);
   const [success, setSuccess] = useState<PreRegistrationSuccessData | null>(
     null,
   );
 
-  const loadForm = useCallback((passwordToUse: string) => {
-    if (!passwordToUse) return;
+  const [triggerFetch, { isLoading: isFetching }] =
+    useLazyGetPreRegistrationFormQuery();
 
-    fetchPreRegistrationForm(passwordToUse)
-      .then((loaded) => {
-        setForm(loaded);
-        setError(null);
-      })
-      .catch((err: unknown) => {
-        setError(err instanceof Error ? err.message : 'Failed to load form');
-      })
-      .finally(() => setIsFetching(false));
-  }, []);
+  const loadForm = useCallback(
+    (passwordToUse: string) => {
+      if (!passwordToUse) return;
+
+      triggerFetch(passwordToUse, true)
+        .unwrap()
+        .then((response) => {
+          setForm(response.data);
+          setError(null);
+        })
+        .catch((err: unknown) => {
+          setError(parseErrorMessage(err, 'Failed to load form'));
+        });
+    },
+    [triggerFetch]
+  );
 
   useEffect(() => {
     if (urlPassword) void loadForm(urlPassword);
@@ -74,7 +80,6 @@ export function PreRegistrationFormComponent({
       return;
     }
     setError(null);
-    setIsFetching(true);
     loadForm(password);
   };
 

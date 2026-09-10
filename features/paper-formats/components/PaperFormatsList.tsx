@@ -61,6 +61,7 @@ export function PaperFormatsList({
             <PaperFormatCard
               key={format.id}
               format={format}
+              photoId={photoId}
               onAddToCart={handleAddToCart}
             />
           ))}

@@ -10,11 +10,11 @@ import { useTranslations } from 'next-intl';
 import type {
   PreRegistrationForm,
   PreRegistrationSuccessData,
+  PreRegistrationValidationIssue,
+  PreRegistrationFormError,
 } from '../types/pre-registration';
-import {
-  PreRegistrationApiError,
-  submitPreRegistration,
-} from '../utils/pre-registration-api';
+import { useSubmitPreRegistrationMutation } from '../api/preRegistrationApi';
+import { parseErrorMessage } from '@/utils/parseErrorMessage';
 import {
   RegisterJobPreRegistrationFormSchema,
   type PreRegistrationFormValues,
@@ -56,13 +56,16 @@ export function PreRegistrationFormFields({
   const t = useTranslations('PreRegistration');
   const [formError, setFormError] = useState<string | null>(null);
 
+  const [submitMutation, { isLoading: isSubmittingMutation }] =
+    useSubmitPreRegistrationMutation();
+
   const {
     register,
     handleSubmit,
     control,
     setError,
     watch,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting: isFormSubmitting },
   } = useForm<PreRegistrationFormValues, unknown, PreRegistrationSubmitValues>({
     resolver: zodResolver(RegisterJobPreRegistrationFormSchema),
     defaultValues: {
@@ -74,11 +77,12 @@ export function PreRegistrationFormFields({
     },
   });
 
+  const isSubmitting = isFormSubmitting || isSubmittingMutation;
   const selectedGroup = watch('group');
 
-  const applyServerErrors = (error: PreRegistrationApiError) => {
+  const applyServerErrors = (fieldErrors: PreRegistrationValidationIssue[]) => {
     const unmapped: string[] = [];
-    for (const issue of error.fieldErrors) {
+    for (const issue of fieldErrors) {
       const field = issue.path[0];
       if (field && (EDITABLE_FIELDS as string[]).includes(field)) {
         setError(field as EditableField, {
@@ -91,26 +95,28 @@ export function PreRegistrationFormFields({
     }
     if (unmapped.length > 0) {
       setFormError(unmapped.join(' '));
-    } else if (error.fieldErrors.length === 0) {
-      setFormError(error.message || 'Failed to submit registration.');
     }
   };
 
   const onSubmit = handleSubmit(async (values) => {
     setFormError(null);
     try {
-      const success = await submitPreRegistration(values);
-      onSuccess(success);
+      const response = await submitMutation(values).unwrap();
+      const data = response.data;
+      onSuccess({
+        accessCardPassword: data.accessCard.password,
+        group: data.accessCard.group,
+        redirectLink: data.redirectLink,
+      });
     } catch (error: unknown) {
-      if (error instanceof PreRegistrationApiError) {
-        applyServerErrors(error);
-      } else {
-        setFormError(
-          error instanceof Error
-            ? error.message
-            : 'An unexpected error occurred.',
-        );
+      if (error && typeof error === 'object' && 'data' in error) {
+        const errorData = (error as { data?: PreRegistrationFormError }).data;
+        if (errorData?.errors && Array.isArray(errorData.errors)) {
+          applyServerErrors(errorData.errors);
+          return;
+        }
       }
+      setFormError(parseErrorMessage(error, 'An unexpected error occurred.'));
     }
   });
 

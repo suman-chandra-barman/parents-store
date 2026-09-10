@@ -10,8 +10,7 @@ import { PhotoItem } from "../types/access-cards";
 import { fetchPhotoPreviewBlob } from "../utils/access-cards-api";
 import { PhotoDetailsPreview } from "./PhotoDetailsPreview";
 import { FullscreenPhotoViewer } from "./FullscreenPhotoViewer";
-import { fetchPaperFormats } from "@/features/paper-formats/utils/paper-formats-api";
-import { PaperFormatItem } from "@/features/paper-formats/types/paper-formats";
+import { useGetPaperFormatsQuery } from "@/features/paper-formats/api/paperFormatsApi";
 import { PaperFormatsList } from "@/features/paper-formats/components/PaperFormatsList";
 
 import { useTenantStore } from "@/stores/useTenantStore";
@@ -26,8 +25,11 @@ export function PhotoDetailsView({ photoId }: PhotoDetailsViewProps) {
   const { galleryResponse, isLoading: isGalleryLoading } = useAccessCardsGallery();
   const { favoriteIds, toggleFavorite } = useFavorites();
 
-  const [formats, setFormats] = useState<PaperFormatItem[]>([]);
-  const [isFormatsLoading, setIsFormatsLoading] = useState<boolean>(true);
+  const { data: formats = [], isLoading: isFormatsLoading } =
+    useGetPaperFormatsQuery(undefined, {
+      skip: !tenant?.id,
+    });
+
   const [activePhotoId, setActivePhotoId] = useState<string>(photoId);
   const [blobUrl, setBlobUrl] = useState<string | null>(null);
   const [isBlobLoading, setIsBlobLoading] = useState<boolean>(true);
@@ -65,32 +67,6 @@ export function PhotoDetailsView({ photoId }: PhotoDetailsViewProps) {
     // Fallback stub if gallery not ready yet
     return { id: activePhotoId };
   }, [allPhotos, currentIndex, activePhotoId]);
-
-  // Fetch paper formats once tenant is loaded
-  useEffect(() => {
-    if (!tenant?.id) return;
-
-    let isMounted = true;
-    setIsFormatsLoading(true);
-
-    fetchPaperFormats()
-      .then((data) => {
-        if (isMounted) {
-          setFormats(data);
-          setIsFormatsLoading(false);
-        }
-      })
-      .catch((err) => {
-        console.error("Failed to load formats:", err);
-        if (isMounted) {
-          setIsFormatsLoading(false);
-        }
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [tenant?.id]);
 
   // Fetch image blob whenever activePhotoId changes
   useEffect(() => {

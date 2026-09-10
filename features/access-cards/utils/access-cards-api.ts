@@ -1,13 +1,11 @@
-import axios from "axios";
 import { env } from "@/config/env";
-import { apiClient } from "@/lib/api-client";
 import { AccessCardsResponse } from "../types/access-cards";
 
 const blobCache = new Map<string, string>();
 const fetchPromisesCache = new Map<string, Promise<string>>();
 
 /**
- * Fetch Access Cards gallery data using axios.
+ * Fetch Access Cards gallery data using native fetch API.
  * @param password The access card password
  */
 export async function fetchAccessCardsGallery(
@@ -16,44 +14,35 @@ export async function fetchAccessCardsGallery(
   const cleanPassword = password.trim();
 
   try {
-    const response = await apiClient.get<AccessCardsResponse>(
-      `/photo-galleries/access-cards`,
-      {
-        params: {
-          passwords: cleanPassword,
-        },
-      }
-    );
+    const url = new URL("/photo-galleries/access-cards", env.baseUrl);
+    url.searchParams.set("passwords", cleanPassword);
 
-    const data = response.data;
+    const response = await fetch(url.toString(), {
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      if (response.status === 401 || response.status === 403 || response.status === 404) {
+        throw new Error("Invalid password or access card not found. Please try again.");
+      }
+      throw new Error(`Failed to fetch gallery photos (${response.status})`);
+    }
+
+    const data: AccessCardsResponse = await response.json();
     if (data && data.success === false) {
       throw new Error(data.message || "Failed to retrieve access card photos.");
     }
 
     return data;
   } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-      if (
-        error.response?.status === 401 ||
-        error.response?.status === 403 ||
-        error.response?.status === 404
-      ) {
-        throw new Error(
-          "Invalid password or access card not found. Please try again."
-        );
-      }
-      const errorData = error.response?.data as { message?: string } | undefined;
-      throw new Error(
-        errorData?.message ||
-          `Failed to fetch gallery photos (${error.response?.status || "network error"})`
-      );
-    }
     throw error;
   }
 }
 
 /**
- * Fetch photo preview blob and return an Object URL string using axios (responseType: 'blob').
+ * Fetch photo preview blob and return an Object URL string using native fetch (response.blob()).
  * Caches results to prevent duplicate HTTP requests.
  */
 export async function fetchPhotoPreviewBlob(photoId: string): Promise<string> {
@@ -68,14 +57,19 @@ export async function fetchPhotoPreviewBlob(photoId: string): Promise<string> {
   const fetchPromise = (async () => {
     try {
       const endpoint = `${env.mediaBaseUrl}/watermark-engine/preview-album-photos/${photoId}`;
-      const response = await axios.get(endpoint, {
-        responseType: "blob",
+      const response = await fetch(endpoint, {
         headers: {
           Accept: "image/*",
         },
       });
 
-      const blob = response.data as Blob;
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch photo preview (${response.status} ${response.statusText})`
+        );
+      }
+
+      const blob = await response.blob();
       const objectUrl = URL.createObjectURL(blob);
       blobCache.set(photoId, objectUrl);
       return objectUrl;
