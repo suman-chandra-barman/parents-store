@@ -1,4 +1,5 @@
-import { env } from "@/config/env";
+import axios from "axios";
+import { apiClient } from "@/lib/axios";
 import {
   CreateOrderPayload,
   CreateOrderResponse,
@@ -7,23 +8,18 @@ import {
 } from "../types/orders";
 
 /**
- * Fetch price list formats by PriceList ID.
+ * Fetch price list formats by PriceList ID using axios.
  */
 export async function fetchPriceList(priceListId: string): Promise<PriceListFormatItem[]> {
   if (!priceListId) return [];
-  const url = `${env.baseUrl}/price-lists/${priceListId}`;
 
   try {
-    const response = await fetch(url, { cache: "no-store" });
-    if (!response.ok) {
-      console.warn(`Failed to fetch price list ${priceListId}: ${response.status}`);
-      return [];
-    }
-
-    const json: PriceListResponse = await response.json();
-    return json?.data?.format || [];
+    const response = await apiClient.get<PriceListResponse>(
+      `/price-lists/${encodeURIComponent(priceListId)}`
+    );
+    return response.data?.data?.format || [];
   } catch (error) {
-    console.error(`Error fetching price list ${priceListId}:`, error);
+    console.error(`Error fetching price list ${priceListId} via axios:`, error);
     return [];
   }
 }
@@ -32,51 +28,47 @@ export async function fetchPriceList(priceListId: string): Promise<PriceListForm
  * Fallback: fetch all price lists to find available formats if specific price list ID is missing.
  */
 export async function fetchAllPriceLists(): Promise<PriceListFormatItem[]> {
-  const url = `${env.baseUrl}/price-lists`;
-
   try {
-    const response = await fetch(url, { cache: "no-store" });
-    if (!response.ok) return [];
-
-    const json = await response.json();
-    const lists = json?.data || [];
+    const response = await apiClient.get<{ data?: { isDefault?: boolean; format?: PriceListFormatItem[] }[] }>(
+      "/price-lists"
+    );
+    const lists = response.data?.data || [];
     if (Array.isArray(lists) && lists.length > 0) {
       const defaultList =
-        lists.find((l: { isDefault?: boolean }) => l.isDefault) || lists[0];
+        lists.find((l) => l.isDefault) || lists[0];
       return defaultList?.format || [];
     }
     return [];
   } catch (error) {
-    console.error("Error fetching price lists fallback:", error);
+    console.error("Error fetching price lists fallback via axios:", error);
     return [];
   }
 }
 
 /**
- * Create order via POST /orders
+ * Create order via POST /orders using axios.
  */
 export async function submitCreateOrder(
   payload: CreateOrderPayload
 ): Promise<CreateOrderResponse> {
-  const url = `${env.baseUrl}/orders`;
+  try {
+    const response = await apiClient.post<CreateOrderResponse>("/orders", payload);
+    const json = response.data;
 
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  });
+    if (!json || json.success === false) {
+      throw new Error(json?.message || "Failed to create order");
+    }
 
-  const json: CreateOrderResponse = await response.json().catch(() => ({
-    success: false,
-    statusCode: response.status,
-    message: `HTTP error ${response.status}`,
-  }));
-
-  if (!response.ok || json.success === false) {
-    throw new Error(json.message || `Failed to create order (${response.status})`);
+    return json;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      const serverMessage = error.response?.data?.message;
+      throw new Error(
+        serverMessage ||
+          error.message ||
+          `Failed to create order (${error.response?.status || 500})`
+      );
+    }
+    throw error;
   }
-
-  return json;
 }

@@ -90,6 +90,9 @@ export function PhotoCardItem({
             width={0}
             height={0}
             sizes="100vw"
+            draggable={false}
+            onContextMenu={(e) => e.preventDefault()}
+            onDragStart={(e) => e.preventDefault()}
             className="w-full h-auto block object-cover transition-transform duration-500 ease-out group-hover:scale-105 pointer-events-none"
           />
 

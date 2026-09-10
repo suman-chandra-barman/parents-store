@@ -1,4 +1,5 @@
-import { env } from '@/config/env';
+import axios from 'axios';
+import { apiClient } from '@/lib/axios';
 import type {
   PreRegistrationForm,
   PreRegistrationFormError,
@@ -29,54 +30,48 @@ export class PreRegistrationApiError extends Error {
   }
 }
 
-async function toApiError(response: Response): Promise<PreRegistrationApiError> {
-  let body: PreRegistrationFormError | undefined;
-  try {
-    body = (await response.json()) as PreRegistrationFormError;
-  } catch {
-    // Non-JSON body — fall back to the HTTP status below.
+function handleAxiosError(error: unknown): PreRegistrationApiError {
+  if (axios.isAxiosError(error)) {
+    const errorBody = error.response?.data as PreRegistrationFormError | undefined;
+    return new PreRegistrationApiError(
+      errorBody?.message ?? error.message ?? `Request failed with status ${error.response?.status}`,
+      errorBody?.statusCode ?? error.response?.status,
+      errorBody?.errors ?? [],
+    );
   }
-
   return new PreRegistrationApiError(
-    body?.message ?? `Request failed with status ${response.status}`,
-    body?.statusCode ?? response.status,
-    body?.errors ?? [],
+    error instanceof Error ? error.message : 'An unexpected error occurred',
   );
-}
-
-async function readJson<T>(response: Response): Promise<T> {
-  return (await response.json()) as T;
 }
 
 export async function fetchPreRegistrationForm(
   password: string,
 ): Promise<PreRegistrationForm> {
-  const response = await fetch(
-    `${env.baseUrl}/job-pre-registration-form/by-password/${encodeURIComponent(password)}`,
-    { method: 'GET', headers: { 'Content-Type': 'application/json' } },
-  );
-
-  if (!response.ok) throw await toApiError(response);
-
-  const body = await readJson<PreRegistrationFormResponse>(response);
-  return body.data;
+  try {
+    const response = await apiClient.get<PreRegistrationFormResponse>(
+      `/job-pre-registration-form/by-password/${encodeURIComponent(password)}`,
+    );
+    return response.data.data;
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
 }
 
 export async function submitPreRegistration(
   values: PreRegistrationSubmitValues,
 ): Promise<PreRegistrationSuccessData> {
-  const response = await fetch(`${env.baseUrl}/job-pre-registration-form/register`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(values),
-  });
-
-  if (!response.ok) throw await toApiError(response);
-
-  const body = await readJson<PreRegistrationSubmitResponse>(response);
-  return {
-    accessCardPassword: body.data.accessCard.password,
-    group: body.data.accessCard.group,
-    redirectLink: body.data.redirectLink,
-  };
+  try {
+    const response = await apiClient.post<PreRegistrationSubmitResponse>(
+      '/job-pre-registration-form/register',
+      values,
+    );
+    const data = response.data.data;
+    return {
+      accessCardPassword: data.accessCard.password,
+      group: data.accessCard.group,
+      redirectLink: data.redirectLink,
+    };
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
 }

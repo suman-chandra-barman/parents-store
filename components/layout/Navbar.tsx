@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Heart, ShoppingCart, Menu, X } from "lucide-react";
 import { useFavorites } from "@/features/access-cards/hooks/useFavorites";
+import { useCart } from "@/features/cart/hooks/useCart";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
 export function Navbar() {
@@ -15,6 +16,7 @@ export function Navbar() {
   const t = useTranslations("Navbar");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { favoriteCount } = useFavorites();
+  const { itemCount } = useCart();
 
   const NAV_LINKS = [
     { label: t("home"), href: `/${locale}` },
@@ -102,6 +104,11 @@ export function Navbar() {
             title={t("shoppingCart")}
           >
             <ShoppingCart className="size-5 stroke-[1.8]" />
+            {itemCount > 0 && (
+              <span className="absolute -top-1 -right-1.5 min-w-4 h-4 px-1 rounded-full bg-[#2060b0] text-[10px] font-bold text-white flex items-center justify-center leading-none shadow-xs animate-in zoom-in-50 duration-200">
+                {itemCount}
+              </span>
+            )}
           </button>
         </div>
 
@@ -115,6 +122,11 @@ export function Navbar() {
             aria-label={t("shoppingCart")}
           >
             <ShoppingCart className="size-5" />
+            {itemCount > 0 && (
+              <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full bg-[#2060b0] text-[10px] font-bold text-white flex items-center justify-center leading-none shadow-xs">
+                {itemCount}
+              </span>
+            )}
           </button>
 
           <button

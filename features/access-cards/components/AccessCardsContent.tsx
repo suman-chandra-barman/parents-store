@@ -9,7 +9,12 @@ import { HeroSection } from "@/features/access-cards/components/HeroSection";
 import { AccessCardPhotoGrid } from "@/features/access-cards/components/AccessCardPhotoGrid";
 import { FullscreenPhotoViewer } from "@/features/access-cards/components/FullscreenPhotoViewer";
 
+import { useRouter } from "next/navigation";
+import { useLocale } from "next-intl";
+
 function AccessCardsContent() {
+  const router = useRouter();
+  const locale = useLocale();
   const {
     isLoading,
     error,
@@ -46,9 +51,12 @@ function AccessCardsContent() {
 
   const hasGalleryData = allPhotos.length > 0;
 
-  const handleOpenFullscreen = useCallback((photo: PhotoItem, index: number) => {
-    setFullscreenIndex(index);
-  }, []);
+  const handleSelectPhoto = useCallback(
+    (photo: PhotoItem) => {
+      router.push(`/${locale}/photo-galleries/access-cards/${photo.id}`);
+    },
+    [router, locale]
+  );
 
   const handleCloseFullscreen = useCallback(() => {
     setFullscreenIndex(-1);
@@ -85,7 +93,7 @@ function AccessCardsContent() {
               photos={allPhotos}
               favoriteIds={favoriteIds}
               onToggleFavorite={toggleFavorite}
-              onSelectPhoto={handleOpenFullscreen}
+              onSelectPhoto={handleSelectPhoto}
             />
           </main>
         </div>
