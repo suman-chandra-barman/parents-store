@@ -4,6 +4,7 @@ export interface FormatSize {
   title: string;
   description?: string | null;
   tenantId?: string | null;
+  preview?: { id?: string; url: string }[] | null;
   createdAt?: string;
   updatedAt?: string;
 }

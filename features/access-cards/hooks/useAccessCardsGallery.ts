@@ -4,9 +4,12 @@ import { useState, useEffect, useCallback } from "react";
 import { AccessCardsResponse } from "../types/access-cards";
 import { fetchAccessCardsGallery } from "../utils/access-cards-api";
 
+import { useTenantStore } from "@/stores/useTenantStore";
+
 const STORAGE_KEY = "access_card_password";
 
 export function useAccessCardsGallery() {
+  const tenant = useTenantStore((state) => state.tenant);
   const [password, setPassword] = useState<string>("");
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -40,15 +43,13 @@ export function useAccessCardsGallery() {
   }, []);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && tenant?.id) {
       const storedPass = sessionStorage.getItem(STORAGE_KEY);
       if (storedPass) {
-        queueMicrotask(() => {
-          handleAuthenticate(storedPass);
-        });
+        handleAuthenticate(storedPass);
       }
     }
-  }, [handleAuthenticate]);
+  }, [handleAuthenticate, tenant?.id]);
 
   const handleRefresh = async () => {
     if (!password) return;

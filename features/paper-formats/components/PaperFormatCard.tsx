@@ -2,19 +2,17 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { Star, Minus, Plus, ShoppingBag, Loader2, Frame } from "lucide-react";
+import { Minus, Plus, ShoppingBag, Loader2, Frame } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PaperFormatItem } from "../types/paper-formats";
 
 export interface PaperFormatCardProps {
   format: PaperFormatItem;
-  photoBlobUrl?: string | null;
   onAddToCart: (formatId: string, quantity: number) => Promise<void>;
 }
 
 export function PaperFormatCard({
   format,
-  photoBlobUrl,
   onAddToCart,
 }: PaperFormatCardProps) {
   const [quantity, setQuantity] = useState<number>(1);
@@ -52,9 +50,9 @@ export function PaperFormatCard({
       {/* Left side: Photo Frame Mockup */}
       <div className="relative shrink-0 w-24 h-32 sm:w-28 sm:h-36 bg-neutral-900 rounded-lg p-2 shadow-lg flex items-center justify-center overflow-hidden border-2 border-neutral-800">
         <div className="relative w-full h-full rounded-xs overflow-hidden bg-neutral-100 flex items-center justify-center">
-          {photoBlobUrl ? (
+          {format.size?.preview ? (
             <Image
-              src={photoBlobUrl}
+              src={format.size.preview[0].url}
               alt={format.title}
               fill
               sizes="112px"
@@ -89,16 +87,7 @@ export function PaperFormatCard({
         </div>
 
         {/* Rating Stars & Size */}
-        <div className="flex items-center gap-2 text-xs text-neutral-500">
-          <div className="flex items-center text-amber-500">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                className="size-3 fill-amber-400 text-amber-400"
-              />
-            ))}
-          </div>
-          <span className="font-medium text-neutral-700">5.0</span>
+        <div className="text-neutral-500">
           {format.size?.title && (
             <>
               <span className="text-neutral-300">•</span>

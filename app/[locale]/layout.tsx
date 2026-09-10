@@ -3,6 +3,7 @@ import { getMessages } from "next-intl/server";
 import { Toaster } from "sonner";
 import { Navbar } from "@/components/layout/Navbar";
 import { CartProvider } from "@/features/cart/context/CartContext";
+import { TenantProvider } from "@/providers/TenantProvider";
 
 export default async function LocaleLayout({
   children,
@@ -13,12 +14,13 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider messages={messages}>
-      <CartProvider>
-        <Toaster position="top-right" richColors closeButton />
-        <Navbar />
-        {children}
-      </CartProvider>
+      <TenantProvider>
+        <CartProvider>
+          <Toaster position="top-right" richColors closeButton />
+          <Navbar />
+          {children}
+        </CartProvider>
+      </TenantProvider>
     </NextIntlClientProvider>
   );
 }
-

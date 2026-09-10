@@ -1,6 +1,6 @@
 import axios from "axios";
 import { env } from "@/config/env";
-import { apiClient } from "@/lib/axios";
+import { apiClient } from "@/lib/api-client";
 import { AccessCardsResponse } from "../types/access-cards";
 
 const blobCache = new Map<string, string>();

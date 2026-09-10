@@ -1,4 +1,4 @@
-import { apiClient } from "@/lib/axios";
+import { apiClient } from "@/lib/api-client";
 import { AddCartItemPayload, CartResponse } from "../types/cart";
 import axios from "axios";
 
@@ -14,14 +14,20 @@ export function getOrCreateCartSessionId(): string {
 
   let sessionId = localStorage.getItem(CART_SESSION_KEY);
   if (!sessionId) {
-    if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    if (
+      typeof crypto !== "undefined" &&
+      typeof crypto.randomUUID === "function"
+    ) {
       sessionId = crypto.randomUUID();
     } else {
-      sessionId = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
-        const r = (Math.random() * 16) | 0;
-        const v = c === "x" ? r : (r & 0x3) | 0x8;
-        return v.toString(16);
-      });
+      sessionId = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+        /[xy]/g,
+        (c) => {
+          const r = (Math.random() * 16) | 0;
+          const v = c === "x" ? r : (r & 0x3) | 0x8;
+          return v.toString(16);
+        },
+      );
     }
     localStorage.setItem(CART_SESSION_KEY, sessionId);
   }
@@ -42,7 +48,7 @@ export function setCartSessionId(sessionId: string): void {
  */
 export async function addItemToCart(
   sessionId: string,
-  payload: AddCartItemPayload
+  payload: AddCartItemPayload,
 ): Promise<CartResponse> {
   const cleanSessionId = sessionId.trim();
   const url = `/carts/${encodeURIComponent(cleanSessionId)}/items`;
@@ -66,7 +72,7 @@ export async function addItemToCart(
       throw new Error(
         serverMessage ||
           error.message ||
-          `Failed to add item to cart (${error.response?.status || 500})`
+          `Failed to add item to cart (${error.response?.status || 500})`,
       );
     }
     throw error;
@@ -76,7 +82,9 @@ export async function addItemToCart(
 /**
  * Fetch current cart contents via GET /carts/:sessionId using axios
  */
-export async function fetchCart(sessionId: string): Promise<CartResponse | null> {
+export async function fetchCart(
+  sessionId: string,
+): Promise<CartResponse | null> {
   if (!sessionId) return null;
   const url = `/carts/${encodeURIComponent(sessionId.trim())}`;
 

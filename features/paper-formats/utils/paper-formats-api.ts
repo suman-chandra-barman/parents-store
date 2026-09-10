@@ -1,4 +1,4 @@
-import { apiClient } from "@/lib/axios";
+import { apiClient } from "@/lib/api-client";
 import { PaperFormatItem, PaperFormatsResponse } from "../types/paper-formats";
 
 /**

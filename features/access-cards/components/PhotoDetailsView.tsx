@@ -14,12 +14,15 @@ import { fetchPaperFormats } from "@/features/paper-formats/utils/paper-formats-
 import { PaperFormatItem } from "@/features/paper-formats/types/paper-formats";
 import { PaperFormatsList } from "@/features/paper-formats/components/PaperFormatsList";
 
+import { useTenantStore } from "@/stores/useTenantStore";
+
 export interface PhotoDetailsViewProps {
   photoId: string;
 }
 
 export function PhotoDetailsView({ photoId }: PhotoDetailsViewProps) {
   const locale = useLocale();
+  const tenant = useTenantStore((state) => state.tenant);
   const { galleryResponse, isLoading: isGalleryLoading } = useAccessCardsGallery();
   const { favoriteIds, toggleFavorite } = useFavorites();
 
@@ -63,9 +66,13 @@ export function PhotoDetailsView({ photoId }: PhotoDetailsViewProps) {
     return { id: activePhotoId };
   }, [allPhotos, currentIndex, activePhotoId]);
 
-  // Fetch paper formats on mount
+  // Fetch paper formats once tenant is loaded
   useEffect(() => {
+    if (!tenant?.id) return;
+
     let isMounted = true;
+    setIsFormatsLoading(true);
+
     fetchPaperFormats()
       .then((data) => {
         if (isMounted) {
@@ -83,7 +90,7 @@ export function PhotoDetailsView({ photoId }: PhotoDetailsViewProps) {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [tenant?.id]);
 
   // Fetch image blob whenever activePhotoId changes
   useEffect(() => {
@@ -191,7 +198,6 @@ export function PhotoDetailsView({ photoId }: PhotoDetailsViewProps) {
               <PaperFormatsList
                 formats={formats}
                 photoId={activePhotoId}
-                photoBlobUrl={blobUrl}
                 isLoading={isFormatsLoading}
               />
             </div>

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Roboto, Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { TenantProvider } from "@/providers/TenantProvider";
 import { fetchTenant } from "@/stores/useTenantStore";
 import { headers } from "next/headers";
 
@@ -84,7 +83,7 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
-        <TenantProvider>{children}</TenantProvider>
+        {children}
       </body>
     </html>
   );

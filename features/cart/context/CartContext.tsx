@@ -9,16 +9,14 @@ import React, {
   ReactNode,
 } from "react";
 import { toast } from "sonner";
-import {
-  CartData,
-  AddCartItemPayload,
-  CartResponse,
-} from "../types/cart";
+import { CartData, AddCartItemPayload, CartResponse } from "../types/cart";
 import {
   getOrCreateCartSessionId,
   addItemToCart,
   fetchCart,
 } from "../utils/cart-api";
+
+import { useTenantStore } from "@/stores/useTenantStore";
 
 export interface CartContextValue {
   sessionId: string;
@@ -31,10 +29,11 @@ export interface CartContextValue {
 }
 
 export const CartContext = createContext<CartContextValue | undefined>(
-  undefined
+  undefined,
 );
 
 export function CartProvider({ children }: { children: ReactNode }) {
+  const tenant = useTenantStore((state) => state.tenant);
   const [sessionId, setSessionId] = useState<string>(() => {
     return getOrCreateCartSessionId();
   });
@@ -44,7 +43,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   // Fetch initial cart state if session ID exists
   const refreshCart = useCallback(async () => {
-    if (!sessionId) return;
+    if (!sessionId || !tenant?.id) return;
     setIsLoading(true);
     try {
       const response = await fetchCart(sessionId);
@@ -56,27 +55,38 @@ export function CartProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  }, [sessionId]);
+  }, [sessionId, tenant?.id]);
 
   useEffect(() => {
-    if (!sessionId) return;
+    if (!sessionId || !tenant?.id) return;
     let isMounted = true;
 
-    fetchCart(sessionId).then((response) => {
-      if (isMounted && response?.data) {
-        setCart(response.data);
-      }
-    }).catch((err) => {
-      console.error("Cart load failed:", err);
-    });
+    fetchCart(sessionId)
+      .then((response) => {
+        if (isMounted && response?.data) {
+          setCart(response.data);
+        }
+      })
+      .catch((err) => {
+        console.error("Cart load failed:", err);
+      });
 
     return () => {
       isMounted = false;
     };
-  }, [sessionId]);
+  }, [sessionId, tenant?.id]);
 
   const addToCart = useCallback(
     async (payload: AddCartItemPayload): Promise<CartResponse> => {
+      const currentTenantId =
+        tenant?.id || useTenantStore.getState().tenant?.id;
+
+      if (!currentTenantId) {
+        const msg = "Tenant context is missing. Please wait for tenant to load.";
+        toast.error(msg);
+        throw new Error(msg);
+      }
+
       let activeSessionId = sessionId;
       if (!activeSessionId) {
         activeSessionId = getOrCreateCartSessionId();
@@ -85,7 +95,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
       setIsAdding(true);
       try {
-        const response = await addItemToCart(activeSessionId, payload);
+        const response = await addItemToCart(
+          activeSessionId,
+          payload,
+        );
         if (response?.data) {
           setCart(response.data);
         }
@@ -102,7 +115,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         setIsAdding(false);
       }
     },
-    [sessionId]
+    [sessionId, tenant?.id]
   );
 
   const itemCount = useMemo(() => {
@@ -120,7 +133,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       addToCart,
       refreshCart,
     }),
-    [sessionId, cart, itemCount, isLoading, isAdding, addToCart, refreshCart]
+    [sessionId, cart, itemCount, isLoading, isAdding, addToCart, refreshCart],
   );
 
   return (

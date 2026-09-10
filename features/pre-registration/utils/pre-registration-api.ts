@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { apiClient } from '@/lib/axios';
+import { apiClient } from '@/lib/api-client';
 import type {
   PreRegistrationForm,
   PreRegistrationFormError,
