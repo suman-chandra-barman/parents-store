@@ -25,16 +25,16 @@ export function PhotoDetailsView({ photoId }: PhotoDetailsViewProps) {
   const { galleryResponse, isLoading: isGalleryLoading } = useAccessCardsGallery();
   const { favoriteIds, toggleFavorite } = useFavorites();
 
-  const { data: formats = [], isLoading: isFormatsLoading } =
-    useGetPaperFormatsQuery(undefined, {
-      skip: !tenant?.id,
-    });
-
   const [activePhotoId, setActivePhotoId] = useState<string>(photoId);
   const [blobUrl, setBlobUrl] = useState<string | null>(null);
   const [isBlobLoading, setIsBlobLoading] = useState<boolean>(true);
   const [blobError, setBlobError] = useState<boolean>(false);
   const [isFullscreenOpen, setIsFullscreenOpen] = useState<boolean>(false);
+
+  const { data: formats = [], isLoading: isFormatsLoading } =
+    useGetPaperFormatsQuery(activePhotoId, {
+      skip: !activePhotoId || !tenant?.id,
+    });
 
   // Flatten all photos in gallery
   const allPhotos = useMemo(() => {
@@ -133,8 +133,7 @@ export function PhotoDetailsView({ photoId }: PhotoDetailsViewProps) {
             </h1>
           </div>
 
-          <div className="flex items-center gap-2 text-xs text-neutral-500">
-            <Sparkles className="size-4 text-brand" />
+          <div className="text-xs text-neutral-500">
             <span>Select a paper format to order custom prints</span>
           </div>
         </div>
