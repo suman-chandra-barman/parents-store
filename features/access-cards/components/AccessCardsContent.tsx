@@ -7,35 +7,31 @@ import { useFavorites } from "@/features/access-cards/hooks/useFavorites";
 
 import { HeroSection } from "@/features/access-cards/components/HeroSection";
 import { AccessCardPhotoGrid } from "@/features/access-cards/components/AccessCardPhotoGrid";
-import { FullscreenPhotoViewer } from "@/features/access-cards/components/FullscreenPhotoViewer";
 
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { useTenantStore } from "@/stores/useTenantStore";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 function AccessCardsContent() {
-  const tenant = useTenantStore(({tenant})=> tenant);
+  const tenant = useTenantStore(({ tenant }) => tenant);
 
   const router = useRouter();
   const locale = useLocale();
-  const {
-    isLoading,
-    error,
-    galleryResponse,
-    handleAuthenticate,
-  } = useAccessCardsGallery();
+  const { isLoading, error, galleryResponse, handleAuthenticate } =
+    useAccessCardsGallery();
 
   const { favoriteIds, toggleFavorite } = useFavorites();
   const [accessCodes, setAccessCodes] = useState<string[]>([]);
-  const [fullscreenIndex, setFullscreenIndex] = useState<number>(-1);
 
   const folders = useMemo(
     () => galleryResponse?.data?.folders || [],
-    [galleryResponse]
+    [galleryResponse],
   );
   const uncategorizedPhotos = useMemo(
     () => galleryResponse?.data?.uncategorized || [],
-    [galleryResponse]
+    [galleryResponse],
   );
 
   // Flatten all photos across folders and uncategorized into a single gallery list
@@ -58,12 +54,8 @@ function AccessCardsContent() {
     (photo: PhotoItem) => {
       router.push(`/${locale}/photo-galleries/access-cards/${photo.id}`);
     },
-    [router, locale]
+    [router, locale],
   );
-
-  const handleCloseFullscreen = useCallback(() => {
-    setFullscreenIndex(-1);
-  }, []);
 
   const handleViewGallery = useCallback(
     async (codes: string[]) => {
@@ -72,11 +64,11 @@ function AccessCardsContent() {
       const el = document.getElementById("gallery-section");
       if (el) el.scrollIntoView({ behavior: "smooth" });
     },
-    [handleAuthenticate]
+    [handleAuthenticate],
   );
 
   return (
-    <div className="bg-background text-foreground transition-colors flex flex-col">
+    <main className="bg-background text-foreground transition-colors flex flex-col">
       {/* Hero Section */}
       <HeroSection
         title="Photo Gallery"
@@ -90,31 +82,27 @@ function AccessCardsContent() {
 
       {/* Unified Gallery Section */}
       {hasGalleryData && (
-        <div id="gallery-section" className="flex-1 pb-24">
-          <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-            <AccessCardPhotoGrid
-              photos={allPhotos}
-              favoriteIds={favoriteIds}
-              onToggleFavorite={toggleFavorite}
-              onSelectPhoto={handleSelectPhoto}
-            />
-          </main>
-        </div>
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+          <AccessCardPhotoGrid
+            photos={allPhotos}
+            favoriteIds={favoriteIds}
+            onToggleFavorite={toggleFavorite}
+            onSelectPhoto={handleSelectPhoto}
+          />
+        </section>
       )}
 
-      {/* Fullscreen Photo Viewer */}
-      {fullscreenIndex >= 0 && (
-        <FullscreenPhotoViewer
-          photos={allPhotos}
-          currentIndex={fullscreenIndex}
-          isOpen={fullscreenIndex >= 0}
-          onClose={handleCloseFullscreen}
-          onNavigate={setFullscreenIndex}
-          favoriteIds={favoriteIds}
-          onToggleFavorite={toggleFavorite}
-        />
+      {favoriteIds.length > 0 && (
+        <div className="flex justify-center mb-16 px-4">
+          <Link
+            href={`/${locale}/photo-galleries/packages`}
+            className="inline-flex items-center justify-center px-8 py-4 rounded-xl font-semibold text-white bg-[#2060b0] hover:bg-[#1a4f94] shadow-md transition-all active:scale-98 text-sm sm:text-base cursor-pointer"
+          >
+            Continue with {favoriteIds.length} {favoriteIds.length === 1 ? "Favorite" : "Favorites"}
+          </Link>
+        </div>
       )}
-    </div>
+    </main>
   );
 }
 

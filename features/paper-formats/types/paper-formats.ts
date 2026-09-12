@@ -32,6 +32,20 @@ export interface FormatPrice {
   updatedAt?: string;
 }
 
+export interface PackageSlotItem {
+  id: string;
+  title?: string | null;
+  kind?: "SINGLE_PHOTO" | "ALL" | string;
+  maxQuantity?: number;
+  sizeId?: string;
+  formatId?: string;
+  tenantId?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+  deletedAt?: string | null;
+  size?: FormatSize | null;
+}
+
 export interface PaperFormatItem {
   id: string;
   kind: string;
@@ -51,7 +65,7 @@ export interface PaperFormatItem {
   size?: FormatSize | null;
   category?: FormatCategory | null;
   prices?: FormatPrice[];
-  packages?: unknown[];
+  packages?: PackageSlotItem[];
   isMine?: boolean;
 }
 
@@ -70,3 +84,12 @@ export interface PaperFormatsResponse {
   pagination?: PaperFormatsPagination;
   data: PaperFormatItem[];
 }
+
+export interface FilterPhotosResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  traceId?: string;
+  data: string[];
+}
+
