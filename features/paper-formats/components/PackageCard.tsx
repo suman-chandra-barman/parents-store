@@ -1,8 +1,7 @@
 "use client";
 
-import React from "react";
 import Image from "next/image";
-import { Star, Frame, ArrowRight } from "lucide-react";
+import { Frame, ArrowRight } from "lucide-react";
 import { PaperFormatItem } from "../types/paper-formats";
 import { cn } from "@/lib/utils";
 
@@ -22,8 +21,6 @@ export function PackageCard({
     : packageItem.oneOffCost || "128.43";
   const numericPrice = parseFloat(rawPrice) || 0;
   const formattedPrice = `€${numericPrice.toFixed(2)}`;
-  const strikePrice =
-    numericPrice > 0 ? `€${(numericPrice * 1.18).toFixed(2)}` : null;
 
   const previewImageUrl =
     packageItem.size?.preview?.[0]?.url || packageItem.size?.previews?.[0]?.url;
@@ -66,20 +63,6 @@ export function PackageCard({
             {packageItem.title}
           </h3>
 
-          {/* Rating stars */}
-          <div className="flex items-center gap-1.5 text-xs text-neutral-500">
-            <div className="flex items-center text-amber-400">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  className="size-3.5 fill-amber-400 stroke-amber-400"
-                />
-              ))}
-            </div>
-            <span className="font-medium text-neutral-600">4 Review</span>
-            <span className="text-neutral-300">·</span>
-          </div>
-
           {/* Subtitle / Digital photos count */}
           <p className="text-xs sm:text-sm text-neutral-600 font-medium">
             {photosCountText}
@@ -87,11 +70,6 @@ export function PackageCard({
 
           {/* Pricing */}
           <div className="flex items-baseline gap-2 pt-1 border-b border-neutral-100 pb-2">
-            {strikePrice && (
-              <span className="text-xs sm:text-sm text-neutral-400 line-through">
-                {strikePrice}
-              </span>
-            )}
             <span className="text-base sm:text-lg md:text-xl font-extrabold text-neutral-900 tracking-tight">
               {formattedPrice}
             </span>
