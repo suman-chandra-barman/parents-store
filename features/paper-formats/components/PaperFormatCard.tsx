@@ -135,11 +135,6 @@ export function PaperFormatCard({
 
           {/* Pricing */}
           <div className="flex items-baseline gap-2 pt-0.5 sm:pt-1">
-            {strikePrice && (
-              <span className="text-xs text-neutral-400 line-through">
-                {strikePrice}
-              </span>
-            )}
             <span className="text-base sm:text-lg md:text-xl font-extrabold text-neutral-900 tracking-tight">
               {formattedPrice}
             </span>
