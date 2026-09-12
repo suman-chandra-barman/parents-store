@@ -114,8 +114,8 @@ export function Navbar() {
           </button>
 
           {/* Shopping Cart */}
-          <button
-            type="button"
+          <Link
+            href={`/${locale}/cart`}
             className="relative p-1.5 text-neutral-700 hover:text-neutral-900 cursor-pointer transition-colors"
             aria-label={t('shoppingCart')}
             title={t('shoppingCart')}
@@ -126,15 +126,15 @@ export function Navbar() {
                 {itemCount}
               </span>
             )}
-          </button>
+          </Link>
         </div>
 
         {/* Mobile: Hamburger & Actions */}
         <div className="flex md:hidden items-center gap-2">
           <LanguageSwitcher />
 
-          <button
-            type="button"
+          <Link
+            href={`/${locale}/cart`}
             className="relative p-1 text-neutral-700 hover:text-neutral-900"
             aria-label={t('shoppingCart')}
           >
@@ -144,7 +144,7 @@ export function Navbar() {
                 {itemCount}
               </span>
             )}
-          </button>
+          </Link>
 
           <button
             type="button"

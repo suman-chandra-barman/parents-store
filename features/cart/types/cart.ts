@@ -100,6 +100,20 @@ export interface PriceBreakdown {
   totalPrice: string;
 }
 
+export interface GiftVoucherCodeInfo {
+  code: string;
+  priceSubTotal?: string;
+  priceTotal?: string;
+  value?: string;
+  voucherId?: string;
+  userId?: number;
+  purchaseId?: string;
+  orderId?: string | null;
+  isActive?: boolean;
+  isRedeemed?: boolean;
+  createdAt?: string;
+}
+
 export interface CartData {
   id: string;
   sessionId: string;
@@ -108,6 +122,7 @@ export interface CartData {
   totalPrice: string;
   discountPrice?: string;
   giftVoucherCodeId?: string | null;
+  giftVoucherCode?: GiftVoucherCodeInfo | null;
   priceBreakdown?: PriceBreakdown;
   expiresAt?: string;
   createdAt?: string;
@@ -122,3 +137,4 @@ export interface CartResponse {
   message: string;
   data: CartData;
 }
+

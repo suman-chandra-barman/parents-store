@@ -1,6 +1,7 @@
 import { baseApi } from "@/services/baseApi";
 import type {
   CreateOrderPayload,
+  CreateOrderFromCartPayload,
   CreateOrderResponse,
   PriceListResponse,
   PriceListFormatItem,
@@ -45,6 +46,18 @@ export const ordersApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Orders", "Cart"],
     }),
+
+    createOrderFromCart: builder.mutation<
+      CreateOrderResponse,
+      CreateOrderFromCartPayload
+    >({
+      query: (payload) => ({
+        url: "/orders/from-cart",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["Orders", "Cart"],
+    }),
   }),
 });
 
@@ -54,4 +67,6 @@ export const {
   useGetAllPriceListsQuery,
   useLazyGetAllPriceListsQuery,
   useCreateOrderMutation,
+  useCreateOrderFromCartMutation,
 } = ordersApi;
+

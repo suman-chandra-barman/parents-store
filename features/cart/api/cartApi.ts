@@ -33,7 +33,67 @@ export const cartApi = baseApi.injectEndpoints({
         }
       },
     }),
+
+    updateCartItemQuantity: builder.mutation<
+      CartResponse,
+      { sessionId: string; itemId: string | number; quantity: number }
+    >({
+      query: ({ sessionId, itemId, quantity }) => ({
+        url: `/carts/${encodeURIComponent(sessionId)}/items/${encodeURIComponent(itemId)}`,
+        method: "PATCH",
+        body: { quantity },
+      }),
+      invalidatesTags: ["Cart"],
+    }),
+
+    removeCartItem: builder.mutation<
+      CartResponse,
+      { sessionId: string; itemId: string | number }
+    >({
+      query: ({ sessionId, itemId }) => ({
+        url: `/carts/${encodeURIComponent(sessionId)}/items/${encodeURIComponent(itemId)}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Cart"],
+    }),
+
+    applyGiftVoucher: builder.mutation<
+      CartResponse,
+      { sessionId: string; code: string }
+    >({
+      query: ({ sessionId, code }) => ({
+        url: `/carts/${encodeURIComponent(sessionId)}/voucher`,
+        method: "POST",
+        body: { code },
+      }),
+      invalidatesTags: ["Cart"],
+    }),
+
+    removeGiftVoucher: builder.mutation<CartResponse, string>({
+      query: (sessionId) => ({
+        url: `/carts/${encodeURIComponent(sessionId)}/voucher`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Cart"],
+    }),
+
+    clearCart: builder.mutation<CartResponse, string>({
+      query: (sessionId) => ({
+        url: `/carts/${encodeURIComponent(sessionId)}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Cart"],
+    }),
   }),
 });
 
-export const { useGetCartQuery, useAddToCartMutation } = cartApi;
+export const {
+  useGetCartQuery,
+  useAddToCartMutation,
+  useUpdateCartItemQuantityMutation,
+  useRemoveCartItemMutation,
+  useApplyGiftVoucherMutation,
+  useRemoveGiftVoucherMutation,
+  useClearCartMutation,
+} = cartApi;
+

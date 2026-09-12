@@ -32,6 +32,14 @@ export interface CreateOrderPayload {
   items: CreateOrderItemInput[];
 }
 
+export interface CreateOrderFromCartPayload {
+  sessionId: string;
+  billingAddress: OrderAddressInput;
+  deliveryAddress?: OrderAddressInput;
+  customerNotes?: string;
+}
+
+
 export interface PriceListFormatSize {
   title: string;
 }
