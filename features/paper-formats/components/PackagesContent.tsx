@@ -3,30 +3,40 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useLocale } from "next-intl";
-import { ArrowLeft, Heart, Loader2, PackageOpen, Sparkles } from "lucide-react";
+import { ArrowLeft, Heart, Loader2, PackageOpen } from "lucide-react";
 import { useFavorites } from "@/features/access-cards/hooks/useFavorites";
 import { useGetPackagesByPhotoIdsQuery } from "../api/paperFormatsApi";
 import { PaperFormatItem } from "../types/paper-formats";
 import { PackageCard } from "./PackageCard";
 import { PackageCustomizerView } from "./PackageCustomizerView";
 import { Button } from "@/components/ui/button";
+import { useTenantStore } from "@/stores/useTenantStore";
 
 export function PackagesContent() {
   const locale = useLocale();
+  const tenant = useTenantStore((state) => state.tenant);
+  const isTenantLoading = useTenantStore((state) => state.isLoading);
   const { favoriteIds } = useFavorites();
   const [selectedPackage, setSelectedPackage] =
     useState<PaperFormatItem | null>(null);
 
   const {
     data: packages = [],
-    isLoading,
+    isLoading: isQueryLoading,
+    isFetching,
     error,
   } = useGetPackagesByPhotoIdsQuery(
     { photoIds: favoriteIds },
     {
-      skip: favoriteIds.length === 0,
+      skip: favoriteIds.length === 0 || !tenant?.id,
     }
   );
+
+  const isLoading =
+    (favoriteIds.length > 0 && !tenant?.id) ||
+    isTenantLoading ||
+    isQueryLoading ||
+    isFetching;
 
   // If no favorite photos have been selected yet
   if (favoriteIds.length === 0) {

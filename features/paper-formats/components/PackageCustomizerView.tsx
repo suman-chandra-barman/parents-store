@@ -16,6 +16,8 @@ import { PackageSlotCard } from "./PackageSlotCard";
 import { PhotoSelectionModal } from "./PhotoSelectionModal";
 import { cn } from "@/lib/utils";
 
+import { useTenantStore } from "@/stores/useTenantStore";
+
 interface PackageCustomizerViewProps {
   packageItem: PaperFormatItem;
   favoriteIds: string[];
@@ -27,6 +29,7 @@ export function PackageCustomizerView({
   favoriteIds,
   onBack,
 }: PackageCustomizerViewProps) {
+  const tenant = useTenantStore((state) => state.tenant);
   const { addToCart, isAdding } = useCart();
   const [activeModalState, setActiveModalState] = useState<{
     slot: PackageSlotItem;
@@ -40,7 +43,7 @@ export function PackageCustomizerView({
       photoIds: favoriteIds,
     },
     {
-      skip: !packageItem.id || favoriteIds.length === 0,
+      skip: !packageItem.id || favoriteIds.length === 0 || !tenant?.id,
     },
   );
 
