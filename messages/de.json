@@ -139,5 +139,27 @@
     "validationErrorItems": "Bitte fügen Sie mindestens 1 Bestellposition hinzu.",
     "validationErrorFormat": "Bitte wählen Sie ein Papierformat für Position #{index}.",
     "validationErrorPhotos": "Bitte wählen Sie mindestens 1 Foto für Position #{index}."
+  },
+  "Products": {
+    "title": "Produkte & Fotobedarf",
+    "subtitle": "Kameraausrüstung, Foto-Andenken, Rahmen und exklusives Zubehör durchsuchen und bestellen.",
+    "allProducts": "Alle Produkte",
+    "searchPlaceholder": "Produkte nach Titel oder Stichworten durchsuchen...",
+    "quickView": "Schnellansicht",
+    "addToCart": "In den Warenkorb",
+    "added": "Hinzugefügt",
+    "addedToCart": "In den Warenkorb gelegt!",
+    "quantity": "Menge",
+    "description": "Beschreibung",
+    "noProductsFound": "Keine Produkte gefunden",
+    "noProductsDesc": "Derzeit sind keine Produkte im Shop verfügbar.",
+    "clearFilters": "Alle Filter zurücksetzen",
+    "retry": "Wiederholen",
+    "failedToLoad": "Produkte konnten nicht geladen werden. Bitte prüfen Sie Ihre Verbindung.",
+    "featured": "Empfohlen",
+    "priceAsc": "Preis: Aufsteigend",
+    "priceDesc": "Preis: Absteigend",
+    "newest": "Neueste",
+    "nameAsc": "Name: A bis Z"
   }
 }

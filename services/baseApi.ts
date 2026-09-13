@@ -17,5 +17,6 @@ export const baseApi = createApi({
     "Favorites",
     "Albums",
     "AlbumPhotos",
+    "Products",
   ],
 });

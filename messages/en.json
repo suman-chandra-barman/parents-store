@@ -139,5 +139,27 @@
     "validationErrorItems": "Please add at least 1 order item.",
     "validationErrorFormat": "Please select a paper format for Item #{index}.",
     "validationErrorPhotos": "Please select at least 1 photo for Item #{index}."
+  },
+  "Products": {
+    "title": "Products & Merchandise",
+    "subtitle": "Browse and order camera gear, photo keepsakes, frames, and exclusive accessories.",
+    "allProducts": "All Products",
+    "searchPlaceholder": "Search products by title or keywords...",
+    "quickView": "Quick View",
+    "addToCart": "Add to Cart",
+    "added": "Added",
+    "addedToCart": "Added to Cart!",
+    "quantity": "Quantity",
+    "description": "Description",
+    "noProductsFound": "No products found",
+    "noProductsDesc": "There are currently no products available in the store.",
+    "clearFilters": "Clear all filters",
+    "retry": "Retry",
+    "failedToLoad": "Failed to load products. Please check your connection.",
+    "featured": "Featured",
+    "priceAsc": "Price: Low to High",
+    "priceDesc": "Price: High to Low",
+    "newest": "Newest",
+    "nameAsc": "Name: A to Z"
   }
 }

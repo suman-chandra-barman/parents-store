@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { Trash2, Minus, Plus, Loader2, Frame } from "lucide-react";
+import { Trash2, Minus, Plus, Loader2, Frame, Package, Gift } from "lucide-react";
 import { CartItem } from "../types/cart";
 import { fetchPhotoPreviewBlob } from "@/features/access-cards/utils/access-cards-api";
 import { useCart } from "../hooks/useCart";
@@ -69,11 +69,15 @@ export function CartItemCard({ item }: CartItemCardProps) {
 
   const lineTotalNum = parseFloat(item.lineTotal || "0");
   const formattedLineTotal = `€${lineTotalNum.toFixed(2)}`;
-  const photosCount = item.photos?.length || 1;
+  
   const descriptionText =
-    photosCount > 1
-      ? `${photosCount} photos included`
-      : `${photosCount} digital photo`;
+    item.kind === "PRODUCT"
+      ? "Store Product Item"
+      : item.kind === "GIFT_VOUCHER"
+        ? "Digital Gift Voucher"
+        : (item.photos?.length || 1) > 1
+          ? `${item.photos?.length} photos included`
+          : "1 digital photo";
 
   const isBusy = isLocalLoading || isUpdating;
 
@@ -81,7 +85,7 @@ export function CartItemCard({ item }: CartItemCardProps) {
     <div className="bg-white rounded-2xl border border-neutral-200/90 p-4 sm:p-6 shadow-xs hover:shadow-sm transition-all duration-200 flex flex-col sm:flex-row gap-4 sm:gap-6 items-stretch sm:items-center justify-between">
       {/* Left side: Thumbnail + Info */}
       <div className="flex items-start sm:items-center gap-4 flex-1 min-w-0">
-        {/* Frame / Photo Preview */}
+        {/* Frame / Photo / Product Preview */}
         <div className="relative shrink-0 w-20 h-24 sm:w-24 sm:h-28 md:w-28 md:h-32 rounded-xl overflow-hidden border border-neutral-200/90 bg-neutral-100 flex items-center justify-center shadow-xs">
           {photoUrl ? (
             <Image
@@ -95,9 +99,19 @@ export function CartItemCard({ item }: CartItemCardProps) {
             />
           ) : (
             <div className="flex flex-col items-center justify-center text-neutral-400 p-2 text-center">
-              <Frame className="size-6 mb-1 text-neutral-400" />
+              {item.kind === "PRODUCT" ? (
+                <Package className="size-6 mb-1 text-neutral-400" />
+              ) : item.kind === "GIFT_VOUCHER" ? (
+                <Gift className="size-6 mb-1 text-neutral-400" />
+              ) : (
+                <Frame className="size-6 mb-1 text-neutral-400" />
+              )}
               <span className="text-[10px] font-mono text-neutral-500 leading-tight">
-                {item.format?.title || "Format"}
+                {item.kind === "PRODUCT"
+                  ? "Product"
+                  : item.kind === "GIFT_VOUCHER"
+                    ? "Voucher"
+                    : item.format?.title || "Format"}
               </span>
             </div>
           )}
