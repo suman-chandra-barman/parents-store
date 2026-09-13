@@ -18,7 +18,7 @@ export default async function LocaleLayout({
       <StoreProvider>
         <TenantProvider>
           <CartProvider>
-            <Toaster position="top-right" richColors closeButton />
+            <Toaster position="top-center" richColors closeButton />
             <Navbar />
             {children}
           </CartProvider>
