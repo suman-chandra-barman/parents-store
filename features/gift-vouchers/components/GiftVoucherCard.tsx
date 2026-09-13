@@ -2,7 +2,21 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { Minus, Plus, ShoppingBag, Loader2, Gift, Eye, Check, Sparkles } from "lucide-react";
+import {
+  Minus,
+  Plus,
+  ShoppingBag,
+  Loader2,
+  Gift,
+  Eye,
+  Check,
+  Sparkles,
+  Palette,
+  MessageSquare,
+  EyeOff,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { GiftVoucherItem } from "../types/gift-vouchers";
 import { useCart } from "@/features/cart/hooks/useCart";
@@ -15,6 +29,12 @@ export interface GiftVoucherCardProps {
 export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) {
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState<number>(1);
+  const [selectedLayoutId, setSelectedLayoutId] = useState<string | undefined>(
+    () => voucher.layouts?.[0]?.id
+  );
+  const [personalMessage, setPersonalMessage] = useState<string>("");
+  const [hideValue, setHideValue] = useState<boolean>(false);
+  const [showPersonalize, setShowPersonalize] = useState<boolean>(false);
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
@@ -43,11 +63,18 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsAdding(true);
+
+    const activeLayoutId =
+      selectedLayoutId || voucher.layouts?.[0]?.id || undefined;
+
     try {
       await addToCart({
         kind: "GIFT_VOUCHER",
         voucherId: voucher.id,
         quantity,
+        layoutId: activeLayoutId,
+        message: personalMessage.trim() || undefined,
+        hideValue: hideValue || undefined,
       });
       setIsSuccess(true);
       setTimeout(() => {
@@ -59,6 +86,8 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
       setIsAdding(false);
     }
   };
+
+  const selectedLayout = voucher.layouts?.find((l) => l.id === selectedLayoutId) || voucher.layouts?.[0];
 
   return (
     <div className="group relative bg-white border border-neutral-200/90 rounded-2xl p-4 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between">
@@ -87,15 +116,20 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
 
               <div className="text-center py-2">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 block">
-                  Gift Voucher
+                  {hideValue ? "Gift Certificate" : "Gift Voucher"}
                 </span>
                 <span className="text-2xl font-black text-neutral-900 tracking-tight">
-                  {formattedValue}
+                  {hideValue ? "Special Gift" : formattedValue}
                 </span>
+                {selectedLayout && (
+                  <span className="inline-block mt-1 px-2 py-0.5 rounded-md text-[9px] font-bold bg-white/90 text-amber-900 border border-amber-200 shadow-2xs">
+                    Theme: {selectedLayout.name}
+                  </span>
+                )}
               </div>
 
               <div className="flex items-center justify-between text-[10px] font-mono text-neutral-500 pt-1.5 border-t border-amber-200/60">
-                <span>Value: {formattedValue}</span>
+                <span>{hideValue ? "Value Hidden" : `Value: ${formattedValue}`}</span>
                 <span className="text-amber-800 font-bold">LumiPhoto</span>
               </div>
             </>
@@ -107,8 +141,8 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
               type="button"
               onClick={() => onQuickView(voucher)}
               className="absolute top-2.5 right-2.5 size-8 rounded-full bg-white/90 backdrop-blur-xs text-neutral-700 shadow-sm opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center justify-center hover:bg-white hover:text-neutral-900 cursor-pointer"
-              aria-label="Quick view"
-              title="Quick view"
+              aria-label="Full Details & Preview"
+              title="Full Details & Preview"
             >
               <Eye className="size-4" />
             </button>
@@ -125,7 +159,7 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
         </div>
 
         {/* Voucher Info */}
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           <h3
             className="text-base font-bold text-neutral-900 line-clamp-1 group-hover:text-[#2060b0] transition-colors cursor-pointer"
             onClick={() => onQuickView?.(voucher)}
@@ -140,27 +174,105 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
             </p>
           )}
 
-          {/* Layout themes preview */}
+          {/* Layout Themes Selection on Card */}
           {voucher.layouts && voucher.layouts.length > 0 && (
-            <div className="flex flex-wrap items-center gap-1 pt-1">
-              <span className="text-[10px] text-neutral-400 font-medium">
-                Designs:
-              </span>
-              {voucher.layouts.slice(0, 3).map((l) => (
-                <span
-                  key={l.id}
-                  className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-neutral-100 text-neutral-700 border border-neutral-200"
-                >
-                  {l.name}
+            <div className="space-y-1.5 pt-1.5 border-t border-neutral-100">
+              <div className="flex items-center justify-between text-[10px] font-bold text-neutral-500 uppercase tracking-wider">
+                <span className="flex items-center gap-1">
+                  <Palette className="size-3 text-[#2060b0]" />
+                  <span>Voucher Design</span>
                 </span>
-              ))}
-              {voucher.layouts.length > 3 && (
-                <span className="text-[10px] text-neutral-400">
-                  +{voucher.layouts.length - 3} more
+                <span className="text-neutral-400 font-normal normal-case">
+                  {selectedLayout?.name}
                 </span>
-              )}
+              </div>
+              <div className="flex flex-wrap items-center gap-1">
+                {voucher.layouts.map((layout) => {
+                  const isSelected = selectedLayoutId === layout.id;
+                  return (
+                    <button
+                      key={layout.id}
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedLayoutId(layout.id);
+                      }}
+                      className={cn(
+                        "px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer border flex items-center gap-1",
+                        isSelected
+                          ? "bg-[#2060b0] text-white border-[#2060b0] shadow-2xs"
+                          : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200 border-neutral-200"
+                      )}
+                      title={layout.description || layout.name}
+                    >
+                      {isSelected && <Check className="size-3" />}
+                      <span>{layout.name}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           )}
+
+          {/* Personalize Button Toggle (Message & Hide Value) */}
+          <div className="pt-1">
+            <button
+              type="button"
+              onClick={() => setShowPersonalize((prev) => !prev)}
+              className="w-full py-1 px-2 rounded-lg bg-neutral-50 hover:bg-neutral-100 border border-neutral-200/80 text-[11px] font-semibold text-neutral-700 flex items-center justify-between transition-colors cursor-pointer"
+            >
+              <span className="flex items-center gap-1.5">
+                <MessageSquare className="size-3 text-[#2060b0]" />
+                <span>
+                  {personalMessage || hideValue
+                    ? "Personalized Gift Active ✨"
+                    : "Add Personal Message / Options"}
+                </span>
+              </span>
+              {showPersonalize ? (
+                <ChevronUp className="size-3.5 text-neutral-400" />
+              ) : (
+                <ChevronDown className="size-3.5 text-neutral-400" />
+              )}
+            </button>
+
+            {/* Expandable Personalization Box */}
+            {showPersonalize && (
+              <div className="mt-2 p-2.5 bg-neutral-50/90 rounded-xl border border-neutral-200/90 space-y-2 animate-in fade-in slide-in-from-top-1 duration-150">
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[10px] font-bold text-neutral-600">
+                      Personal Message
+                    </label>
+                    <span className="text-[9px] text-neutral-400">
+                      {personalMessage.length}/2000
+                    </span>
+                  </div>
+                  <textarea
+                    rows={2}
+                    maxLength={2000}
+                    value={personalMessage}
+                    onChange={(e) => setPersonalMessage(e.target.value)}
+                    placeholder="Write a message for the recipient..."
+                    className="w-full text-xs p-2 rounded-lg border border-neutral-200 bg-white focus:outline-hidden focus:border-[#2060b0] focus:ring-1 focus:ring-[#2060b0]/20 placeholder:text-neutral-400"
+                  />
+                </div>
+
+                <label className="flex items-center gap-2 p-1.5 rounded-lg border border-neutral-200/80 bg-white hover:bg-neutral-50 cursor-pointer transition-colors">
+                  <input
+                    type="checkbox"
+                    checked={hideValue}
+                    onChange={(e) => setHideValue(e.target.checked)}
+                    className="rounded border-neutral-300 text-[#2060b0] focus:ring-[#2060b0] size-3.5 cursor-pointer"
+                  />
+                  <div className="flex items-center gap-1 text-[10px] font-semibold text-neutral-700">
+                    <EyeOff className="size-3 text-neutral-500" />
+                    <span>Hide price/value on voucher card</span>
+                  </div>
+                </label>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

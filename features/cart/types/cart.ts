@@ -11,6 +11,10 @@ export interface AddGiftVoucherCartItemPayload {
   kind: "GIFT_VOUCHER";
   voucherId: string;
   quantity: number;
+  layoutId?: string;       // Optional UUID for voucher design layout
+  message?: string;        // Optional personal message (max 2000 chars)
+  hideValue?: boolean;     // Optional flag to conceal monetary value
+  sendAt?: string;         // Optional ISO date string for scheduled delivery
 }
 
 export interface AddProductCartItemPayload {
@@ -63,13 +67,17 @@ export interface CartItem {
   id: number | string;
   cartId: string;
   kind: CartItemKind;
-  title: string;
+  title: string | null;
   formatId?: string;
   voucherId?: string;
   productId?: string;
   quantity: number;
   unitPrice: string;
   lineTotal: string;
+  layoutId?: string | null;
+  message?: string | null;
+  hideValue?: boolean | null;
+  sendAt?: string | null;
   createdAt?: string;
   updatedAt?: string;
   format?: CartFormatInfo | null;
@@ -137,4 +145,3 @@ export interface CartResponse {
   message: string;
   data: CartData;
 }
-

@@ -2,7 +2,20 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { X, Minus, Plus, ShoppingBag, Loader2, Gift, Check, Sparkles, Calendar, Palette } from "lucide-react";
+import {
+  X,
+  Minus,
+  Plus,
+  ShoppingBag,
+  Loader2,
+  Gift,
+  Check,
+  Sparkles,
+  Calendar,
+  Palette,
+  EyeOff,
+  MessageSquare,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { GiftVoucherItem } from "../types/gift-vouchers";
 import { useCart } from "@/features/cart/hooks/useCart";
@@ -38,6 +51,12 @@ function GiftVoucherQuickViewModalContent({
 }) {
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState<number>(1);
+  const [selectedLayoutId, setSelectedLayoutId] = useState<string | undefined>(
+    voucher.layouts?.[0]?.id
+  );
+  const [personalMessage, setPersonalMessage] = useState<string>("");
+  const [hideValue, setHideValue] = useState<boolean>(false);
+  const [scheduledDate, setScheduledDate] = useState<string>("");
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
@@ -80,6 +99,10 @@ function GiftVoucherQuickViewModalContent({
         kind: "GIFT_VOUCHER",
         voucherId: voucher.id,
         quantity,
+        layoutId: selectedLayoutId || undefined,
+        message: personalMessage.trim() || undefined,
+        hideValue: hideValue || undefined,
+        sendAt: scheduledDate ? new Date(scheduledDate).toISOString() : undefined,
       });
       setIsSuccess(true);
       setTimeout(() => {
@@ -92,6 +115,8 @@ function GiftVoucherQuickViewModalContent({
     }
   };
 
+  const selectedLayout = voucher.layouts?.find((l) => l.id === selectedLayoutId);
+
   return (
     <div
       role="dialog"
@@ -100,7 +125,7 @@ function GiftVoucherQuickViewModalContent({
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-3xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-neutral-200 flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200"
+        className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-neutral-200 flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
@@ -114,7 +139,7 @@ function GiftVoucherQuickViewModalContent({
         </button>
 
         <div className="overflow-y-auto p-6 sm:p-8 flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 items-start">
-          {/* Certificate Design / Preview */}
+          {/* Certificate Design / Preview & Layout Selector */}
           <div className="space-y-4">
             <div className="relative aspect-4/3 w-full rounded-2xl overflow-hidden bg-linear-to-br from-amber-500/10 via-amber-500/5 to-purple-500/10 border border-amber-200/80 p-6 flex flex-col justify-between shadow-xs">
               {previewUrl ? (
@@ -148,11 +173,16 @@ function GiftVoucherQuickViewModalContent({
 
                   <div className="text-center py-4">
                     <span className="text-xs font-semibold text-neutral-500 uppercase tracking-widest block mb-1">
-                      Gift Voucher Value
+                      {hideValue ? "Gift Certificate" : "Gift Voucher Value"}
                     </span>
                     <span className="text-3xl sm:text-4xl font-black text-neutral-900 tracking-tight">
-                      {formattedValue}
+                      {hideValue ? "Special Gift" : formattedValue}
                     </span>
+                    {selectedLayout && (
+                      <span className="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-white/80 text-amber-900 border border-amber-200">
+                        Theme: {selectedLayout.name}
+                      </span>
+                    )}
                   </div>
 
                   <div className="flex items-center justify-between text-[11px] font-mono text-neutral-500 pt-2 border-t border-amber-200/60">
@@ -163,44 +193,62 @@ function GiftVoucherQuickViewModalContent({
               )}
             </div>
 
-            {/* Layout Themes */}
+            {/* Design Layouts Selection */}
             {voucher.layouts && voucher.layouts.length > 0 && (
-              <div className="bg-neutral-50 rounded-2xl p-3.5 border border-neutral-200/80 space-y-2">
-                <div className="flex items-center gap-1.5 text-xs font-bold text-neutral-700">
-                  <Palette className="size-3.5 text-[#2060b0]" />
-                  <span>Included Design Layouts ({voucher.layouts.length})</span>
+              <div className="bg-neutral-50 rounded-2xl p-4 border border-neutral-200/80 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-neutral-700">
+                    <Palette className="size-3.5 text-[#2060b0]" />
+                    <span>Choose Voucher Design</span>
+                  </div>
+                  <span className="text-[10px] font-semibold text-neutral-400">
+                    {voucher.layouts.length} designs available
+                  </span>
                 </div>
-                <div className="space-y-1.5">
-                  {voucher.layouts.map((layout) => (
-                    <div
-                      key={layout.id}
-                      className="p-2 bg-white rounded-lg border border-neutral-200/60 text-xs flex items-start justify-between gap-2"
-                    >
-                      <div>
-                        <span className="font-bold text-neutral-900">
-                          {layout.name}
-                        </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {voucher.layouts.map((layout) => {
+                    const isSelected = selectedLayoutId === layout.id;
+                    return (
+                      <button
+                        key={layout.id}
+                        type="button"
+                        onClick={() => setSelectedLayoutId(layout.id)}
+                        className={cn(
+                          "p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-1",
+                          isSelected
+                            ? "bg-blue-50/80 border-[#2060b0] ring-2 ring-[#2060b0]/20"
+                            : "bg-white border-neutral-200 hover:border-neutral-300"
+                        )}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-xs text-neutral-900">
+                            {layout.name}
+                          </span>
+                          {isSelected && (
+                            <Check className="size-3.5 text-[#2060b0]" />
+                          )}
+                        </div>
                         {layout.description && (
-                          <p className="text-[11px] text-neutral-500">
+                          <p className="text-[10px] text-neutral-500 line-clamp-2 leading-tight">
                             {layout.description}
                           </p>
                         )}
-                      </div>
-                      {layout.fontFamily && (
-                        <span className="text-[10px] font-mono text-neutral-400 shrink-0">
-                          {layout.fontFamily}
-                        </span>
-                      )}
-                    </div>
-                  ))}
+                        {layout.fontFamily && (
+                          <span className="text-[9px] font-mono text-neutral-400">
+                            Font: {layout.fontFamily}
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
           </div>
 
-          {/* Details & Actions */}
+          {/* Details, Customization & Actions */}
           <div className="flex flex-col h-full justify-between space-y-5">
-            <div className="space-y-3">
+            <div className="space-y-3.5">
               {voucher.category && (
                 <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200">
                   {voucher.category}
@@ -212,12 +260,12 @@ function GiftVoucherQuickViewModalContent({
               </h2>
 
               {/* Pricing breakdown */}
-              <div className="p-4 bg-linear-to-r from-amber-50 to-orange-50 rounded-2xl border border-amber-200/70 space-y-1.5">
+              <div className="p-3.5 bg-linear-to-r from-amber-50 to-orange-50 rounded-2xl border border-amber-200/70 space-y-1">
                 <div className="flex items-baseline justify-between">
                   <span className="text-xs font-bold uppercase tracking-wider text-amber-900">
                     Voucher Value
                   </span>
-                  <span className="text-xl sm:text-2xl font-black text-amber-900">
+                  <span className="text-xl font-black text-amber-900">
                     {formattedValue}
                   </span>
                 </div>
@@ -235,30 +283,86 @@ function GiftVoucherQuickViewModalContent({
                 )}
               </div>
 
+              {/* Customization Inputs */}
+              <div className="space-y-3 pt-1">
+                {/* Personal Message */}
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between">
+                    <label
+                      htmlFor="voucher-message"
+                      className="flex items-center gap-1.5 text-xs font-bold text-neutral-700"
+                    >
+                      <MessageSquare className="size-3 text-neutral-500" />
+                      <span>Personal Message (Optional)</span>
+                    </label>
+                    <span className="text-[10px] text-neutral-400">
+                      {personalMessage.length}/2000
+                    </span>
+                  </div>
+                  <textarea
+                    id="voucher-message"
+                    rows={2}
+                    maxLength={2000}
+                    value={personalMessage}
+                    onChange={(e) => setPersonalMessage(e.target.value)}
+                    placeholder="Add a heartfelt note for the recipient..."
+                    className="w-full text-xs p-2.5 rounded-xl border border-neutral-200 focus:outline-hidden focus:border-[#2060b0] focus:ring-2 focus:ring-[#2060b0]/20 transition-all placeholder:text-neutral-400 bg-neutral-50/50"
+                  />
+                </div>
+
+                {/* Scheduled delivery & Hide value row */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {/* Scheduled Delivery */}
+                  <div className="space-y-1">
+                    <label
+                      htmlFor="voucher-date"
+                      className="flex items-center gap-1.5 text-[11px] font-bold text-neutral-700"
+                    >
+                      <Calendar className="size-3 text-neutral-500" />
+                      <span>Delivery Date (Optional)</span>
+                    </label>
+                    <input
+                      id="voucher-date"
+                      type="date"
+                      value={scheduledDate}
+                      min={new Date().toISOString().split("T")[0]}
+                      onChange={(e) => setScheduledDate(e.target.value)}
+                      className="w-full text-xs p-2 rounded-xl border border-neutral-200 focus:outline-hidden focus:border-[#2060b0] bg-neutral-50/50 cursor-pointer"
+                    />
+                  </div>
+
+                  {/* Hide Value Toggle */}
+                  <div className="flex items-center">
+                    <label className="flex items-center gap-2 p-2 rounded-xl border border-neutral-200 bg-neutral-50/50 hover:bg-neutral-100/50 cursor-pointer w-full transition-colors mt-auto">
+                      <input
+                        type="checkbox"
+                        checked={hideValue}
+                        onChange={(e) => setHideValue(e.target.checked)}
+                        className="rounded border-neutral-300 text-[#2060b0] focus:ring-[#2060b0] size-4 cursor-pointer"
+                      />
+                      <div className="flex items-center gap-1 text-[11px] font-semibold text-neutral-700">
+                        <EyeOff className="size-3 text-neutral-500" />
+                        <span>Hide value on card</span>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
               {cleanDescription && (
-                <div className="pt-2">
-                  <h4 className="text-xs font-bold text-neutral-700 uppercase tracking-wider mb-1">
+                <div className="pt-2 border-t border-neutral-100">
+                  <h4 className="text-[11px] font-bold text-neutral-700 uppercase tracking-wider mb-0.5">
                     About this Voucher
                   </h4>
-                  <p className="text-sm text-neutral-600 leading-relaxed max-h-36 overflow-y-auto">
+                  <p className="text-xs text-neutral-600 leading-relaxed max-h-20 overflow-y-auto">
                     {cleanDescription}
                   </p>
-                </div>
-              )}
-
-              {voucher.availableTo && (
-                <div className="flex items-center gap-1.5 text-xs text-neutral-500 pt-1">
-                  <Calendar className="size-3.5 text-neutral-400" />
-                  <span>
-                    Valid through{" "}
-                    {new Date(voucher.availableTo).toLocaleDateString()}
-                  </span>
                 </div>
               )}
             </div>
 
             {/* Actions */}
-            <div className="space-y-4 pt-4 border-t border-neutral-100">
+            <div className="space-y-3 pt-3 border-t border-neutral-100">
               <div className="flex items-center justify-between gap-4">
                 <span className="text-xs font-semibold text-neutral-700">
                   Quantity

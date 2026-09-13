@@ -43,7 +43,7 @@ export function CheckoutSummaryCard({ isSubmitting }: CheckoutSummaryCardProps) 
                 {photoUrl ? (
                   <Image
                     src={photoUrl}
-                    alt={item.title}
+                    alt={item.title || "Order item"}
                     fill
                     sizes="48px"
                     className="object-cover pointer-events-none"
@@ -59,7 +59,7 @@ export function CheckoutSummaryCard({ isSubmitting }: CheckoutSummaryCardProps) 
 
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-bold text-neutral-800 truncate">
-                  {item.title}
+                  {item.title || "Cart Item"}
                 </p>
                 <p className="text-[11px] text-neutral-400">
                   Qty: {item.quantity}

@@ -2,7 +2,15 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { Trash2, Minus, Plus, Loader2, Frame, Package, Gift } from "lucide-react";
+import {
+  Trash2,
+  Minus,
+  Plus,
+  Loader2,
+  Frame,
+  Package,
+  Gift,
+} from "lucide-react";
 import { CartItem } from "../types/cart";
 import { fetchPhotoPreviewBlob } from "@/features/access-cards/utils/access-cards-api";
 import { useCart } from "../hooks/useCart";
@@ -14,7 +22,7 @@ interface CartItemCardProps {
 export function CartItemCard({ item }: CartItemCardProps) {
   const { updateItemQuantity, removeItem, isRemoving } = useCart();
   const [photoUrl, setPhotoUrl] = useState<string | null>(
-    item.photos?.[0]?.media?.url || null
+    item.photos?.[0]?.media?.url || null,
   );
   const [isLocalLoading, setIsLocalLoading] = useState<boolean>(false);
 
@@ -69,7 +77,7 @@ export function CartItemCard({ item }: CartItemCardProps) {
 
   const lineTotalNum = parseFloat(item.lineTotal || "0");
   const formattedLineTotal = `€${lineTotalNum.toFixed(2)}`;
-  
+
   const descriptionText =
     item.kind === "PRODUCT"
       ? "Store Product Item"
@@ -90,7 +98,7 @@ export function CartItemCard({ item }: CartItemCardProps) {
           {photoUrl ? (
             <Image
               src={photoUrl}
-              alt={item.title}
+              alt={item.title || "Cart item"}
               fill
               sizes="(max-width: 640px) 80px, 112px"
               className="object-cover pointer-events-none"
@@ -121,7 +129,7 @@ export function CartItemCard({ item }: CartItemCardProps) {
         <div className="flex-1 min-w-0 space-y-1.5">
           <div className="flex items-start justify-between sm:hidden">
             <h3 className="text-sm font-bold text-neutral-900 truncate">
-              {item.title}
+              {item.title || "Cart Item"}
             </h3>
             {/* Mobile delete button */}
             <button
@@ -137,7 +145,7 @@ export function CartItemCard({ item }: CartItemCardProps) {
           </div>
 
           <h3 className="hidden sm:block text-base md:text-lg font-bold text-neutral-900 truncate">
-            {item.title}
+            {item.title || "Cart Item"}
           </h3>
 
           <p className="text-xs text-neutral-500 font-medium">
