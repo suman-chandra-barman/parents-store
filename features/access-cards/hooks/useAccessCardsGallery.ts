@@ -1,7 +1,11 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { useGetAccessCardsGalleryQuery } from "../api/accessCardsApi";
+import {
+  useGetAccessCardsGalleryQuery,
+  useLazyCheckTwoFactorStatusQuery,
+  useLazyVerifyTwoFactorPasswordQuery,
+} from "../api/accessCardsApi";
 import { parseErrorMessage } from "@/utils/parseErrorMessage";
 import { useTenantStore } from "@/stores/useTenantStore";
 
@@ -16,18 +20,43 @@ export function useAccessCardsGallery() {
     return "";
   });
 
+  const [triggerCheck2FA, { isFetching: isChecking2FA }] =
+    useLazyCheckTwoFactorStatusQuery();
+  const [triggerVerify2FA, { isFetching: isVerifying2FA }] =
+    useLazyVerifyTwoFactorPasswordQuery();
+
   const {
     data: galleryResponse = null,
-    isLoading,
-    isFetching,
+    isLoading: isGalleryLoading,
+    isFetching: isGalleryFetching,
     error: queryError,
     refetch,
   } = useGetAccessCardsGalleryQuery(password, {
     skip: !password || !tenant?.id,
   });
 
-  const handleAuthenticate = useCallback(async (inputPassword: string) => {
-    const trimmed = inputPassword.trim();
+  const check2FAStatus = useCallback(
+    async (inputPassword: string): Promise<boolean> => {
+      const trimmed = inputPassword.trim();
+      const res = await triggerCheck2FA(trimmed).unwrap();
+      return Boolean(res?.data?.isTwoFactorProtected);
+    },
+    [triggerCheck2FA],
+  );
+
+  const verify2FAPassword = useCallback(
+    async (inputPassword: string, twoFactorPassword: string): Promise<boolean> => {
+      const res = await triggerVerify2FA({
+        password: inputPassword.trim(),
+        twoFactorPassword: twoFactorPassword.trim(),
+      }).unwrap();
+      return Boolean(res?.data?.isMatch);
+    },
+    [triggerVerify2FA],
+  );
+
+  const handleAuthenticate = useCallback(async (formattedPassword: string) => {
+    const trimmed = formattedPassword.trim();
     setPassword(trimmed);
     if (typeof window !== "undefined") {
       sessionStorage.setItem(STORAGE_KEY, trimmed);
@@ -46,17 +75,21 @@ export function useAccessCardsGallery() {
   const errorMessage = queryError
     ? parseErrorMessage(
         queryError,
-        "Failed to authenticate with the provided password."
+        "Failed to authenticate with the provided password.",
       )
     : null;
 
   return {
     password,
     isAuthenticated: Boolean(galleryResponse?.data),
-    isLoading: isLoading || isFetching,
-    isRefreshing: isFetching,
+    isLoading: isGalleryLoading || isGalleryFetching,
+    isChecking2FA,
+    isVerifying2FA,
+    isRefreshing: isGalleryFetching,
     error: errorMessage,
     galleryResponse,
+    check2FAStatus,
+    verify2FAPassword,
     handleAuthenticate,
     handleRefresh,
   };

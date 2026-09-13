@@ -45,4 +45,24 @@ export interface AccessCardsResponse {
   };
 }
 
+export interface TwoFactorStatusResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  traceId?: string;
+  data: {
+    isTwoFactorProtected: boolean;
+  };
+}
+
+export interface TwoFactorVerifyResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  traceId?: string;
+  data: {
+    isMatch: boolean;
+  };
+}
+
 export type ViewMode = "grid" | "masonry";
