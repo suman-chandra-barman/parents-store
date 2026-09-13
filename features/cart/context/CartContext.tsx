@@ -27,6 +27,7 @@ export interface CartContextValue {
   cart: CartData | null;
   itemCount: number;
   isLoading: boolean;
+  isFetching: boolean;
   isAdding: boolean;
   isUpdating: boolean;
   isRemoving: boolean;
@@ -213,7 +214,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     return cart.items.reduce((total, item) => total + (item.quantity || 1), 0);
   }, [cart]);
 
-  const isLoading = (!tenant?.id && isGetLoading) || isGetLoading || isFetching;
+  const isLoading = (!tenant?.id && isGetLoading) || (isGetLoading && !cartResponse);
 
   const contextValue = useMemo<CartContextValue>(
     () => ({
@@ -221,6 +222,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       cart,
       itemCount,
       isLoading,
+      isFetching,
       isAdding,
       isUpdating,
       isRemoving,
@@ -239,6 +241,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       cart,
       itemCount,
       isLoading,
+      isFetching,
       isAdding,
       isUpdating,
       isRemoving,

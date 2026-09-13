@@ -12,7 +12,7 @@ interface CartItemCardProps {
 }
 
 export function CartItemCard({ item }: CartItemCardProps) {
-  const { updateItemQuantity, removeItem, isUpdating, isRemoving } = useCart();
+  const { updateItemQuantity, removeItem, isRemoving } = useCart();
   const [photoUrl, setPhotoUrl] = useState<string | null>(
     item.photos?.[0]?.media?.url || null
   );
@@ -79,7 +79,7 @@ export function CartItemCard({ item }: CartItemCardProps) {
           ? `${item.photos?.length} photos included`
           : "1 digital photo";
 
-  const isBusy = isLocalLoading || isUpdating;
+  const isBusy = isLocalLoading;
 
   return (
     <div className="bg-white rounded-2xl border border-neutral-200/90 p-4 sm:p-6 shadow-xs hover:shadow-sm transition-all duration-200 flex flex-col sm:flex-row gap-4 sm:gap-6 items-stretch sm:items-center justify-between">

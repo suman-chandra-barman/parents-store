@@ -1,8 +1,7 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
-import { useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
 import { ArrowLeft, Loader2, Trash2 } from "lucide-react";
 import { useCart } from "../hooks/useCart";
 import { CartItemCard } from "./CartItemCard";
@@ -11,10 +10,10 @@ import { CartSummaryCard } from "./CartSummaryCard";
 import { CartEmptyState } from "./CartEmptyState";
 
 export function CartContent() {
-  const locale = useLocale();
+  const router = useRouter();
   const { cart, itemCount, isLoading, clearCart } = useCart();
 
-  if (isLoading) {
+  if (isLoading && !cart) {
     return (
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-24 flex flex-col items-center justify-center text-neutral-400">
         <Loader2 className="size-8 animate-spin text-[#2060b0] mb-3" />
@@ -28,17 +27,18 @@ export function CartContent() {
   }
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-6xl space-y-6 animate-in fade-in duration-200">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-6xl space-y-6">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-200/80 pb-4">
         <div className="flex items-center gap-3">
-          <Link
-            href={`/${locale}/photo-galleries/access-cards`}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 transition-colors"
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 transition-colors cursor-pointer"
           >
             <ArrowLeft className="size-4" />
             <span>Continue Shopping</span>
-          </Link>
+          </button>
           <span className="text-neutral-300">/</span>
           <h1 className="text-xl sm:text-2xl font-bold text-neutral-900 tracking-tight">
             Cart ({itemCount})
