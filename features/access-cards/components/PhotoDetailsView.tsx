@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useLocale } from "next-intl";
-import { ArrowLeft, Sparkles } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useAccessCardsGallery } from "../hooks/useAccessCardsGallery";
 import { useFavorites } from "../hooks/useFavorites";
 import { PhotoItem } from "../types/access-cards";

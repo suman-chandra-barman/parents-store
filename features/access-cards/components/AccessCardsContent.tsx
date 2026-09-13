@@ -11,7 +11,6 @@ import { AccessCardPhotoGrid } from "@/features/access-cards/components/AccessCa
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { useTenantStore } from "@/stores/useTenantStore";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 function AccessCardsContent() {

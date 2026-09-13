@@ -11,10 +11,10 @@ export interface AddGiftVoucherCartItemPayload {
   kind: "GIFT_VOUCHER";
   voucherId: string;
   quantity: number;
-  layoutId?: string;       // Optional UUID for voucher design layout
-  message?: string;        // Optional personal message (max 2000 chars)
-  hideValue?: boolean;     // Optional flag to conceal monetary value
-  sendAt?: string;         // Optional ISO date string for scheduled delivery
+  layoutId?: string;
+  message?: string;
+  hideValue?: boolean;
+  sendAt?: string;
 }
 
 export interface AddProductCartItemPayload {

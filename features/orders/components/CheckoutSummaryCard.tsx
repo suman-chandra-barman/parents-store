@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { Loader2, Lock, ShoppingBag, Frame } from "lucide-react";
+import { Loader2, Lock, Frame } from "lucide-react";
 import { useCart } from "@/features/cart/hooks/useCart";
 import { cn } from "@/lib/utils";
 

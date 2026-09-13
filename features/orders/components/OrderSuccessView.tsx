@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { useLocale } from "next-intl";
-import { CheckCircle2, ArrowLeft, PackageCheck } from "lucide-react";
+import { CheckCircle2, ArrowLeft } from "lucide-react";
 import { OrderCreatedData } from "../types/orders";
 
 interface OrderSuccessViewProps {

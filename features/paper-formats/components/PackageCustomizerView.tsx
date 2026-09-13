@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, Loader2, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
@@ -75,7 +75,7 @@ export function PackageCustomizerView({
   const {
     handleSubmit,
     setValue,
-    watch,
+    control,
     formState: { errors },
   } = useForm<PackageCustomizationFormData>({
     resolver: zodResolver(PackageCustomizationFormSchema),
@@ -93,7 +93,11 @@ export function PackageCustomizerView({
     }
   }, [packageItem.id, defaultSlotSelections, setValue]);
 
-  const watchedSlotSelections = watch("slotSelections") || {};
+  const watchedSlotSelections = useWatch({
+    control,
+    name: "slotSelections",
+    defaultValue: defaultSlotSelections,
+  }) || {};
 
   // Pricing calculations
   const priceObj =

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ArrowRight, ShoppingBag } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useCart } from "../hooks/useCart";
 
 import { useRouter } from "next/navigation";

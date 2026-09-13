@@ -3,7 +3,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Ticket, X, Check, Loader2, Sparkles } from "lucide-react";
+import { X, Check, Loader2 } from "lucide-react";
 import { useCart } from "../hooks/useCart";
 import {
   ApplyGiftVoucherFormData,
@@ -107,7 +107,7 @@ export function CartVoucherCard() {
                 "flex-1 px-4 py-2.5 rounded-xl border text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#2060b0] focus:bg-white transition-all uppercase",
                 errors.code
                   ? "border-red-400 ring-1 ring-red-200"
-                  : "border-neutral-200 hover:border-neutral-300"
+                  : "border-neutral-200 hover:border-neutral-300",
               )}
             />
             <button

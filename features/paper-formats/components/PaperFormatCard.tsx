@@ -34,9 +34,6 @@ export function PaperFormatCard({
   const numericPrice = parseFloat(rawPrice) || 0;
   const formattedPrice = `$${numericPrice.toFixed(2)}`;
 
-  // Slight decorative original strike price if non-zero
-  const strikePrice =
-    numericPrice > 0 ? `$${(numericPrice * 1.18).toFixed(2)}` : null;
 
   const previewImageUrl =
     format.size?.preview?.[0]?.url || format.size?.previews?.[0]?.url;
