@@ -161,5 +161,33 @@
     "priceDesc": "Price: High to Low",
     "newest": "Newest",
     "nameAsc": "Name: A to Z"
+  },
+  "GiftVouchers": {
+    "title": "Gift Vouchers & Celebration Cards",
+    "subtitle": "Give the gift of timeless memories. Purchase vouchers redeemable for photo sessions, prints, and packages.",
+    "allVouchers": "All Vouchers",
+    "searchPlaceholder": "Search vouchers by title or keywords...",
+    "quickView": "Quick View",
+    "addToCart": "Add to Cart",
+    "added": "Added",
+    "addedToCart": "Added to Cart!",
+    "quantity": "Quantity",
+    "voucherValue": "Voucher Value",
+    "purchasePrice": "Purchase Price",
+    "youSave": "You Save",
+    "aboutVoucher": "About this Voucher",
+    "validThrough": "Valid through",
+    "includedDesigns": "Included Design Layouts",
+    "noVouchersFound": "No gift vouchers found",
+    "noVouchersDesc": "There are currently no gift vouchers available in the store.",
+    "clearFilters": "Clear all filters",
+    "retry": "Retry",
+    "failedToLoad": "Failed to load gift vouchers. Please check your connection.",
+    "featured": "Featured",
+    "valueDesc": "Value: High to Low",
+    "priceAsc": "Price: Low to High",
+    "priceDesc": "Price: High to Low",
+    "newest": "Newest",
+    "nameAsc": "Name: A to Z"
   }
 }

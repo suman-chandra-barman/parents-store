@@ -161,5 +161,33 @@
     "priceDesc": "Preis: Absteigend",
     "newest": "Neueste",
     "nameAsc": "Name: A bis Z"
+  },
+  "GiftVouchers": {
+    "title": "Geschenkgutscheine & Feierkarten",
+    "subtitle": "Verschenken Sie zeitlose Erinnerungen. Gutscheine einlösbar für Fotoshootings, Abzüge und Pakete.",
+    "allVouchers": "Alle Gutscheine",
+    "searchPlaceholder": "Gutscheine nach Titel oder Stichworten durchsuchen...",
+    "quickView": "Schnellansicht",
+    "addToCart": "In den Warenkorb",
+    "added": "Hinzugefügt",
+    "addedToCart": "In den Warenkorb gelegt!",
+    "quantity": "Menge",
+    "voucherValue": "Gutscheinwert",
+    "purchasePrice": "Kaufpreis",
+    "youSave": "Sie sparen",
+    "aboutVoucher": "Über diesen Gutschein",
+    "validThrough": "Gültig bis",
+    "includedDesigns": "Enthaltene Design-Layouts",
+    "noVouchersFound": "Keine Gutscheine gefunden",
+    "noVouchersDesc": "Derzeit sind keine Geschenkgutscheine im Shop verfügbar.",
+    "clearFilters": "Alle Filter zurücksetzen",
+    "retry": "Wiederholen",
+    "failedToLoad": "Gutscheine konnten nicht geladen werden. Bitte prüfen Sie Ihre Verbindung.",
+    "featured": "Empfohlen",
+    "valueDesc": "Wert: Absteigend",
+    "priceAsc": "Preis: Aufsteigend",
+    "priceDesc": "Preis: Absteigend",
+    "newest": "Neueste",
+    "nameAsc": "Name: A bis Z"
   }
 }

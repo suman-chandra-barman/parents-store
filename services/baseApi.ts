@@ -18,5 +18,6 @@ export const baseApi = createApi({
     "Albums",
     "AlbumPhotos",
     "Products",
+    "GiftVouchers",
   ],
 });
