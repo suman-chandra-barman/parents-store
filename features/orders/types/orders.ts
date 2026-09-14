@@ -34,6 +34,8 @@ export interface CreateOrderPayload {
 
 export interface CreateOrderFromCartPayload {
   sessionId: string;
+  email?: string;
+  phone?: string;
   billingAddress: OrderAddressInput;
   deliveryAddress?: OrderAddressInput;
   customerNotes?: string;

@@ -14,7 +14,7 @@ export function OrderSuccessView({ orderData }: OrderSuccessViewProps) {
   const locale = useLocale();
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center max-w-xl animate-in fade-in zoom-in-95 duration-300">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center max-w-xl">
       <div className="size-20 rounded-3xl bg-emerald-50 border border-emerald-100 flex items-center justify-center mx-auto mb-6 text-emerald-600 shadow-xs">
         <CheckCircle2 className="size-10 stroke-[2]" />
       </div>

@@ -95,30 +95,47 @@ export function CheckoutContent() {
     }
 
     try {
+      const cleanEmail = data.email?.trim();
+      const cleanPhone = data.phone?.trim();
+      const cleanNotes = data.customerNotes?.trim();
+
       const payload: CreateOrderFromCartPayload = {
         sessionId,
+        ...(cleanEmail ? { email: cleanEmail } : {}),
+        ...(cleanPhone ? { phone: cleanPhone } : {}),
         billingAddress: {
-          gender: data.billingAddress.gender || undefined,
+          ...(data.billingAddress.gender && data.billingAddress.gender !== "NOT_SPECIFIED"
+            ? { gender: data.billingAddress.gender }
+            : {}),
           firstName: data.billingAddress.firstName.trim(),
-          lastName: data.billingAddress.lastName?.trim() || undefined,
-          companyName: data.billingAddress.companyName?.trim() || undefined,
+          ...(data.billingAddress.lastName?.trim()
+            ? { lastName: data.billingAddress.lastName.trim() }
+            : {}),
+          ...(data.billingAddress.companyName?.trim()
+            ? { companyName: data.billingAddress.companyName.trim() }
+            : {}),
           location: {
             country: data.billingAddress.country.trim(),
             state: data.billingAddress.state.trim(),
             city: data.billingAddress.city.trim(),
             zipCode: data.billingAddress.zipCode.trim(),
             addressLine1: data.billingAddress.addressLine1.trim(),
-            note: data.billingAddress.note?.trim() || "",
+            note: data.billingAddress.note?.trim() || "N/A",
           },
         },
-        deliveryAddress:
-          data.shipToDifferentAddress && data.deliveryAddress?.firstName?.trim()
-            ? {
-                gender: data.deliveryAddress.gender || undefined,
+        ...(data.shipToDifferentAddress && data.deliveryAddress?.firstName?.trim()
+          ? {
+              deliveryAddress: {
+                ...(data.deliveryAddress.gender && data.deliveryAddress.gender !== "NOT_SPECIFIED"
+                  ? { gender: data.deliveryAddress.gender }
+                  : {}),
                 firstName: data.deliveryAddress.firstName.trim(),
-                lastName: data.deliveryAddress.lastName?.trim() || undefined,
-                companyName:
-                  data.deliveryAddress.companyName?.trim() || undefined,
+                ...(data.deliveryAddress.lastName?.trim()
+                  ? { lastName: data.deliveryAddress.lastName.trim() }
+                  : {}),
+                ...(data.deliveryAddress.companyName?.trim()
+                  ? { companyName: data.deliveryAddress.companyName.trim() }
+                  : {}),
                 location: {
                   country: data.deliveryAddress.country?.trim() || "US",
                   state: data.deliveryAddress.state?.trim() || "",
@@ -126,11 +143,12 @@ export function CheckoutContent() {
                   zipCode: data.deliveryAddress.zipCode?.trim() || "",
                   addressLine1:
                     data.deliveryAddress.addressLine1?.trim() || "",
-                  note: data.deliveryAddress.note?.trim() || "",
+                  note: data.deliveryAddress.note?.trim() || "N/A",
                 },
-              }
-            : undefined,
-        customerNotes: data.customerNotes?.trim() || undefined,
+              },
+            }
+          : {}),
+        ...(cleanNotes ? { customerNotes: cleanNotes } : {}),
       };
 
       const response = await createOrderFromCart(payload).unwrap();

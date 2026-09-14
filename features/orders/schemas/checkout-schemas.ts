@@ -31,10 +31,12 @@ export const CheckoutFormSchema = z
     email: z
       .string()
       .trim()
-      .email("Please enter a valid email address")
-      .optional()
-      .or(z.literal("")),
-    phone: z.string().trim().optional().or(z.literal("")),
+      .min(1, "Email address is required")
+      .email("Please enter a valid email address"),
+    phone: z
+      .string()
+      .trim()
+      .min(1, "Phone number is required"),
     billingAddress: AddressFormSchema,
     shipToDifferentAddress: z.boolean(),
     deliveryAddress: OptionalAddressFormSchema.optional(),
