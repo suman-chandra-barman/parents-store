@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   useGetGalleryPasswordStatusQuery,
@@ -20,20 +20,23 @@ export function usePublicGallery(jobIdOverride?: string) {
   const tenant = useTenantStore((state) => state.tenant);
   const isTenantLoading = useTenantStore((state) => state.isLoading);
 
-  const [password, setPassword] = useState<string>(() => {
+  const [customPassword, setCustomPassword] = useState<string | null>(null);
+  const [prevJobId, setPrevJobId] = useState(jobId);
+
+  // Synchronize customPassword state when jobId changes during render (no useEffect setState)
+  if (prevJobId !== jobId) {
+    setPrevJobId(jobId);
+    setCustomPassword(null);
+  }
+
+  const savedPassword = useMemo(() => {
     if (typeof window !== "undefined" && jobId) {
       return sessionStorage.getItem(getStorageKey(jobId)) || "";
     }
     return "";
-  });
-
-  // Keep password state synchronized if jobId changes
-  useEffect(() => {
-    if (typeof window !== "undefined" && jobId) {
-      const saved = sessionStorage.getItem(getStorageKey(jobId)) || "";
-      setPassword(saved);
-    }
   }, [jobId]);
+
+  const password = customPassword !== null ? customPassword : savedPassword;
 
   // 1. Check if password is required for this jobId
   const {
@@ -97,7 +100,7 @@ export function usePublicGallery(jobIdOverride?: string) {
   const submitPassword = useCallback(
     (enteredPassword: string) => {
       const clean = enteredPassword.trim();
-      setPassword(clean);
+      setCustomPassword(clean);
       if (typeof window !== "undefined" && jobId) {
         sessionStorage.setItem(getStorageKey(jobId), clean);
       }
@@ -106,7 +109,7 @@ export function usePublicGallery(jobIdOverride?: string) {
   );
 
   const resetPassword = useCallback(() => {
-    setPassword("");
+    setCustomPassword("");
     if (typeof window !== "undefined" && jobId) {
       sessionStorage.removeItem(getStorageKey(jobId));
     }
