@@ -9,7 +9,7 @@ const fetchPromisesCache = new Map<string, Promise<string>>();
  * @param password The access card password
  */
 export async function fetchAccessCardsGallery(
-  password: string
+  password: string,
 ): Promise<AccessCardsResponse> {
   const cleanPassword = password.trim();
 
@@ -24,8 +24,14 @@ export async function fetchAccessCardsGallery(
     });
 
     if (!response.ok) {
-      if (response.status === 401 || response.status === 403 || response.status === 404) {
-        throw new Error("Invalid password or access card not found. Please try again.");
+      if (
+        response.status === 401 ||
+        response.status === 403 ||
+        response.status === 404
+      ) {
+        throw new Error(
+          "Invalid password or access card not found. Please try again.",
+        );
       }
       throw new Error(`Failed to fetch gallery photos (${response.status})`);
     }
@@ -65,7 +71,7 @@ export async function fetchPhotoPreviewBlob(photoId: string): Promise<string> {
 
       if (!response.ok) {
         throw new Error(
-          `Failed to fetch photo preview (${response.status} ${response.statusText})`
+          `Failed to fetch photo preview (${response.status} ${response.statusText})`,
         );
       }
 

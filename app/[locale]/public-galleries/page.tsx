@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
 import { PublicGalleriesContent } from "@/features/public-galleries/components/PublicGalleriesContent";
 
-export default function ClassicPage() {
+export default function PublicGalleriesPage() {
   return (
     <Suspense
       fallback={

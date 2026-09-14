@@ -9,6 +9,7 @@ export const baseApi = createApi({
     "Tenant",
     "User",
     "AccessCards",
+    "PublicGalleries",
     "Orders",
     "PriceLists",
     "PaperFormats",

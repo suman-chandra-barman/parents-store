@@ -17,9 +17,15 @@ import { useTenantStore } from "@/stores/useTenantStore";
 
 export interface PhotoDetailsViewProps {
   photoId: string;
+  backUrl?: string;
+  backLabel?: string;
 }
 
-export function PhotoDetailsView({ photoId }: PhotoDetailsViewProps) {
+export function PhotoDetailsView({
+  photoId,
+  backUrl,
+  backLabel,
+}: PhotoDetailsViewProps) {
   const locale = useLocale();
   const tenant = useTenantStore((state) => state.tenant);
   const { galleryResponse, isLoading: isGalleryLoading } = useAccessCardsGallery();
@@ -121,11 +127,11 @@ export function PhotoDetailsView({ photoId }: PhotoDetailsViewProps) {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-200/80 pb-4">
           <div className="flex items-center gap-3">
             <Link
-              href={`/${locale}/photo-galleries/access-cards`}
+              href={backUrl || `/${locale}/photo-galleries/access-cards`}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 transition-colors"
             >
               <ArrowLeft className="size-4" />
-              <span>Back to Gallery</span>
+              <span>{backLabel || "Back to Gallery"}</span>
             </Link>
             <span className="text-neutral-300">/</span>
             <h1 className="text-lg sm:text-xl font-bold text-neutral-900 tracking-tight">

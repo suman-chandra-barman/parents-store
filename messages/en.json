@@ -189,5 +189,15 @@
     "priceDesc": "Price: High to Low",
     "newest": "Newest",
     "nameAsc": "Name: A to Z"
+  },
+  "PublicGalleries": {
+    "title": "Open Photo Gallery",
+    "subtitle": "Browse our open collection of event captures, portraits, and moments. Anyone can view, favorite, and order prints without needing a password.",
+    "explorePhotos": "EXPLORE PHOTOS",
+    "freeAccess": "Free Open Access",
+    "photosAvailable": "{count} {count, plural, =1 {Photo} other {Photos}} Available",
+    "noPhotosFound": "No public photos found",
+    "noPhotosDesc": "There are currently no photos uploaded to the public gallery. Please check back later.",
+    "continueWithFavorites": "Continue with {count} {count, plural, =1 {Favorite} other {Favorites}}"
   }
 }

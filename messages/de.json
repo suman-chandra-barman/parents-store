@@ -189,5 +189,15 @@
     "priceDesc": "Preis: Absteigend",
     "newest": "Neueste",
     "nameAsc": "Name: A bis Z"
+  },
+  "PublicGalleries": {
+    "title": "Offene Fotogalerie",
+    "subtitle": "Durchsuchen Sie unsere offene Sammlung von Eventfotos, Porträts und Momenten. Jeder kann Fotos ansehen, favorisieren und Abzüge bestellen, ohne ein Passwort zu benötigen.",
+    "explorePhotos": "FOTOS ERKUNDEN",
+    "freeAccess": "Kostenloser offener Zugang",
+    "photosAvailable": "{count} {count, plural, =1 {Foto} other {Fotos}} verfügbar",
+    "noPhotosFound": "Keine öffentlichen Fotos gefunden",
+    "noPhotosDesc": "Derzeit sind keine Fotos in der öffentlichen Galerie verfügbar. Bitte schauen Sie später wieder vorbei.",
+    "continueWithFavorites": "Weiter mit {count} {count, plural, =1 {Favorit} other {Favoriten}}"
   }
 }
