@@ -17,10 +17,15 @@ export function PublicGalleryHero({
   onExploreClick,
 }: PublicGalleryHeroProps) {
   const tenant = useTenantStore((state) => state.tenant);
+  const isTenantLoading = useTenantStore((state) => state.isLoading);
+  const [isImageReady, setIsImageReady] = React.useState(false);
+
   const tHero = useTranslations("HeroSection");
   const t = useTranslations("PublicGalleries");
 
   const studioName = tenant?.name || "LUMIPHOTO";
+  const heroImageUrl =
+    tenant?.heroImage?.url || (!isTenantLoading ? "/hero-section.png" : null);
 
   return (
     <section className="relative w-full overflow-hidden bg-[#FBF9F5]">
@@ -93,16 +98,21 @@ export function PublicGalleryHero({
           className="hidden md:block relative h-96 w-full md:h-auto md:w-1/2 select-none"
           onContextMenu={(e) => e.preventDefault()}
         >
-          <Image
-            src={tenant?.heroImage ? tenant.heroImage.url : "/hero-section.png"}
-            alt={tHero("imageAlt")}
-            fill
-            priority
-            draggable={false}
-            onDragStart={(e) => e.preventDefault()}
-            sizes="(max-width: 768px) 100vw, 50vw"
-            className="pointer-events-none object-contain object-center md:object-right"
-          />
+          {heroImageUrl && (
+            <Image
+              src={heroImageUrl}
+              alt={tHero("imageAlt")}
+              fill
+              priority
+              draggable={false}
+              onDragStart={(e) => e.preventDefault()}
+              sizes="(max-width: 768px) 100vw, 50vw"
+              onLoad={() => setIsImageReady(true)}
+              className={`pointer-events-none object-contain object-center md:object-right transition-opacity duration-500 ease-out ${
+                isImageReady ? "opacity-100" : "opacity-0"
+              }`}
+            />
+          )}
         </div>
       </div>
     </section>

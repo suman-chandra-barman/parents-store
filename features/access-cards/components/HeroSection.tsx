@@ -26,13 +26,18 @@ export function HeroSection({
   error,
   onViewGallery,
 }: HeroSectionProps) {
-  const tenant = useTenantStore(({tenant})=>tenant);
+  const tenant = useTenantStore(({ tenant }) => tenant);
+  const isTenantLoading = useTenantStore(({ isLoading }) => isLoading);
+  const [isImageReady, setIsImageReady] = React.useState(false);
 
   const t = useTranslations("HeroSection");
   const inputRef = useRef<HTMLInputElement>(null);
 
   const displayTitle = title ?? t("title");
   const displaySubtitle = subtitle ?? t("subtitle");
+
+  const heroImageUrl =
+    tenant?.heroImage?.url || (!isTenantLoading ? "/hero-section.png" : null);
 
   const addCode = (value: string) => {
     const trimmed = value.trim().toUpperCase();
@@ -212,16 +217,19 @@ export function HeroSection({
           className="hidden md:block relative h-100 w-full md:h-auto md:w-[48%] select-none"
           onContextMenu={(e) => e.preventDefault()}
         >
-          <Image
-            src={tenant?.heroImage ? tenant.heroImage?.url : "/hero-section.png"}
-            alt={t("imageAlt")}
-            fill
-            priority
-            draggable={false}
-            onDragStart={(e) => e.preventDefault()}
-            sizes="(max-width: 768px) 100vw, 48vw"
-            className="pointer-events-none object-contain object-center md:object-right"
-          />
+          {heroImageUrl && (
+            <Image
+              src={heroImageUrl}
+              alt={t("imageAlt")}
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, 48vw"
+              onLoad={() => setIsImageReady(true)}
+              className={`pointer-events-none object-contain object-center md:object-right transition-opacity duration-500 ease-out ${
+                isImageReady ? "opacity-100" : "opacity-0"
+              }`}
+            />
+          )}
         </div>
       </div>
     </section>

@@ -27,7 +27,7 @@ export const useTenantStore = create<TenantState>((set) => ({
       set({
         tenant,
         isLoading: false,
-        error: null,
+        error: tenant ? null : "Tenant not found",
       });
     } catch (error) {
       set({
@@ -47,14 +47,28 @@ export const useTenantStore = create<TenantState>((set) => ({
     }),
 }));
 
-export async function fetchTenant(slug: string): Promise<Tenant> {
-  const response = await fetch(`${env.baseUrl}/tenants/by-url/${slug}`);
+export async function fetchTenant(slug: string): Promise<Tenant | null> {
+  if (!slug) return null;
 
-  const result: ApiResponse<Tenant> = await response.json();
+  try {
+    const cleanSlug = slug.split(":")[0];
+    const response = await fetch(`${env.baseUrl}/tenants/by-url/${cleanSlug}`, {
+      next: { revalidate: 60 },
+    });
 
-  if (!response.ok || !result.success || !result.data) {
-    throw new Error(result.message || "Failed to retrieve tenant");
+    if (!response.ok) {
+      return null;
+    }
+
+    const result: ApiResponse<Tenant> = await response.json();
+
+    if (!result.success || !result.data) {
+      return null;
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("fetchTenant error:", error);
+    return null;
   }
-
-  return result.data;
 }
