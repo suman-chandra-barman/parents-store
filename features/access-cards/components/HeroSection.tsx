@@ -3,7 +3,7 @@
 import React, { useRef } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { X, Loader2 } from "lucide-react";
+import { X, Loader2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTenantStore } from "@/stores/useTenantStore";
 
@@ -198,15 +198,13 @@ export function HeroSection({
             <Button
               onClick={handleViewGallery}
               disabled={!hasAnyCodes || isLoading}
-              className="mt-8 h-12 w-fit rounded-none bg-brand hover:opacity-70 px-8 text-xs font-semibold tracking-[0.2em] text-white hover:bg-[#274d8c] disabled:opacity-60 disabled:cursor-not-allowed"
+              className="mt-8 h-12 w-fit rounded-none bg-brand hover:opacity-70 px-8 text-xs font-semibold tracking-[0.2em] text-white hover:bg-[#274d8c] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer inline-flex items-center gap-2"
             >
+              <span>{t("viewGallery")}</span>
               {isLoading ? (
-                <>
-                  <Loader2 size={13} className="animate-spin" />
-                  <span>{t("loading")}</span>
-                </>
+                <Loader2 className="size-3.5 animate-spin" />
               ) : (
-                t("viewGallery")
+                <ArrowRight className="size-3.5" />
               )}
             </Button>
           </div>
