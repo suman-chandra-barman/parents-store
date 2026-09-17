@@ -99,7 +99,7 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
           {/* Category Chip Overlay */}
           {product.category && (
             <div className="absolute top-2.5 left-2.5">
-              <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold bg-white/95 text-[#2060b0] backdrop-blur-xs shadow-2xs border border-neutral-100">
+              <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold bg-white/95 text-brand backdrop-blur-xs shadow-2xs border border-neutral-100">
                 {product.category}
               </span>
             </div>
@@ -109,7 +109,7 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
         {/* Product Info */}
         <div className="space-y-1.5">
           <h3
-            className="text-base font-bold text-neutral-900 line-clamp-1 group-hover:text-[#2060b0] transition-colors cursor-pointer"
+            className="text-base font-bold text-neutral-900 line-clamp-1 group-hover:text-brand transition-colors cursor-pointer"
             onClick={() => onQuickView?.(product)}
             title={product.title}
           >
@@ -181,7 +181,7 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
               "flex-1 py-2 px-3 rounded-lg font-semibold text-xs text-white shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer",
               isSuccess
                 ? "bg-emerald-600 hover:bg-emerald-700"
-                : "bg-[#2060b0] hover:bg-[#1a4f94] active:scale-[0.98]",
+                : "bg-brand hover:opacity-90 active:scale-98",
               "disabled:opacity-60 disabled:cursor-not-allowed"
             )}
           >

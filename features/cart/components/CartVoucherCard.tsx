@@ -104,7 +104,7 @@ export function CartVoucherCard() {
               {...register("code")}
               disabled={isApplyingVoucher}
               className={cn(
-                "flex-1 px-4 py-2.5 rounded-xl border text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#2060b0] focus:bg-white transition-all uppercase",
+                "flex-1 px-4 py-2.5 rounded-xl border text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand focus:bg-white transition-all uppercase",
                 errors.code
                   ? "border-red-400 ring-1 ring-red-200"
                   : "border-neutral-200 hover:border-neutral-300",
@@ -113,7 +113,7 @@ export function CartVoucherCard() {
             <button
               type="submit"
               disabled={isApplyingVoucher}
-              className="px-4 sm:px-5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-white bg-[#2060b0] hover:bg-[#1a4f94] active:scale-98 transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-60"
+              className="px-4 sm:px-5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-white bg-brand hover:opacity-90 active:scale-98 transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-60"
             >
               {isApplyingVoucher ? (
                 <Loader2 className="size-4 animate-spin text-white" />

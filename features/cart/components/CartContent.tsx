@@ -16,7 +16,7 @@ export function CartContent() {
   if (isLoading && !cart) {
     return (
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-24 flex flex-col items-center justify-center text-neutral-400">
-        <Loader2 className="size-8 animate-spin text-[#2060b0] mb-3" />
+        <Loader2 className="size-8 animate-spin text-brand mb-3" />
         <p className="text-sm font-medium">Loading your shopping cart...</p>
       </div>
     );

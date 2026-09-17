@@ -198,7 +198,7 @@ function GiftVoucherQuickViewModalContent({
               <div className="bg-neutral-50 rounded-2xl p-4 border border-neutral-200/80 space-y-2.5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5 text-xs font-bold text-neutral-700">
-                    <Palette className="size-3.5 text-[#2060b0]" />
+                    <Palette className="size-3.5 text-brand" />
                     <span>Choose Voucher Design</span>
                   </div>
                   <span className="text-[10px] font-semibold text-neutral-400">
@@ -216,7 +216,7 @@ function GiftVoucherQuickViewModalContent({
                         className={cn(
                           "p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-1",
                           isSelected
-                            ? "bg-blue-50/80 border-[#2060b0] ring-2 ring-[#2060b0]/20"
+                            ? "bg-brand/10 border-brand ring-2 ring-brand/20"
                             : "bg-white border-neutral-200 hover:border-neutral-300"
                         )}
                       >
@@ -225,7 +225,7 @@ function GiftVoucherQuickViewModalContent({
                             {layout.name}
                           </span>
                           {isSelected && (
-                            <Check className="size-3.5 text-[#2060b0]" />
+                            <Check className="size-3.5 text-brand" />
                           )}
                         </div>
                         {layout.description && (
@@ -306,7 +306,7 @@ function GiftVoucherQuickViewModalContent({
                     value={personalMessage}
                     onChange={(e) => setPersonalMessage(e.target.value)}
                     placeholder="Add a heartfelt note for the recipient..."
-                    className="w-full text-xs p-2.5 rounded-xl border border-neutral-200 focus:outline-hidden focus:border-[#2060b0] focus:ring-2 focus:ring-[#2060b0]/20 transition-all placeholder:text-neutral-400 bg-neutral-50/50"
+                    className="w-full text-xs p-2.5 rounded-xl border border-neutral-200 focus:outline-hidden focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all placeholder:text-neutral-400 bg-neutral-50/50"
                   />
                 </div>
 
@@ -327,7 +327,7 @@ function GiftVoucherQuickViewModalContent({
                       value={scheduledDate}
                       min={new Date().toISOString().split("T")[0]}
                       onChange={(e) => setScheduledDate(e.target.value)}
-                      className="w-full text-xs p-2 rounded-xl border border-neutral-200 focus:outline-hidden focus:border-[#2060b0] bg-neutral-50/50 cursor-pointer"
+                      className="w-full text-xs p-2 rounded-xl border border-neutral-200 focus:outline-hidden focus:border-brand bg-neutral-50/50 cursor-pointer"
                     />
                   </div>
 
@@ -338,7 +338,7 @@ function GiftVoucherQuickViewModalContent({
                         type="checkbox"
                         checked={hideValue}
                         onChange={(e) => setHideValue(e.target.checked)}
-                        className="rounded border-neutral-300 text-[#2060b0] focus:ring-[#2060b0] size-4 cursor-pointer"
+                        className="rounded border-neutral-300 text-brand focus:ring-brand size-4 cursor-pointer"
                       />
                       <div className="flex items-center gap-1 text-[11px] font-semibold text-neutral-700">
                         <EyeOff className="size-3 text-neutral-500" />
@@ -400,7 +400,7 @@ function GiftVoucherQuickViewModalContent({
                   "w-full py-3.5 rounded-xl font-semibold text-sm text-white shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer",
                   isSuccess
                     ? "bg-emerald-600 hover:bg-emerald-700"
-                    : "bg-[#2060b0] hover:bg-[#1a4f94] active:scale-[0.98]",
+                    : "bg-brand hover:opacity-90 active:scale-98",
                   "disabled:opacity-60 disabled:cursor-not-allowed"
                 )}
               >

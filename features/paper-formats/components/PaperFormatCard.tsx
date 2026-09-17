@@ -177,7 +177,7 @@ export function PaperFormatCard({
           disabled={isAdding}
           className={cn(
             "flex-1 sm:flex-initial px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-white shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer",
-            "bg-[#2060b0] hover:bg-[#1a4f94] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+            "bg-brand hover:opacity-90 active:scale-98 disabled:opacity-60 disabled:cursor-not-allowed"
           )}
         >
           {isAdding ? (

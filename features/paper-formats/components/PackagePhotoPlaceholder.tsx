@@ -49,7 +49,7 @@ export function PackagePhotoPlaceholder({
     return (
       <div
         onClick={onClick}
-        className="group relative aspect-square sm:aspect-4/5 rounded-2xl overflow-hidden border-2 border-neutral-200 bg-neutral-100 cursor-pointer shadow-xs hover:shadow-md hover:border-[#2060b0] transition-all"
+        className="group relative aspect-square sm:aspect-4/5 rounded-2xl overflow-hidden border-2 border-neutral-200 bg-neutral-100 cursor-pointer shadow-xs hover:shadow-md hover:border-brand transition-all"
         role="button"
         tabIndex={0}
         aria-label={`Photo ${index + 1} of ${totalCount}`}
@@ -70,7 +70,7 @@ export function PackagePhotoPlaceholder({
         </div>
 
         {/* Selected Checkmark */}
-        <div className="absolute top-2.5 right-2.5 size-5 rounded-full bg-[#2060b0] text-white flex items-center justify-center shadow-xs">
+        <div className="absolute top-2.5 right-2.5 size-5 rounded-full bg-brand text-white flex items-center justify-center shadow-xs">
           <Check className="size-3 stroke-[3]" />
         </div>
 
@@ -88,7 +88,7 @@ export function PackagePhotoPlaceholder({
   if (isLoading) {
     return (
       <div className="aspect-square sm:aspect-4/5 rounded-2xl border-2 border-neutral-200 bg-neutral-100 flex flex-col items-center justify-center p-4">
-        <Loader2 className="size-6 animate-spin text-[#2060b0]" />
+        <Loader2 className="size-6 animate-spin text-brand" />
         <span className="text-[10px] font-medium text-neutral-400 mt-2">
           Loading...
         </span>
@@ -101,16 +101,16 @@ export function PackagePhotoPlaceholder({
       onClick={onClick}
       className={cn(
         "group relative aspect-square sm:aspect-4/5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col items-center justify-center p-4",
-        "bg-[#eef2f6] border-[#cbd5e1] hover:border-[#2060b0] hover:bg-[#e8eef8]"
+        "bg-neutral-100/80 border-neutral-300 hover:border-brand hover:bg-brand/5"
       )}
       role="button"
       tabIndex={0}
       aria-label={`Add photo ${index + 1} of ${totalCount}`}
     >
-      <div className="size-10 sm:size-12 rounded-full bg-white shadow-xs border border-neutral-200 flex items-center justify-center group-hover:border-[#2060b0] group-hover:scale-110 transition-all">
-        <Plus className="size-5 sm:size-6 text-neutral-400 group-hover:text-[#2060b0] transition-colors stroke-[2]" />
+      <div className="size-10 sm:size-12 rounded-full bg-white shadow-xs border border-neutral-200 flex items-center justify-center group-hover:border-brand group-hover:scale-110 transition-all">
+        <Plus className="size-5 sm:size-6 text-neutral-400 group-hover:text-brand transition-colors stroke-[2]" />
       </div>
-      <span className="text-xs font-semibold text-neutral-500 group-hover:text-[#2060b0] mt-2 transition-colors">
+      <span className="text-xs font-semibold text-neutral-500 group-hover:text-brand mt-2 transition-colors">
         Photo {index + 1}
       </span>
     </div>

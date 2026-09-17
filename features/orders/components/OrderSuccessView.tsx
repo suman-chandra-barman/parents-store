@@ -42,7 +42,7 @@ export function OrderSuccessView({ orderData }: OrderSuccessViewProps) {
           <span className="text-xs text-neutral-500 font-medium">
             Total Amount
           </span>
-          <span className="text-base font-extrabold text-[#2060b0]">
+          <span className="text-base font-extrabold text-brand">
             €{parseFloat(orderData.totalPrice || "0").toFixed(2)}
           </span>
         </div>
@@ -68,7 +68,7 @@ export function OrderSuccessView({ orderData }: OrderSuccessViewProps) {
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
         <Link
           href={`/${locale}/photo-galleries/access-cards`}
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-white bg-[#2060b0] hover:bg-[#1a4f94] shadow-xs text-sm transition-all active:scale-98"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-white bg-brand hover:opacity-90 shadow-xs text-sm transition-all active:scale-98"
         >
           <ArrowLeft className="size-4" />
           <span>Return to Gallery</span>

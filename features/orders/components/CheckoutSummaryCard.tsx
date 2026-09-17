@@ -119,7 +119,7 @@ export function CheckoutSummaryCard({ isSubmitting }: CheckoutSummaryCardProps) 
         type="submit"
         disabled={isSubmitting || items.length === 0}
         className={cn(
-          "w-full py-3.5 px-6 rounded-xl font-semibold text-sm text-white bg-[#2060b0] hover:bg-[#1a4f94] active:scale-98 shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+          "w-full py-3.5 px-6 rounded-xl font-semibold text-sm text-white bg-brand hover:opacity-90 active:scale-98 shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
         )}
       >
         {isSubmitting ? (

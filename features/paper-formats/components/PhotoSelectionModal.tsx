@@ -108,7 +108,7 @@ export function PhotoSelectionModal({
                     className={cn(
                       "group relative aspect-3/4 rounded-xl overflow-hidden border-2 bg-neutral-100 transition-all text-left focus:outline-none focus:ring-2 focus:ring-primary",
                       isSelected
-                        ? "border-[#2060b0] ring-2 ring-[#2060b0]/30 shadow-md"
+                        ? "border-brand ring-2 ring-brand/30 shadow-md"
                         : "border-neutral-200 hover:border-neutral-400 hover:shadow-sm"
                     )}
                   >
@@ -134,7 +134,7 @@ export function PhotoSelectionModal({
 
                     {/* Selected Badge */}
                     {isSelected && (
-                      <div className="absolute top-2 right-2 size-6 rounded-full bg-[#2060b0] text-white flex items-center justify-center shadow-md">
+                      <div className="absolute top-2 right-2 size-6 rounded-full bg-brand text-white flex items-center justify-center shadow-md">
                         <Check className="size-3.5 stroke-[3]" />
                       </div>
                     )}

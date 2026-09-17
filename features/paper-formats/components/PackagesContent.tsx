@@ -54,7 +54,7 @@ export function PackagesContent() {
         </p>
         <Link
           href={`/${locale}/photo-galleries/access-cards`}
-          className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl font-semibold text-white bg-[#2060b0] hover:bg-[#1a4f94] shadow-xs text-sm transition-all active:scale-98"
+          className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl font-semibold text-white bg-brand hover:opacity-90 shadow-xs text-sm transition-all active:scale-98"
         >
           Back to Photo Gallery
         </Link>
@@ -103,7 +103,7 @@ export function PackagesContent() {
       {/* Content */}
       {isLoading ? (
         <div className="py-24 flex flex-col items-center justify-center text-neutral-400">
-          <Loader2 className="size-8 animate-spin text-[#2060b0] mb-3" />
+          <Loader2 className="size-8 animate-spin text-brand mb-3" />
           <p className="text-sm font-medium">Finding eligible packages for your photos...</p>
         </div>
       ) : error ? (

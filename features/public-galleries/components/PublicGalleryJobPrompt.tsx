@@ -53,7 +53,7 @@ export function PublicGalleryJobPrompt() {
   return (
     <div className="min-h-[calc(100vh-66px)] flex items-center justify-center px-4 py-12 bg-neutral-50/60">
       <div className="w-full max-w-md bg-white rounded-3xl border border-neutral-200/80 p-8 sm:p-10 shadow-lg space-y-6 animate-in fade-in zoom-in-95 duration-200">
-        <div className="size-16 rounded-2xl bg-blue-50 border border-blue-200/80 flex items-center justify-center mx-auto text-[#2060b0] shadow-xs">
+        <div className="size-16 rounded-2xl bg-brand/10 border border-brand/20 flex items-center justify-center mx-auto text-brand shadow-xs">
           <Images className="size-8 stroke-[1.8]" />
         </div>
 

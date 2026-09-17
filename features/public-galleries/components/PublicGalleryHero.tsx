@@ -62,7 +62,7 @@ export function PublicGalleryHero({
             {/* Feature Highlights */}
             <div className="flex flex-wrap items-center gap-2 pt-2">
               <div className="inline-flex items-center gap-1.5 text-xs text-neutral-700 bg-white border border-neutral-200/80 px-3 py-1.5 rounded-xl shadow-xs">
-                <Eye className="size-3.5 text-[#2060b0]" />
+                <Eye className="size-3.5 text-brand" />
                 <span className="font-medium">{t("freeAccess")}</span>
               </div>
               {totalPhotos > 0 && (

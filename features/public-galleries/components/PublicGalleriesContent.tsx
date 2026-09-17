@@ -137,7 +137,7 @@ export function PublicGalleriesContent() {
           <div className="flex justify-center pt-8 pb-12">
             <Link
               href={`/${locale}/photo-galleries/packages`}
-              className="inline-flex items-center justify-center px-8 py-4 rounded-xl font-semibold text-white bg-[#2060b0] hover:bg-[#1a4f94] shadow-md transition-all active:scale-98 text-sm sm:text-base cursor-pointer"
+              className="inline-flex items-center justify-center px-8 py-4 rounded-xl font-semibold text-white bg-brand hover:opacity-90 shadow-md transition-all active:scale-98 text-sm sm:text-base cursor-pointer"
             >
               Continue with {favoriteIds.length}{" "}
               {favoriteIds.length === 1 ? "Favorite" : "Favorites"}

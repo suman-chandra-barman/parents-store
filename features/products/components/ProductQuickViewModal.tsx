@@ -146,7 +146,7 @@ function ProductQuickViewModalContent({
                     className={cn(
                       "relative size-14 rounded-lg overflow-hidden border-2 shrink-0 transition-all cursor-pointer bg-neutral-100",
                       selectedMediaIndex === idx
-                        ? "border-[#2060b0] ring-2 ring-[#2060b0]/20"
+                        ? "border-brand ring-2 ring-brand/20"
                         : "border-neutral-200 hover:border-neutral-400 opacity-70 hover:opacity-100"
                     )}
                   >
@@ -169,7 +169,7 @@ function ProductQuickViewModalContent({
           <div className="flex flex-col h-full justify-between space-y-5">
             <div className="space-y-3">
               {product.category && (
-                <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-50 text-[#2060b0] border border-blue-100">
+                <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-brand/10 text-brand border border-brand/20">
                   {product.category}
                 </span>
               )}
@@ -179,35 +179,35 @@ function ProductQuickViewModalContent({
               </h2>
 
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl sm:text-3xl font-extrabold text-neutral-900 tracking-tight">
+                <span className="text-2xl font-black text-neutral-900 tracking-tight">
                   {formattedPrice}
                 </span>
                 {product.vatRate && (
-                  <span className="text-xs text-neutral-500 font-medium">
+                  <span className="text-xs text-neutral-500">
                     Incl. {product.vatRate}% VAT
                   </span>
                 )}
               </div>
 
-              {cleanDescription && (
+              {product.description && (
                 <div className="pt-2 border-t border-neutral-100">
-                  <h4 className="text-xs font-bold text-neutral-700 uppercase tracking-wider mb-1">
+                  <h4 className="text-xs font-semibold text-neutral-700 uppercase tracking-wider mb-1.5">
                     Description
                   </h4>
-                  <p className="text-sm text-neutral-600 leading-relaxed max-h-48 overflow-y-auto">
-                    {cleanDescription}
+                  <p className="text-xs text-neutral-600 leading-relaxed max-h-36 overflow-y-auto pr-1">
+                    {product.description}
                   </p>
                 </div>
               )}
             </div>
 
-            {/* Actions */}
+            {/* Quantity Selector & Add Button */}
             <div className="space-y-4 pt-4 border-t border-neutral-100">
-              <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-neutral-700">
                   Quantity
                 </span>
-                <div className="flex items-center border border-neutral-200 rounded-full px-2 py-1 bg-neutral-50 shrink-0">
+                <div className="flex items-center border border-neutral-200 rounded-full p-1 bg-neutral-50">
                   <button
                     type="button"
                     onClick={handleDecrement}
@@ -240,7 +240,7 @@ function ProductQuickViewModalContent({
                   "w-full py-3.5 rounded-xl font-semibold text-sm text-white shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer",
                   isSuccess
                     ? "bg-emerald-600 hover:bg-emerald-700"
-                    : "bg-[#2060b0] hover:bg-[#1a4f94] active:scale-[0.98]",
+                    : "bg-brand hover:opacity-90 active:scale-98",
                   "disabled:opacity-60 disabled:cursor-not-allowed"
                 )}
               >

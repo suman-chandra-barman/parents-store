@@ -98,7 +98,7 @@ export function LanguageSwitcher() {
                   className={cn(
                     "w-full flex items-center justify-between px-3 py-2 text-xs font-medium transition-colors text-left cursor-pointer",
                     locale === lang.code
-                      ? "text-[#2060b0] font-bold bg-[#2060b0]/10"
+                      ? "text-brand font-bold bg-brand/10"
                       : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900"
                   )}
                 >
@@ -107,7 +107,7 @@ export function LanguageSwitcher() {
                     <span>{t(lang.nameKey)}</span>
                   </div>
                   {locale === lang.code && (
-                    <Check className="size-3.5 text-[#2060b0]" />
+                    <Check className="size-3.5 text-brand" />
                   )}
                 </button>
               </li>

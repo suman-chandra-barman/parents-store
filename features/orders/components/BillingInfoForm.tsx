@@ -38,7 +38,7 @@ export function BillingInfoForm({ form }: BillingInfoFormProps) {
                 placeholder="Your first name"
                 {...register("billingAddress.firstName")}
                 className={cn(
-                  "w-full px-4 py-2.5 rounded-xl border text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#2060b0] focus:bg-white transition-all",
+                  "w-full px-4 py-2.5 rounded-xl border text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand focus:bg-white transition-all",
                   errors.billingAddress?.firstName
                     ? "border-red-400 ring-1 ring-red-200"
                     : "border-neutral-200 hover:border-neutral-300"
@@ -59,7 +59,7 @@ export function BillingInfoForm({ form }: BillingInfoFormProps) {
                 type="text"
                 placeholder="Your last name"
                 {...register("billingAddress.lastName")}
-                className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 hover:border-neutral-300 text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#2060b0] focus:bg-white transition-all"
+                className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 hover:border-neutral-300 text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand focus:bg-white transition-all"
               />
             </div>
           </div>
@@ -75,7 +75,7 @@ export function BillingInfoForm({ form }: BillingInfoFormProps) {
                 placeholder="Email Address"
                 {...register("email")}
                 className={cn(
-                  "w-full px-4 py-2.5 rounded-xl border text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#2060b0] focus:bg-white transition-all",
+                  "w-full px-4 py-2.5 rounded-xl border text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand focus:bg-white transition-all",
                   errors.email
                     ? "border-red-400 ring-1 ring-red-200"
                     : "border-neutral-200 hover:border-neutral-300"
@@ -97,7 +97,7 @@ export function BillingInfoForm({ form }: BillingInfoFormProps) {
                 placeholder="Phone number"
                 {...register("phone")}
                 className={cn(
-                  "w-full px-4 py-2.5 rounded-xl border text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#2060b0] focus:bg-white transition-all",
+                  "w-full px-4 py-2.5 rounded-xl border text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand focus:bg-white transition-all",
                   errors.phone
                     ? "border-red-400 ring-1 ring-red-200"
                     : "border-neutral-200 hover:border-neutral-300"
@@ -119,7 +119,7 @@ export function BillingInfoForm({ form }: BillingInfoFormProps) {
               </label>
               <select
                 {...register("billingAddress.country")}
-                className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 hover:border-neutral-300 text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-[#2060b0] focus:bg-white transition-all"
+                className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 hover:border-neutral-300 text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-brand focus:bg-white transition-all"
               >
                 <option value="US">United States (US)</option>
                 <option value="DE">Germany (DE)</option>
@@ -144,7 +144,7 @@ export function BillingInfoForm({ form }: BillingInfoFormProps) {
                 placeholder="State / Province"
                 {...register("billingAddress.state")}
                 className={cn(
-                  "w-full px-4 py-2.5 rounded-xl border text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#2060b0] focus:bg-white transition-all",
+                  "w-full px-4 py-2.5 rounded-xl border text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand focus:bg-white transition-all",
                   errors.billingAddress?.state
                     ? "border-red-400 ring-1 ring-red-200"
                     : "border-neutral-200 hover:border-neutral-300"
@@ -168,7 +168,7 @@ export function BillingInfoForm({ form }: BillingInfoFormProps) {
               placeholder="ZIP / Postal code"
               {...register("billingAddress.zipCode")}
               className={cn(
-                "w-full px-4 py-2.5 rounded-xl border text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#2060b0] focus:bg-white transition-all",
+                "w-full px-4 py-2.5 rounded-xl border text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand focus:bg-white transition-all",
                 errors.billingAddress?.zipCode
                   ? "border-red-400 ring-1 ring-red-200"
                   : "border-neutral-200 hover:border-neutral-300"
@@ -191,7 +191,7 @@ export function BillingInfoForm({ form }: BillingInfoFormProps) {
               placeholder="House number & Street name"
               {...register("billingAddress.addressLine1")}
               className={cn(
-                "w-full px-4 py-2.5 rounded-xl border text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#2060b0] focus:bg-white transition-all",
+                "w-full px-4 py-2.5 rounded-xl border text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand focus:bg-white transition-all",
                 errors.billingAddress?.addressLine1
                   ? "border-red-400 ring-1 ring-red-200"
                   : "border-neutral-200 hover:border-neutral-300"
@@ -207,7 +207,7 @@ export function BillingInfoForm({ form }: BillingInfoFormProps) {
               type="text"
               placeholder="Apartment, suite, unit, etc. (Optional)"
               {...register("billingAddress.note")}
-              className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 hover:border-neutral-300 text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#2060b0] focus:bg-white transition-all"
+              className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 hover:border-neutral-300 text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand focus:bg-white transition-all"
             />
           </div>
 
@@ -221,7 +221,7 @@ export function BillingInfoForm({ form }: BillingInfoFormProps) {
               placeholder="Town / City"
               {...register("billingAddress.city")}
               className={cn(
-                "w-full px-4 py-2.5 rounded-xl border text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#2060b0] focus:bg-white transition-all",
+                "w-full px-4 py-2.5 rounded-xl border text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand focus:bg-white transition-all",
                 errors.billingAddress?.city
                   ? "border-red-400 ring-1 ring-red-200"
                   : "border-neutral-200 hover:border-neutral-300"
@@ -240,7 +240,7 @@ export function BillingInfoForm({ form }: BillingInfoFormProps) {
               <input
                 type="checkbox"
                 {...register("shipToDifferentAddress")}
-                className="size-4 rounded-sm border-neutral-300 text-[#2060b0] focus:ring-[#2060b0]"
+                className="size-4 rounded-sm border-neutral-300 text-brand focus:ring-brand"
               />
               <span className="text-xs font-semibold text-neutral-700">
                 Ship to a different address
@@ -267,7 +267,7 @@ export function BillingInfoForm({ form }: BillingInfoFormProps) {
                   type="text"
                   placeholder="First name"
                   {...register("deliveryAddress.firstName")}
-                  className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 hover:border-neutral-300 text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-[#2060b0] focus:bg-white"
+                  className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 hover:border-neutral-300 text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-brand focus:bg-white"
                 />
               </div>
               <div className="space-y-1.5">
@@ -278,7 +278,7 @@ export function BillingInfoForm({ form }: BillingInfoFormProps) {
                   type="text"
                   placeholder="Last name"
                   {...register("deliveryAddress.lastName")}
-                  className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 hover:border-neutral-300 text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-[#2060b0] focus:bg-white"
+                  className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 hover:border-neutral-300 text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-brand focus:bg-white"
                 />
               </div>
             </div>
@@ -290,7 +290,7 @@ export function BillingInfoForm({ form }: BillingInfoFormProps) {
                 </label>
                 <select
                   {...register("deliveryAddress.country")}
-                  className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 hover:border-neutral-300 text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-[#2060b0] focus:bg-white"
+                  className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 hover:border-neutral-300 text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-brand focus:bg-white"
                 >
                   <option value="US">United States (US)</option>
                   <option value="DE">Germany (DE)</option>
@@ -308,7 +308,7 @@ export function BillingInfoForm({ form }: BillingInfoFormProps) {
                   type="text"
                   placeholder="State"
                   {...register("deliveryAddress.state")}
-                  className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 hover:border-neutral-300 text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-[#2060b0] focus:bg-white"
+                  className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 hover:border-neutral-300 text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-brand focus:bg-white"
                 />
               </div>
             </div>
@@ -321,7 +321,7 @@ export function BillingInfoForm({ form }: BillingInfoFormProps) {
                 type="text"
                 placeholder="ZIP"
                 {...register("deliveryAddress.zipCode")}
-                className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 hover:border-neutral-300 text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-[#2060b0] focus:bg-white"
+                className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 hover:border-neutral-300 text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-brand focus:bg-white"
               />
             </div>
 
@@ -333,13 +333,13 @@ export function BillingInfoForm({ form }: BillingInfoFormProps) {
                 type="text"
                 placeholder="House number & Street name"
                 {...register("deliveryAddress.addressLine1")}
-                className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 hover:border-neutral-300 text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-[#2060b0] focus:bg-white"
+                className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 hover:border-neutral-300 text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-brand focus:bg-white"
               />
               <input
                 type="text"
                 placeholder="Apartment, suite, unit, etc. (Optional)"
                 {...register("deliveryAddress.note")}
-                className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 hover:border-neutral-300 text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-[#2060b0] focus:bg-white"
+                className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 hover:border-neutral-300 text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-brand focus:bg-white"
               />
             </div>
 
@@ -351,7 +351,7 @@ export function BillingInfoForm({ form }: BillingInfoFormProps) {
                 type="text"
                 placeholder="Town / City"
                 {...register("deliveryAddress.city")}
-                className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 hover:border-neutral-300 text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-[#2060b0] focus:bg-white"
+                className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 hover:border-neutral-300 text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-brand focus:bg-white"
               />
             </div>
           </div>
@@ -372,7 +372,7 @@ export function BillingInfoForm({ form }: BillingInfoFormProps) {
             rows={4}
             placeholder="Notes about your order, e.g. special notes for delivery"
             {...register("customerNotes")}
-            className="w-full px-4 py-3 rounded-xl border border-neutral-200 hover:border-neutral-300 text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#2060b0] focus:bg-white transition-all resize-none"
+            className="w-full px-4 py-3 rounded-xl border border-neutral-200 hover:border-neutral-300 text-xs sm:text-sm bg-neutral-50/50 text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand focus:bg-white transition-all resize-none"
           />
         </div>
       </div>

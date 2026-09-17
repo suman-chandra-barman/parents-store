@@ -55,7 +55,7 @@ export function TwoFactorAuthModal({
         {/* Header decoration */}
         <div className="bg-neutral-50 px-6 py-5 border-b border-neutral-100 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="size-10 rounded-xl bg-[#2060b0]/10 border border-[#2060b0]/20 flex items-center justify-center text-[#2060b0]">
+            <div className="size-10 rounded-xl bg-brand/10 border border-brand/20 flex items-center justify-center text-brand">
               <ShieldCheck className="size-5" />
             </div>
             <div>
@@ -107,7 +107,7 @@ export function TwoFactorAuthModal({
                 }}
                 disabled={isLoading}
                 placeholder="Enter 2FA password"
-                className="w-full pl-9 pr-10 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#2060b0]/20 focus:border-[#2060b0] transition-all disabled:opacity-50"
+                className="w-full pl-9 pr-10 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all disabled:opacity-50"
               />
               <button
                 type="button"
@@ -144,7 +144,7 @@ export function TwoFactorAuthModal({
             <Button
               type="submit"
               disabled={isLoading || !twoFactorPassword.trim()}
-              className="h-10 px-5 text-xs font-semibold tracking-wider rounded-xl bg-[#2060b0] hover:bg-[#1a4f94] text-white flex items-center gap-2"
+              className="h-10 px-5 text-xs font-semibold tracking-wider rounded-xl bg-brand hover:opacity-90 text-white flex items-center gap-2"
             >
               {isLoading ? (
                 <>

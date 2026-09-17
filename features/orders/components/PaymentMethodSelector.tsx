@@ -27,7 +27,7 @@ export function PaymentMethodSelector({ form }: PaymentMethodSelectorProps) {
           className={cn(
             "p-4 rounded-xl border transition-all cursor-pointer",
             paymentMethod === "PAYPAL"
-              ? "border-[#2060b0] bg-blue-50/20 ring-1 ring-[#2060b0]/30"
+              ? "border-brand bg-brand/5 ring-1 ring-brand/30"
               : "border-neutral-200 hover:border-neutral-300"
           )}
         >
@@ -38,7 +38,7 @@ export function PaymentMethodSelector({ form }: PaymentMethodSelectorProps) {
                 value="PAYPAL"
                 {...register("paymentMethod")}
                 checked={paymentMethod === "PAYPAL"}
-                className="size-4 text-[#2060b0] border-neutral-300 focus:ring-[#2060b0]"
+                className="size-4 text-brand border-neutral-300 focus:ring-brand"
               />
               <div>
                 <span className="text-sm font-bold text-neutral-900 block">
@@ -63,7 +63,7 @@ export function PaymentMethodSelector({ form }: PaymentMethodSelectorProps) {
           className={cn(
             "p-4 rounded-xl border transition-all cursor-pointer space-y-4",
             paymentMethod === "CREDIT_CARD"
-              ? "border-[#2060b0] bg-blue-50/20 ring-1 ring-[#2060b0]/30"
+              ? "border-brand bg-brand/5 ring-1 ring-brand/30"
               : "border-neutral-200 hover:border-neutral-300"
           )}
         >
@@ -74,7 +74,7 @@ export function PaymentMethodSelector({ form }: PaymentMethodSelectorProps) {
                 value="CREDIT_CARD"
                 {...register("paymentMethod")}
                 checked={paymentMethod === "CREDIT_CARD"}
-                className="size-4 text-[#2060b0] border-neutral-300 focus:ring-[#2060b0]"
+                className="size-4 text-brand border-neutral-300 focus:ring-brand"
               />
               <span className="text-sm font-bold text-neutral-900">
                 Pay with Credit Card
@@ -106,7 +106,7 @@ export function PaymentMethodSelector({ form }: PaymentMethodSelectorProps) {
                   <input
                     type="text"
                     placeholder="1234 5678 9012 3456"
-                    className="w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-neutral-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#2060b0]"
+                    className="w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-neutral-200 bg-white focus:outline-none focus:ring-2 focus:ring-brand"
                   />
                   <CreditCard className="size-4 absolute left-2.5 top-2.5 text-neutral-400" />
                 </div>
@@ -119,7 +119,7 @@ export function PaymentMethodSelector({ form }: PaymentMethodSelectorProps) {
                 <input
                   type="text"
                   placeholder="MM / YY"
-                  className="w-full px-3 py-2 text-xs rounded-lg border border-neutral-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#2060b0]"
+                  className="w-full px-3 py-2 text-xs rounded-lg border border-neutral-200 bg-white focus:outline-none focus:ring-2 focus:ring-brand"
                 />
               </div>
 
@@ -130,7 +130,7 @@ export function PaymentMethodSelector({ form }: PaymentMethodSelectorProps) {
                 <input
                   type="text"
                   placeholder="CVC"
-                  className="w-full px-3 py-2 text-xs rounded-lg border border-neutral-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#2060b0]"
+                  className="w-full px-3 py-2 text-xs rounded-lg border border-neutral-200 bg-white focus:outline-none focus:ring-2 focus:ring-brand"
                 />
               </div>
             </div>

@@ -134,7 +134,7 @@ export function Navbar() {
           >
             <ShoppingCart className="size-5 stroke-[1.8]" />
             {itemCount > 0 && (
-              <span className="absolute -top-1 -right-1.5 min-w-4 h-4 px-1 rounded-full bg-[#2060b0] text-[10px] font-bold text-white flex items-center justify-center leading-none shadow-xs animate-in zoom-in-50 duration-200">
+              <span className="absolute -top-1 -right-1.5 min-w-4 h-4 px-1 rounded-full bg-brand text-[10px] font-bold text-white flex items-center justify-center leading-none shadow-xs animate-in zoom-in-50 duration-200">
                 {itemCount}
               </span>
             )}
@@ -181,7 +181,7 @@ export function Navbar() {
           >
             <ShoppingCart className="size-5" />
             {itemCount > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full bg-[#2060b0] text-[10px] font-bold text-white flex items-center justify-center leading-none shadow-xs">
+              <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full bg-brand text-[10px] font-bold text-white flex items-center justify-center leading-none shadow-xs">
                 {itemCount}
               </span>
             )}

@@ -37,7 +37,7 @@ export function GiftVouchersFilter({
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search vouchers by title or keywords..."
-            className="w-full pl-9 pr-8 py-2 text-xs sm:text-sm bg-white border border-neutral-200 rounded-xl focus:outline-hidden focus:border-[#2060b0] focus:ring-2 focus:ring-[#2060b0]/20 transition-all placeholder:text-neutral-400 shadow-2xs"
+            className="w-full pl-9 pr-8 py-2 text-xs sm:text-sm bg-white border border-neutral-200 rounded-xl focus:outline-hidden focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all placeholder:text-neutral-400 shadow-2xs"
           />
           {searchQuery && (
             <button
@@ -84,7 +84,7 @@ export function GiftVouchersFilter({
             className={cn(
               "px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer",
               selectedCategory === "ALL"
-                ? "bg-[#2060b0] text-white shadow-2xs"
+                ? "bg-brand text-white shadow-2xs"
                 : "bg-white text-neutral-600 hover:text-neutral-900 border border-neutral-200 hover:bg-neutral-50"
             )}
           >
@@ -98,7 +98,7 @@ export function GiftVouchersFilter({
               className={cn(
                 "px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer",
                 selectedCategory === cat
-                  ? "bg-[#2060b0] text-white shadow-2xs"
+                  ? "bg-brand text-white shadow-2xs"
                   : "bg-white text-neutral-600 hover:text-neutral-900 border border-neutral-200 hover:bg-neutral-50"
               )}
             >

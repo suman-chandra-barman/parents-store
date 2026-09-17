@@ -88,7 +88,7 @@ export function PackageCard({
           onClick={() => onViewPackage(packageItem)}
           className={cn(
             "w-full md:w-auto px-6 sm:px-8 py-3 rounded-xl font-semibold text-xs sm:text-sm text-white shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer",
-            "bg-[#2060b0] hover:bg-[#1a4f94] active:scale-98"
+            "bg-brand hover:opacity-90 active:scale-98"
           )}
         >
           <span>View package</span>

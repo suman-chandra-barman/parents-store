@@ -161,7 +161,7 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
         {/* Voucher Info */}
         <div className="space-y-2">
           <h3
-            className="text-base font-bold text-neutral-900 line-clamp-1 group-hover:text-[#2060b0] transition-colors cursor-pointer"
+            className="text-base font-bold text-neutral-900 line-clamp-1 group-hover:text-brand transition-colors cursor-pointer"
             onClick={() => onQuickView?.(voucher)}
             title={voucher.title}
           >
@@ -179,7 +179,7 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
             <div className="space-y-1.5 pt-1.5 border-t border-neutral-100">
               <div className="flex items-center justify-between text-[10px] font-bold text-neutral-500 uppercase tracking-wider">
                 <span className="flex items-center gap-1">
-                  <Palette className="size-3 text-[#2060b0]" />
+                  <Palette className="size-3 text-brand" />
                   <span>Voucher Design</span>
                 </span>
                 <span className="text-neutral-400 font-normal normal-case">
@@ -200,7 +200,7 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
                       className={cn(
                         "px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer border flex items-center gap-1",
                         isSelected
-                          ? "bg-[#2060b0] text-white border-[#2060b0] shadow-2xs"
+                          ? "bg-brand text-white border-brand shadow-2xs"
                           : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200 border-neutral-200"
                       )}
                       title={layout.description || layout.name}
@@ -222,7 +222,7 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
               className="w-full py-1 px-2 rounded-lg bg-neutral-50 hover:bg-neutral-100 border border-neutral-200/80 text-[11px] font-semibold text-neutral-700 flex items-center justify-between transition-colors cursor-pointer"
             >
               <span className="flex items-center gap-1.5">
-                <MessageSquare className="size-3 text-[#2060b0]" />
+                <MessageSquare className="size-3 text-brand" />
                 <span>
                   {personalMessage || hideValue
                     ? "Personalized Gift Active ✨"
@@ -254,7 +254,7 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
                     value={personalMessage}
                     onChange={(e) => setPersonalMessage(e.target.value)}
                     placeholder="Write a message for the recipient..."
-                    className="w-full text-xs p-2 rounded-lg border border-neutral-200 bg-white focus:outline-hidden focus:border-[#2060b0] focus:ring-1 focus:ring-[#2060b0]/20 placeholder:text-neutral-400"
+                    className="w-full text-xs p-2 rounded-lg border border-neutral-200 bg-white focus:outline-hidden focus:border-brand focus:ring-1 focus:ring-brand/20 placeholder:text-neutral-400"
                   />
                 </div>
 
@@ -263,7 +263,7 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
                     type="checkbox"
                     checked={hideValue}
                     onChange={(e) => setHideValue(e.target.checked)}
-                    className="rounded border-neutral-300 text-[#2060b0] focus:ring-[#2060b0] size-3.5 cursor-pointer"
+                    className="rounded border-neutral-300 text-brand focus:ring-brand size-3.5 cursor-pointer"
                   />
                   <div className="flex items-center gap-1 text-[10px] font-semibold text-neutral-700">
                     <EyeOff className="size-3 text-neutral-500" />
@@ -333,7 +333,7 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
               "flex-1 py-2 px-3 rounded-lg font-semibold text-xs text-white shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer",
               isSuccess
                 ? "bg-emerald-600 hover:bg-emerald-700"
-                : "bg-[#2060b0] hover:bg-[#1a4f94] active:scale-[0.98]",
+                : "bg-brand hover:opacity-90 active:scale-98",
               "disabled:opacity-60 disabled:cursor-not-allowed"
             )}
           >

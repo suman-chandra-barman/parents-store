@@ -88,7 +88,7 @@ export function CartSummaryCard({
         <button
           type="button"
           onClick={handleProceed}
-          className="w-full py-3.5 px-6 rounded-xl font-semibold text-sm text-white bg-[#2060b0] hover:bg-[#1a4f94] active:scale-98 shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
+          className="w-full py-3.5 px-6 rounded-xl font-semibold text-sm text-white bg-brand hover:opacity-90 active:scale-98 shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
         >
           <span>Proceed to checkout</span>
           <ArrowRight className="size-4" />
