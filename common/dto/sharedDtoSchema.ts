@@ -274,7 +274,7 @@ export const sharedDtoSchema = {
         }
       }),
 
-  email: (options = { trustCheck: process.env.NODE_ENV == 'production' }) =>
+  email: (options = { trustCheck: false }) =>
     z
       .email('Invalid email address')
       .max(255, 'Email must be at most 255 characters')
