@@ -199,5 +199,23 @@
     "noPhotosFound": "Keine öffentlichen Fotos gefunden",
     "noPhotosDesc": "Derzeit sind keine Fotos in der öffentlichen Galerie verfügbar. Bitte schauen Sie später wieder vorbei.",
     "continueWithFavorites": "Weiter mit {count} {count, plural, =1 {Favorit} other {Favoriten}}"
+  },
+  "Favorites": {
+    "title": "Meine Favoriten",
+    "subtitle": "Sehen Sie sich alle Ihre ausgewählten Lieblingsfotos an, entdecken Sie individuelle Abzüge oder bestellen Sie komplette Fotopakete.",
+    "emptyTitle": "Noch keine Favoriten vorhanden",
+    "emptyDesc": "Sie haben noch keine Fotos als Favoriten markiert. Durchsuchen Sie Ihre Fotogalerien und klicken Sie auf das Herzsymbol bei einem Foto, um es hier zu speichern.",
+    "goToAccessCards": "Zugangskarten-Galerie",
+    "goToPublicGalleries": "Offene Galerie",
+    "clearAll": "Alle löschen",
+    "clearAllConfirm": "Möchten Sie wirklich alle Favoriten entfernen?",
+    "favoritesCount": "{count} {count, plural, =1 {Foto} other {Fotos}} ausgewählt",
+    "orderPackages": "Fotopakete bestellen",
+    "orderPrints": "Einzelne Abzüge bestellen",
+    "viewDetails": "Details & Formate anzeigen",
+    "unfavorite": "Aus Favoriten entfernen",
+    "backToFavorites": "Zurück zu den Favoriten",
+    "continueOrdering": "Weiter zu den Paketen ({count})",
+    "selectFormatHint": "Klicken Sie auf ein Foto, um Papierformate zu wählen, oder bestellen Sie unten Fotopakete."
   }
 }

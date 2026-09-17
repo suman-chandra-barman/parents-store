@@ -94,9 +94,14 @@ export function Navbar() {
           <LanguageSwitcher />
 
           {/* Favorites */}
-          <button
-            type="button"
-            className="relative flex items-center gap-1.5 text-xs font-medium text-neutral-600 hover:text-neutral-900 cursor-pointer transition-colors p-1.5"
+          <Link
+            href={`/${locale}/favorites`}
+            className={cn(
+              "relative flex items-center gap-1.5 text-xs font-medium cursor-pointer transition-colors p-1.5 rounded-lg",
+              pathname.startsWith(`/${locale}/favorites`)
+                ? "text-brand bg-brand/10 font-semibold"
+                : "text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100",
+            )}
             title={t('favorites')}
             aria-label={t('favorites')}
           >
@@ -113,12 +118,17 @@ export function Navbar() {
                 </span>
               )}
             </div>
-          </button>
+          </Link>
 
           {/* Shopping Cart */}
           <Link
             href={`/${locale}/cart`}
-            className="relative p-1.5 text-neutral-700 hover:text-neutral-900 cursor-pointer transition-colors"
+            className={cn(
+              "relative p-1.5 cursor-pointer transition-colors rounded-lg",
+              pathname.startsWith(`/${locale}/cart`)
+                ? "text-brand bg-brand/10 font-semibold"
+                : "text-neutral-700 hover:text-neutral-900 hover:bg-neutral-100",
+            )}
             aria-label={t('shoppingCart')}
             title={t('shoppingCart')}
           >
@@ -132,12 +142,41 @@ export function Navbar() {
         </div>
 
         {/* Mobile: Hamburger & Actions */}
-        <div className="flex md:hidden items-center gap-2">
+        <div className="flex md:hidden items-center gap-1.5">
           <LanguageSwitcher />
+
+          {/* Favorites (Mobile Top Bar) */}
+          <Link
+            href={`/${locale}/favorites`}
+            className={cn(
+              "relative p-1.5 rounded-lg text-neutral-700 hover:text-neutral-900 transition-colors",
+              pathname.startsWith(`/${locale}/favorites`)
+                ? "text-brand bg-brand/10 font-semibold"
+                : "text-neutral-600",
+            )}
+            aria-label={t('favorites')}
+          >
+            <Heart
+              className={cn(
+                'size-4.5',
+                favoriteCount > 0 ? 'fill-rose-500 text-rose-500' : '',
+              )}
+            />
+            {favoriteCount > 0 && (
+              <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full bg-rose-500 text-[10px] font-bold text-white flex items-center justify-center leading-none shadow-xs">
+                {favoriteCount}
+              </span>
+            )}
+          </Link>
 
           <Link
             href={`/${locale}/cart`}
-            className="relative p-1 text-neutral-700 hover:text-neutral-900"
+            className={cn(
+              "relative p-1.5 rounded-lg text-neutral-700 hover:text-neutral-900 transition-colors",
+              pathname.startsWith(`/${locale}/cart`)
+                ? "text-brand bg-brand/10 font-semibold"
+                : "text-neutral-700",
+            )}
             aria-label={t('shoppingCart')}
           >
             <ShoppingCart className="size-5" />
@@ -188,9 +227,15 @@ export function Navbar() {
           </nav>
 
           <div className="flex items-center justify-between pt-3 border-t border-neutral-100 text-xs text-neutral-600">
-            <button
-              type="button"
-              className="flex items-center gap-1.5 hover:text-neutral-900"
+            <Link
+              href={`/${locale}/favorites`}
+              onClick={() => setMobileMenuOpen(false)}
+              className={cn(
+                "flex items-center gap-2 px-3 py-2 rounded-lg transition-colors w-full",
+                pathname.startsWith(`/${locale}/favorites`)
+                  ? "bg-rose-50 text-rose-600 font-semibold"
+                  : "hover:bg-neutral-50 text-neutral-700",
+              )}
             >
               <div className="relative flex items-center justify-center">
                 <Heart
@@ -206,7 +251,7 @@ export function Navbar() {
                 )}
               </div>
               <span>{t('favorites')}</span>
-            </button>
+            </Link>
           </div>
         </div>
       )}

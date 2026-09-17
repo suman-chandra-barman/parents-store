@@ -199,5 +199,23 @@
     "noPhotosFound": "No public photos found",
     "noPhotosDesc": "There are currently no photos uploaded to the public gallery. Please check back later.",
     "continueWithFavorites": "Continue with {count} {count, plural, =1 {Favorite} other {Favorites}}"
+  },
+  "Favorites": {
+    "title": "My Favorite Photos",
+    "subtitle": "Review all your favorite selected photos, explore custom prints, or order full photography packages.",
+    "emptyTitle": "No favorite photos yet",
+    "emptyDesc": "You haven't marked any photos as favorites. Browse your photo galleries and click the heart icon on any photo to save it here.",
+    "goToAccessCards": "Access Card Gallery",
+    "goToPublicGalleries": "Open Gallery",
+    "clearAll": "Clear all",
+    "clearAllConfirm": "Are you sure you want to remove all favorite photos?",
+    "favoritesCount": "{count} {count, plural, =1 {photo} other {photos}} selected",
+    "orderPackages": "Order Custom Packages",
+    "orderPrints": "Order Single Prints",
+    "viewDetails": "View Details & Formats",
+    "unfavorite": "Remove from favorites",
+    "backToFavorites": "Back to Favorites",
+    "continueOrdering": "Continue to Packages ({count})",
+    "selectFormatHint": "Click any photo to select individual paper formats or order full packages below."
   }
 }
