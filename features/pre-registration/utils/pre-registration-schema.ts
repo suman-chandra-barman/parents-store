@@ -12,7 +12,7 @@ export const RegisterJobPreRegistrationFormSchema = z.object({
   name: _.name({ field: 'name' }),
 
   /** user email */
-  email: _.email().nullish(),
+  email: _.email({ trustCheck: false }).nullish(),
 
   /** user phone number */
   phone: _.phone().nullish(),
