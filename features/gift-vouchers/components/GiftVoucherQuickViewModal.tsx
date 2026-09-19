@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import {
@@ -16,10 +16,10 @@ import {
   EyeOff,
   MessageSquare,
 } from "lucide-react";
-import sanitizeHtml from "sanitize-html";
 import { cn } from "@/lib/utils";
 import { GiftVoucherItem } from "../types/gift-vouchers";
 import { useCart } from "@/features/cart/hooks/useCart";
+import { RichTextRenderer } from "@/components/common/RichTextRenderer";
 
 interface GiftVoucherQuickViewModalProps {
   voucher: GiftVoucherItem | null;
@@ -88,34 +88,6 @@ function GiftVoucherQuickViewModalContent({
 
   const previewUrl = voucher.preview?.url;
   const showImage = Boolean(previewUrl && !imageError);
-
-  const sanitizedDescription = useMemo(() => {
-    if (!voucher.description) return "";
-    return sanitizeHtml(voucher.description, {
-      allowedTags: [
-        "b",
-        "i",
-        "em",
-        "strong",
-        "a",
-        "p",
-        "br",
-        "ul",
-        "ol",
-        "li",
-        "span",
-        "sub",
-        "sup",
-        "strike",
-        "u",
-      ],
-      allowedAttributes: {
-        a: ["href", "target", "rel"],
-        span: ["class", "style"],
-        p: ["class", "style"],
-      },
-    });
-  }, [voucher.description]);
 
   const handleDecrement = () => setQuantity((prev) => Math.max(1, prev - 1));
   const handleIncrement = () =>
@@ -360,24 +332,14 @@ function GiftVoucherQuickViewModalContent({
                 </div>
               </div>
 
-              {sanitizedDescription && (
+              {voucher.description && (
                 <div className="pt-2 border-t border-neutral-100 space-y-1">
                   <h4 className="text-[11px] font-bold text-neutral-700 uppercase tracking-wider">
                     {t("aboutVoucher")}
                   </h4>
-                  <div
-                    className={cn(
-                      "text-xs text-neutral-600 leading-relaxed max-h-36 overflow-y-auto pr-1",
-                      "prose prose-xs max-w-none dark:prose-invert",
-                      "[&_p]:mb-1.5 [&_p:last-child]:mb-0",
-                      "[&_strong]:font-semibold [&_strong]:text-neutral-800",
-                      "[&_em]:italic",
-                      "[&_ul]:list-disc [&_ul]:pl-4 [&_ul]:my-1 [&_ul]:space-y-0.5",
-                      "[&_ol]:list-decimal [&_ol]:pl-4 [&_ol]:my-1 [&_ol]:space-y-0.5",
-                      "[&_li]:text-neutral-600",
-                      "[&_a]:text-brand [&_a]:underline [&_a:hover]:opacity-80",
-                    )}
-                    dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
+                  <RichTextRenderer
+                    content={voucher.description}
+                    className="max-h-36 overflow-y-auto pr-1"
                   />
                 </div>
               )}

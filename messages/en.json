@@ -160,7 +160,11 @@
     "priceAsc": "Price: Low to High",
     "priceDesc": "Price: High to Low",
     "newest": "Newest",
-    "nameAsc": "Name: A to Z"
+    "nameAsc": "Name: A to Z",
+    "readMore": "Read more",
+    "showLess": "Show less",
+    "inclVat": "Incl. {vat}% VAT",
+    "total": "Total"
   },
   "GiftVouchers": {
     "title": "Gift Vouchers & Celebration Cards",

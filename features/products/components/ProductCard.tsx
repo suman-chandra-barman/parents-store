@@ -2,10 +2,12 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Minus, Plus, ShoppingBag, Loader2, Package, Eye, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ProductItem } from "../types/products";
 import { useCart } from "@/features/cart/hooks/useCart";
+import { RichTextRenderer } from "@/components/common/RichTextRenderer";
 
 export interface ProductCardProps {
   product: ProductItem;
@@ -13,20 +15,19 @@ export interface ProductCardProps {
 }
 
 export function ProductCard({ product, onQuickView }: ProductCardProps) {
+  const t = useTranslations("Products");
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState<number>(1);
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [imageError, setImageError] = useState<boolean>(false);
 
   const priceNum = parseFloat(product.price) || 0;
   const formattedPrice = `€${priceNum.toFixed(2)}`;
 
   const primaryMedia = product.medias?.[0];
   const previewImageUrl = primaryMedia?.url;
-
-  const cleanDescription = product.description
-    ? product.description.replace(/<[^>]*>?/gm, "").trim()
-    : "";
+  const showImage = Boolean(previewImageUrl && !imageError);
 
   const handleDecrement = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -59,26 +60,27 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
   };
 
   return (
-    <div className="group relative bg-white border border-neutral-200/90 rounded-2xl p-4 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between">
+    <div className="group relative bg-white border border-neutral-200/80 rounded-2xl p-4 shadow-xs hover:shadow-xl hover:border-neutral-300 transition-all duration-300 flex flex-col justify-between overflow-hidden">
       {/* Top Media & Details */}
       <div className="space-y-3.5">
         {/* Product Media Thumbnail */}
         <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-neutral-100 border border-neutral-200/80 flex items-center justify-center">
-          {previewImageUrl ? (
+          {showImage ? (
             <Image
-              src={previewImageUrl}
+              src={previewImageUrl!}
               alt={product.title}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-              className="object-cover pointer-events-none transition-transform duration-300 group-hover:scale-105"
+              className="object-cover pointer-events-none transition-transform duration-500 group-hover:scale-105"
               draggable={false}
+              onError={() => setImageError(true)}
               onContextMenu={(e) => e.preventDefault()}
             />
           ) : (
-            <div className="flex flex-col items-center justify-center text-neutral-400 p-4 text-center">
+            <div className="flex flex-col items-center justify-center text-neutral-400 p-4 text-center select-none">
               <Package className="size-12 mb-1.5 text-neutral-300 stroke-[1.2]" />
               <span className="text-[11px] font-mono text-neutral-400">
-                {product.category || "Product"}
+                {product.category || t("allProducts")}
               </span>
             </div>
           )}
@@ -88,9 +90,9 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
             <button
               type="button"
               onClick={() => onQuickView(product)}
-              className="absolute top-2.5 right-2.5 size-8 rounded-full bg-white/90 backdrop-blur-xs text-neutral-700 shadow-sm opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center justify-center hover:bg-white hover:text-neutral-900 cursor-pointer"
-              aria-label="Quick view"
-              title="Quick view"
+              className="absolute top-2.5 right-2.5 size-8 rounded-full bg-white/90 backdrop-blur-xs text-neutral-700 shadow-sm opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center justify-center hover:bg-white hover:text-neutral-900 hover:scale-105 active:scale-95 cursor-pointer"
+              aria-label={t("quickView")}
+              title={t("quickView")}
             >
               <Eye className="size-4" />
             </button>
@@ -116,11 +118,14 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
             {product.title}
           </h3>
 
-          {cleanDescription && (
-            <p className="text-xs text-neutral-500 line-clamp-2 leading-relaxed">
-              {cleanDescription}
-            </p>
-          )}
+          {/* Reusable Rich Text Description */}
+          <RichTextRenderer
+            content={product.description}
+            lineClamp={2}
+            expandable
+            expandText={t("readMore")}
+            collapseText={t("showLess")}
+          />
         </div>
       </div>
 
@@ -134,13 +139,13 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
             </span>
             {product.vatRate && (
               <span className="block text-[10px] text-neutral-400">
-                Incl. {product.vatRate}% VAT
+                {t("inclVat", { vat: product.vatRate })}
               </span>
             )}
           </div>
           {quantity > 1 && (
             <span className="text-xs font-semibold text-neutral-600">
-              Total: €{(priceNum * quantity).toFixed(2)}
+              {t("total")}: €{(priceNum * quantity).toFixed(2)}
             </span>
           )}
         </div>
@@ -148,12 +153,12 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
         {/* Actions row: Quantity selector + Add to Cart */}
         <div className="flex items-center gap-2">
           {/* Quantity Controls */}
-          <div className="flex items-center border border-neutral-200 rounded-lg px-1.5 py-1 bg-neutral-50/80 shrink-0">
+          <div className="flex items-center border border-neutral-200 rounded-xl px-1 py-0.5 bg-neutral-50 shrink-0">
             <button
               type="button"
               onClick={handleDecrement}
               disabled={quantity <= 1 || isAdding}
-              className="size-6 rounded-md flex items-center justify-center text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200/60 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              className="size-7 rounded-lg flex items-center justify-center text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200/60 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
               aria-label="Decrease quantity"
             >
               <Minus className="size-3" />
@@ -165,7 +170,7 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
               type="button"
               onClick={handleIncrement}
               disabled={quantity >= 9999 || isAdding}
-              className="size-6 rounded-md flex items-center justify-center text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200/60 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              className="size-7 rounded-lg flex items-center justify-center text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200/60 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
               aria-label="Increase quantity"
             >
               <Plus className="size-3" />
@@ -178,11 +183,11 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
             onClick={handleAddToCart}
             disabled={isAdding}
             className={cn(
-              "flex-1 py-2 px-3 rounded-lg font-semibold text-xs text-white shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer",
+              "flex-1 py-2 px-3 rounded-xl font-semibold text-xs text-white shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer",
               isSuccess
                 ? "bg-emerald-600 hover:bg-emerald-700"
                 : "bg-brand hover:opacity-90 active:scale-98",
-              "disabled:opacity-60 disabled:cursor-not-allowed"
+              "disabled:opacity-60 disabled:cursor-not-allowed",
             )}
           >
             {isAdding ? (
@@ -192,7 +197,7 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
             ) : (
               <ShoppingBag className="size-3.5" />
             )}
-            <span>{isSuccess ? "Added" : "Add to Cart"}</span>
+            <span>{isSuccess ? t("added") : t("addToCart")}</span>
           </button>
         </div>
       </div>

@@ -2,10 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { X, Minus, Plus, ShoppingBag, Loader2, Package, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ProductItem } from "../types/products";
 import { useCart } from "@/features/cart/hooks/useCart";
+import { RichTextRenderer } from "@/components/common/RichTextRenderer";
 
 interface ProductQuickViewModalProps {
   product: ProductItem | null;
@@ -36,6 +38,7 @@ function ProductQuickViewModalContent({
   product: ProductItem;
   onClose: () => void;
 }) {
+  const t = useTranslations("Products");
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState<number>(1);
   const [selectedMediaIndex, setSelectedMediaIndex] = useState<number>(0);
@@ -63,10 +66,6 @@ function ProductQuickViewModalContent({
   const currentMedia = medias[selectedMediaIndex] || medias[0];
   const priceNum = parseFloat(product.price) || 0;
   const formattedPrice = `€${priceNum.toFixed(2)}`;
-
-  const cleanDescription = product.description
-    ? product.description.replace(/<[^>]*>?/gm, "").trim()
-    : "";
 
   const handleDecrement = () => setQuantity((prev) => Math.max(1, prev - 1));
   const handleIncrement = () => setQuantity((prev) => Math.min(9999, prev + 1));
@@ -129,7 +128,7 @@ function ProductQuickViewModalContent({
                 <div className="flex flex-col items-center justify-center text-neutral-400 p-6 text-center">
                   <Package className="size-16 mb-2 text-neutral-300 stroke-[1.2]" />
                   <span className="text-xs text-neutral-400 font-medium">
-                    No image preview
+                    {t("noProductsFound")}
                   </span>
                 </div>
               )}
@@ -147,7 +146,7 @@ function ProductQuickViewModalContent({
                       "relative size-14 rounded-lg overflow-hidden border-2 shrink-0 transition-all cursor-pointer bg-neutral-100",
                       selectedMediaIndex === idx
                         ? "border-brand ring-2 ring-brand/20"
-                        : "border-neutral-200 hover:border-neutral-400 opacity-70 hover:opacity-100"
+                        : "border-neutral-200 hover:border-neutral-400 opacity-70 hover:opacity-100",
                     )}
                   >
                     <Image
@@ -184,19 +183,20 @@ function ProductQuickViewModalContent({
                 </span>
                 {product.vatRate && (
                   <span className="text-xs text-neutral-500">
-                    Incl. {product.vatRate}% VAT
+                    {t("inclVat", { vat: product.vatRate })}
                   </span>
                 )}
               </div>
 
               {product.description && (
-                <div className="pt-2 border-t border-neutral-100">
-                  <h4 className="text-xs font-semibold text-neutral-700 uppercase tracking-wider mb-1.5">
-                    Description
+                <div className="pt-2 border-t border-neutral-100 space-y-1">
+                  <h4 className="text-xs font-semibold text-neutral-700 uppercase tracking-wider">
+                    {t("description")}
                   </h4>
-                  <p className="text-xs text-neutral-600 leading-relaxed max-h-36 overflow-y-auto pr-1">
-                    {product.description}
-                  </p>
+                  <RichTextRenderer
+                    content={product.description}
+                    className="max-h-36 overflow-y-auto pr-1"
+                  />
                 </div>
               )}
             </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import {
@@ -16,10 +16,10 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
-import sanitizeHtml from "sanitize-html";
 import { cn } from "@/lib/utils";
 import { GiftVoucherItem } from "../types/gift-vouchers";
 import { useCart } from "@/features/cart/hooks/useCart";
+import { RichTextRenderer } from "@/components/common/RichTextRenderer";
 
 export interface GiftVoucherCardProps {
   voucher: GiftVoucherItem;
@@ -43,7 +43,6 @@ export function GiftVoucherCard({
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [imageError, setImageError] = useState<boolean>(false);
-  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState<boolean>(false);
 
   const priceNum = parseFloat(voucher.price) || 0;
   const valueNum = parseFloat(voucher.value) || priceNum;
@@ -53,35 +52,6 @@ export function GiftVoucherCard({
 
   const previewUrl = voucher.preview?.url;
   const showImage = Boolean(previewUrl && !imageError);
-
-  // Sanitize Rich Text HTML Description from backend editor
-  const sanitizedDescription = useMemo(() => {
-    if (!voucher.description) return "";
-    return sanitizeHtml(voucher.description, {
-      allowedTags: [
-        "b",
-        "i",
-        "em",
-        "strong",
-        "a",
-        "p",
-        "br",
-        "ul",
-        "ol",
-        "li",
-        "span",
-        "sub",
-        "sup",
-        "strike",
-        "u",
-      ],
-      allowedAttributes: {
-        a: ["href", "target", "rel"],
-        span: ["class", "style"],
-        p: ["class", "style"],
-      },
-    });
-  }, [voucher.description]);
 
   const handleDecrement = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -192,42 +162,14 @@ export function GiftVoucherCard({
             {voucher.title}
           </h3>
 
-          {/* Rich Text Editor HTML Description */}
-          {sanitizedDescription && (
-            <div className="space-y-1">
-              <div
-                className={cn(
-                  "text-xs text-neutral-600 leading-relaxed",
-                  "prose prose-xs max-w-none dark:prose-invert",
-                  "[&_p]:mb-1 [&_p:last-child]:mb-0",
-                  "[&_strong]:font-semibold [&_strong]:text-neutral-800",
-                  "[&_em]:italic",
-                  "[&_ul]:list-disc [&_ul]:pl-4 [&_ul]:my-1 [&_ul]:space-y-0.5",
-                  "[&_ol]:list-decimal [&_ol]:pl-4 [&_ol]:my-1 [&_ol]:space-y-0.5",
-                  "[&_li]:text-neutral-600",
-                  "[&_a]:text-brand [&_a]:underline [&_a:hover]:opacity-80",
-                  isDescriptionExpanded
-                    ? "max-h-48 overflow-y-auto pr-1"
-                    : "line-clamp-2 max-h-10 overflow-hidden",
-                )}
-                dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
-              />
-              {voucher.description && voucher.description.length > 90 && (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setIsDescriptionExpanded((prev) => !prev);
-                  }}
-                  className="text-[11px] font-semibold text-brand hover:underline cursor-pointer inline-flex items-center gap-0.5"
-                >
-                  <span>
-                    {isDescriptionExpanded ? t("showLess") : t("readMore")}
-                  </span>
-                </button>
-              )}
-            </div>
-          )}
+          {/* Reusable Rich Text Description */}
+          <RichTextRenderer
+            content={voucher.description}
+            lineClamp={2}
+            expandable
+            expandText={t("readMore")}
+            collapseText={t("showLess")}
+          />
 
           {/* Layout Themes Selection */}
           {voucher.layouts && voucher.layouts.length > 0 && (

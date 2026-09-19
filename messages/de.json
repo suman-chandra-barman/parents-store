@@ -160,7 +160,11 @@
     "priceAsc": "Preis: Aufsteigend",
     "priceDesc": "Preis: Absteigend",
     "newest": "Neueste",
-    "nameAsc": "Name: A bis Z"
+    "nameAsc": "Name: A bis Z",
+    "readMore": "Mehr lesen",
+    "showLess": "Weniger anzeigen",
+    "inclVat": "Inkl. {vat}% MwSt.",
+    "total": "Gesamt"
   },
   "GiftVouchers": {
     "title": "Geschenkgutscheine & Feierkarten",
