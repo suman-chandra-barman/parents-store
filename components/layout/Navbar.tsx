@@ -34,9 +34,7 @@ export function Navbar() {
         pathname === `/${locale}` ||
         pathname === '/' ||
         pathname.startsWith(`/${locale}/photo-galleries`) ||
-        pathname.startsWith('/photo-galleries') ||
-        pathname.startsWith(`/${locale}/public-galleries`) ||
-        pathname.startsWith('/public-galleries')
+        pathname.startsWith('/photo-galleries')
       );
     }
     return pathname.startsWith(href);

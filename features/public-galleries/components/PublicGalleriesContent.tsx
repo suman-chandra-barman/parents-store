@@ -45,7 +45,7 @@ export function PublicGalleriesContent() {
 
   const handleSelectPhoto = useCallback(
     (photo: PhotoItem) => {
-      router.push(`/${locale}/public-galleries/${photo.id}`);
+      router.push(`/${locale}/photo-galleries/classic/${photo.id}`);
     },
     [router, locale],
   );

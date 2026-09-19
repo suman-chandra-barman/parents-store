@@ -2,16 +2,16 @@ import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
 import { PhotoDetailsView } from "@/features/access-cards/components/PhotoDetailsView";
 
-interface PublicPhotoDetailsPageProps {
+interface ClassicPhotoDetailsPageProps {
   params: Promise<{
     locale: string;
     photoId: string;
   }>;
 }
 
-export default async function PublicPhotoDetailsPage({
+export default async function ClassicPhotoDetailsPage({
   params,
-}: PublicPhotoDetailsPageProps) {
+}: ClassicPhotoDetailsPageProps) {
   const { locale, photoId } = await params;
 
   return (
@@ -24,8 +24,8 @@ export default async function PublicPhotoDetailsPage({
     >
       <PhotoDetailsView
         photoId={photoId}
-        backUrl={`/${locale}/public-galleries`}
-        backLabel="Back to Public Gallery"
+        backUrl={`/${locale}/photo-galleries/classic`}
+        backLabel="Back to Classic Gallery"
       />
     </Suspense>
   );

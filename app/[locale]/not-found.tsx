@@ -25,7 +25,7 @@ export default function NotFound() {
       highlight: true,
     },
     {
-      href: `/${locale}/public-galleries`,
+      href: `/${locale}/photo-galleries/classic`,
       label: t("browseGalleries"),
       description: "Explore open photo collections & albums",
       icon: Images,

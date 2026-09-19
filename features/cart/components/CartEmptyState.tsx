@@ -33,7 +33,7 @@ export function CartEmptyState() {
         </Link>
 
         <Link
-          href={`/${locale}/public-galleries`}
+          href={`/${locale}/photo-galleries/classic`}
           className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-neutral-700 bg-neutral-100 hover:bg-neutral-200 border border-neutral-200/80 transition-all active:scale-98 cursor-pointer"
         >
           <Images className="size-4" />
