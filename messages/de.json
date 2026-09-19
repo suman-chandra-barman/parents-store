@@ -249,5 +249,15 @@
     "browseGalleries": "Fotogalerien",
     "exploreProducts": "Shop-Produkte",
     "giftVouchers": "Geschenkgutscheine"
+  },
+  "Cart": {
+    "emptyTitle": "Ihr Warenkorb ist leer",
+    "emptyDesc": "Sie haben noch keine Fotoabzüge, Produkte oder Geschenkgutscheine zu Ihrem Warenkorb hinzugefügt. Entdecken Sie Ihre Fotos und den Shop, um loszulegen!",
+    "goToAccessCards": "Zugangskarten-Galerie",
+    "goToPublicGalleries": "Offene Galerie",
+    "explorePhotos": "Fotogalerien",
+    "exploreStore": "Shop & Produkte",
+    "exploreVouchers": "Geschenkgutscheine",
+    "goBack": "Zurück"
   }
 }

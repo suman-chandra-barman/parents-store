@@ -249,5 +249,15 @@
     "browseGalleries": "Photo Galleries",
     "exploreProducts": "Store Products",
     "giftVouchers": "Gift Vouchers"
+  },
+  "Cart": {
+    "emptyTitle": "Your Cart is Empty",
+    "emptyDesc": "You haven't added any photo prints, merchandise, or gift vouchers to your cart yet. Explore your photos and store to get started!",
+    "goToAccessCards": "Access Card Gallery",
+    "goToPublicGalleries": "Open Gallery",
+    "explorePhotos": "Photo Galleries",
+    "exploreStore": "Store & Products",
+    "exploreVouchers": "Gift Vouchers",
+    "goBack": "Go Back"
   }
 }

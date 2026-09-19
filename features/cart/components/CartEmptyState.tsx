@@ -2,31 +2,68 @@
 
 import React from "react";
 import Link from "next/link";
-import { useLocale } from "next-intl";
-import { ShoppingBag, ArrowLeft } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import { ShoppingBag, KeyRound, Images } from "lucide-react";
 
 export function CartEmptyState() {
   const locale = useLocale();
+  const t = useTranslations("Cart");
+
+  const getSafeTranslation = (key: string, fallback: string) => {
+    try {
+      const val = t(key);
+      if (val && !val.startsWith("Cart.")) {
+        return val;
+      }
+    } catch {
+      // fallback
+    }
+    return fallback;
+  };
+
+  const title = getSafeTranslation("emptyTitle", "Your Cart is Empty");
+  const desc = getSafeTranslation(
+    "emptyDesc",
+    "You haven't added any photo prints, merchandise, or gift vouchers to your cart yet. Explore your photos and store to get started!"
+  );
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center max-w-lg">
-      <div className="size-20 rounded-3xl bg-brand/10 border border-brand/20 flex items-center justify-center mx-auto mb-6 text-brand shadow-xs">
-        <ShoppingBag className="size-10 stroke-[1.5]" />
+    <div className="py-16 sm:py-20 px-4 text-center max-w-lg mx-auto animate-in fade-in zoom-in-95 duration-200">
+      <div className="size-16 sm:size-20 rounded-3xl bg-brand/10 border border-brand/20 flex items-center justify-center mx-auto mb-5 text-brand shadow-xs">
+        <ShoppingBag className="size-8 sm:size-10 stroke-[1.5]" />
       </div>
-      <h2 className="text-xl sm:text-2xl font-bold text-foreground mb-2">
-        Your Cart is Empty
+
+      <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 mb-2 tracking-tight">
+        {title}
       </h2>
-      <p className="text-sm text-muted-foreground mb-8 leading-relaxed">
-        You haven&apos;t added any photo prints or packages to your cart yet.
-        Explore your photos to get started!
+
+      <p className="text-xs sm:text-sm text-neutral-500 max-w-md mx-auto leading-relaxed mb-8">
+        {desc}
       </p>
-      <Link
-        href={`/${locale}/photo-galleries/access-cards`}
-        className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-white bg-brand hover:opacity-90 shadow-sm text-sm transition-all active:scale-98"
-      >
-        <ArrowLeft className="size-4" />
-        <span>Return to Photo Gallery</span>
-      </Link>
+
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <Link
+          href={`/${locale}/photo-galleries/access-cards`}
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-white bg-brand hover:opacity-95 shadow-sm transition-all active:scale-98 cursor-pointer"
+        >
+          <KeyRound className="size-4" />
+          <span>
+            {getSafeTranslation("goToAccessCards", "Access Card Gallery")}
+          </span>
+        </Link>
+
+        <Link
+          href={`/${locale}/public-galleries`}
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-neutral-700 bg-neutral-100 hover:bg-neutral-200 border border-neutral-200/80 transition-all active:scale-98 cursor-pointer"
+        >
+          <Images className="size-4" />
+          <span>
+            {getSafeTranslation("goToPublicGalleries", "Open Gallery")}
+          </span>
+        </Link>
+      </div>
     </div>
   );
 }
+
+

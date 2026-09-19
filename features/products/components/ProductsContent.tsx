@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
-import { useLocale, useTranslations } from "next-intl";
-import { ArrowLeft, PackageOpen } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { PackageOpen } from "lucide-react";
 import { useGetProductsQuery } from "../api/productsApi";
 import { ProductItem } from "../types/products";
 import { ProductCard } from "./ProductCard";
@@ -15,11 +14,12 @@ import { EmptyState } from "@/components/common/EmptyState";
 
 export function ProductsContent() {
   const t = useTranslations("Products");
-  const locale = useLocale();
   const tenant = useTenantStore((state) => state.tenant);
   const isTenantLoading = useTenantStore((state) => state.isLoading);
 
-  const [quickViewProduct, setQuickViewProduct] = useState<ProductItem | null>(null);
+  const [quickViewProduct, setQuickViewProduct] = useState<ProductItem | null>(
+    null,
+  );
 
   const isTenantReady = Boolean(tenant?.id);
 
@@ -33,7 +33,8 @@ export function ProductsContent() {
     skip: !isTenantReady,
   });
 
-  const isLoading = !isTenantReady || isTenantLoading || isQueryLoading || isFetching;
+  const isLoading =
+    !isTenantReady || isTenantLoading || isQueryLoading || isFetching;
 
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-neutral-50/50 py-8">
@@ -41,17 +42,6 @@ export function ProductsContent() {
         {/* Header and Breadcrumb */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-200/80 pb-5">
           <div className="space-y-1">
-            <div className="flex items-center gap-2 text-xs text-neutral-500 font-medium">
-              <Link
-                href={`/${locale}`}
-                className="inline-flex items-center gap-1 hover:text-neutral-900 transition-colors"
-              >
-                <ArrowLeft className="size-3.5" />
-                <span>Home</span>
-              </Link>
-              <span className="text-neutral-300">/</span>
-              <span className="text-neutral-800 font-semibold">{t("title")}</span>
-            </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-neutral-900 tracking-tight">
               {t("title")}
             </h1>
@@ -102,4 +92,3 @@ export function ProductsContent() {
     </div>
   );
 }
-

@@ -3,8 +3,6 @@
 import React, { useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import Link from "next/link";
-import { Heart, PackageOpen, ArrowRight, ArrowLeft } from "lucide-react";
 import { useFavorites } from "@/features/access-cards/hooks/useFavorites";
 import { useAccessCardsGallery } from "@/features/access-cards/hooks/useAccessCardsGallery";
 import { PhotoItem } from "@/features/access-cards/types/access-cards";
@@ -53,7 +51,7 @@ export function FavoritesContent() {
     (photo: PhotoItem) => {
       router.push(`/${locale}/favorites/${photo.id}`);
     },
-    [router, locale]
+    [router, locale],
   );
 
   return (
@@ -63,14 +61,6 @@ export function FavoritesContent() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <Link
-                href={`/${locale}/photo-galleries/access-cards`}
-                className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors mr-2"
-              >
-                <ArrowLeft className="size-3.5" />
-                <span>Gallery</span>
-              </Link>
-              <span className="text-muted-foreground/40">/</span>
               <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
                 {t("title")}
               </h1>
