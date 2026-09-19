@@ -238,5 +238,16 @@
     "backToFavorites": "Zurück zu den Favoriten",
     "continueOrdering": "Weiter zu den Paketen ({count})",
     "selectFormatHint": "Klicken Sie auf ein Foto, um Papierformate zu wählen, oder bestellen Sie unten Fotopakete."
+  },
+  "NotFound": {
+    "code": "404",
+    "title": "Seite nicht gefunden",
+    "subtitle": "Die angeforderte Seite existiert nicht oder wurde verschoben.",
+    "description": "Bitte überprüfen Sie die URL oder nutzen Sie die Links unten, um zum Shop zurückzukehren.",
+    "backHome": "Zur Startseite",
+    "exploreTitle": "Oder stöbern Sie in unseren Bereichen:",
+    "browseGalleries": "Fotogalerien",
+    "exploreProducts": "Shop-Produkte",
+    "giftVouchers": "Geschenkgutscheine"
   }
 }

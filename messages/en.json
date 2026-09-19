@@ -238,5 +238,16 @@
     "backToFavorites": "Back to Favorites",
     "continueOrdering": "Continue to Packages ({count})",
     "selectFormatHint": "Click any photo to select individual paper formats or order full packages below."
+  },
+  "NotFound": {
+    "code": "404",
+    "title": "Page Not Found",
+    "subtitle": "The page you are looking for doesn't exist or has been moved.",
+    "description": "Please check the URL for typos, or use the quick navigation below to return to the store.",
+    "backHome": "Back to Home",
+    "exploreTitle": "Or explore popular sections:",
+    "browseGalleries": "Photo Galleries",
+    "exploreProducts": "Store Products",
+    "giftVouchers": "Gift Vouchers"
   }
 }
