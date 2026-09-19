@@ -10,7 +10,7 @@ import { AccessCardPhotoGrid } from "@/features/access-cards/components/AccessCa
 import { TwoFactorAuthModal } from "@/features/access-cards/components/TwoFactorAuthModal";
 
 import { useRouter } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useTenantStore } from "@/stores/useTenantStore";
 import { parseErrorMessage } from "@/utils/parseErrorMessage";
 import { toast } from "sonner";
@@ -125,12 +125,13 @@ function AccessCardsContent() {
     [twoFactorModalCode, verify2FAPassword, handleAuthenticate],
   );
 
+  const tGalleries = useTranslations("PublicGalleries");
+
   return (
     <main className="bg-background text-foreground transition-colors flex flex-col">
       {/* Hero Section */}
       <HeroSection
-        title="Photo Gallery"
-        subtitle={tenant?.name ?? "LUMIPHOTO"}
+        subtitle={tenant?.name}
         accessCodes={accessCodes}
         onAccessCodesChange={setAccessCodes}
         isLoading={isLoading || isChecking2FA}
@@ -159,7 +160,9 @@ function AccessCardsContent() {
             href={`/${locale}/photo-galleries/packages`}
             className="inline-flex items-center justify-center px-8 py-4 rounded-xl font-semibold text-white bg-brand hover:opacity-90 shadow-md transition-all active:scale-98 text-sm sm:text-base cursor-pointer"
           >
-            Continue with {favoriteIds.length} {favoriteIds.length === 1 ? "Favorite" : "Favorites"}
+            {tGalleries("continueWithFavorites", {
+              count: favoriteIds.length,
+            })}
           </Link>
         </div>
       )}

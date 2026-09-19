@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { Sparkles, ArrowDown, Eye } from "lucide-react";
+import { ArrowDown, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTenantStore } from "@/stores/useTenantStore";
 
@@ -47,10 +47,6 @@ export function PublicGalleryHero({
             <div className="flex items-center gap-2">
               <span className="text-xs font-medium tracking-widest text-neutral-500 uppercase">
                 {studioName}
-              </span>
-              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200/80 px-2.5 py-0.5 rounded-full">
-                <Sparkles className="size-3 text-emerald-600" />
-                <span>Public Gallery</span>
               </span>
             </div>
 

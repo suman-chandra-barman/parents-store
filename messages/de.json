@@ -27,7 +27,8 @@
     "multiCodeHint": "Drücken Sie <bold>Eingabetaste</bold> oder <bold>Leertaste</bold>, um weiteren Code hinzuzufügen",
     "viewGallery": "GALERIE ANZEIGEN",
     "loading": "WIRD GELADEN...",
-    "imageAlt": "Fotograf blickt durch eine Kamera auf einem Stativ"
+    "imageAlt": "Fotograf blickt durch eine Kamera auf einem Stativ",
+    "accessCardCode": "Zugangskartencode"
   },
   "AccessCards": {
     "loadingPhoto": "Foto wird geladen...",
@@ -213,12 +214,13 @@
   },
   "PublicGalleries": {
     "title": "Offene Fotogalerie",
-    "subtitle": "Durchsuchen Sie unsere offene Sammlung von Eventfotos, Porträts und Momenten. Jeder kann Fotos ansehen, favorisieren und Abzüge bestellen, ohne ein Passwort zu benötigen.",
-    "explorePhotos": "FOTOS ERKUNDEN",
-    "freeAccess": "Kostenloser offener Zugang",
+    "subtitle": "Entdecken Sie unsere offene Galerie mit Eventfotos, Porträts und Momenten. Jeder kann ohne Passwort Fotos ansehen, favorisieren und bestellen.",
+    "badge": "Öffentliche Galerie",
+    "explorePhotos": "FOTOS ENTDECKEN",
+    "freeAccess": "Kostenloser Zugang",
     "photosAvailable": "{count} {count, plural, =1 {Foto} other {Fotos}} verfügbar",
     "noPhotosFound": "Keine öffentlichen Fotos gefunden",
-    "noPhotosDesc": "Derzeit sind keine Fotos in der öffentlichen Galerie verfügbar. Bitte schauen Sie später wieder vorbei.",
+    "noPhotosDesc": "Zurzeit sind keine Fotos in der Galerie verfügbar. Bitte versuchen Sie es später erneut.",
     "continueWithFavorites": "Weiter mit {count} {count, plural, =1 {Favorit} other {Favoriten}}"
   },
   "Favorites": {

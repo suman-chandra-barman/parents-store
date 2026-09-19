@@ -27,7 +27,8 @@
     "multiCodeHint": "Press <bold>Enter</bold> or <bold>Space</bold> to add another code",
     "viewGallery": "VIEW GALLERY",
     "loading": "LOADING...",
-    "imageAlt": "Photographer looking through a camera on a tripod"
+    "imageAlt": "Photographer looking through a camera on a tripod",
+    "accessCardCode": "Access card code"
   },
   "AccessCards": {
     "loadingPhoto": "Loading photo...",
@@ -214,6 +215,7 @@
   "PublicGalleries": {
     "title": "Open Photo Gallery",
     "subtitle": "Browse our open collection of event captures, portraits, and moments. Anyone can view, favorite, and order prints without needing a password.",
+    "badge": "Public Gallery",
     "explorePhotos": "EXPLORE PHOTOS",
     "freeAccess": "Free Open Access",
     "photosAvailable": "{count} {count, plural, =1 {Photo} other {Photos}} Available",

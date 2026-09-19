@@ -34,7 +34,7 @@ export function HeroSection({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const displayTitle = title ?? t("title");
-  const displaySubtitle = subtitle ?? t("subtitle");
+  const studioName = subtitle ?? tenant?.name ?? t("subtitle");
 
   const heroImageUrl =
     tenant?.heroImage?.url || (!isTenantLoading ? "/hero-section.png" : null);
@@ -91,46 +91,43 @@ export function HeroSection({
     <section className="relative w-full overflow-hidden bg-[#FBF9F5]">
       <div className="md:h-[calc(100vh-66px)] mx-auto flex flex-col md:flex-row">
         {/* ── LEFT: Text content ── */}
-        <div className="relative z-10 flex w-full flex-col justify-center px-6 py-16 sm:px-10 md:w-[52%] md:px-16 lg:px-20">
-          {/* Decorative corner shapes — contained inside left column */}
+        <div className="relative z-10 flex w-full flex-col justify-center px-6 py-16 sm:px-10 md:w-1/2 md:px-16 lg:px-20">
+          {/* Decorative corner shapes */}
           <div
             className="pointer-events-none absolute -left-40 -top-20 h-40 w-56 rounded-full bg-[#E7E4DD]"
             aria-hidden="true"
           />
           <div
-            className="pointer-events-none absolute -bottom-25 -left-50 h-64 w-72 rounded-full bg-[#F6E1C4]"
+            className="pointer-events-none absolute -bottom-24 -left-48 h-64 w-72 rounded-full bg-[#F6E1C4]"
             aria-hidden="true"
           />
 
-          <div className="relative">
-            {/* LUMIPHOTO eyebrow */}
-            <p className="text-xs font-medium tracking-[0.25em] text-neutral-500">
-              {displaySubtitle}
-            </p>
+          <div className="relative space-y-6">
+            {/* Eyebrow: Studio Name & Badge */}
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium tracking-widest text-neutral-500 uppercase">
+                {studioName}
+              </span>
+            </div>
 
-            {/* Heading */}
-            <h1 className="mt-6 text-5xl font-normal leading-[1.05] text-neutral-900 sm:text-6xl lg:text-[64px]">
-              {displayTitle}
-            </h1>
-
-            {/* Date / subtext */}
-            <p className="mt-5 text-xs font-medium tracking-[0.2em] text-neutral-400">
-              {t("shotsDetails")}
-            </p>
-
-            {/* ── Access Card section ── */}
-            <div className="mt-8 space-y-2">
-              <p className="text-[11px] font-semibold tracking-[0.18em] text-neutral-600 uppercase">
-                {t("withAccessCard")}
+            {/* Main Heading & Subtitle */}
+            <div className="space-y-2">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-normal leading-tight text-neutral-900 tracking-tight">
+                {displayTitle}
+              </h1>
+              <p className="text-xs sm:text-sm text-neutral-500 max-w-md">
+                {t("shotsDetails")}
               </p>
+            </div>
 
-              {/* Tag-based code input */}
+            {/* ── Access Card Code Input Section ── */}
+            <div className="space-y-2 pt-1">
               <div
                 onClick={() => inputRef.current?.focus()}
-                className="flex flex-wrap items-center gap-1.5 border border-neutral-300 bg-white px-3"
+                className="flex flex-wrap items-center gap-1.5 border border-neutral-300 bg-white px-3 transition-colors focus-within:border-brand"
                 style={{
-                  minHeight: 46,
-                  maxWidth: 340,
+                  minHeight: 48,
+                  maxWidth: 360,
                   cursor: "text",
                   padding: accessCodes.length > 0 ? "6px 12px" : "0 12px",
                 }}
@@ -139,7 +136,7 @@ export function HeroSection({
                 {accessCodes.map((code) => (
                   <span
                     key={code}
-                    className="inline-flex items-center gap-1 rounded-sm bg-brand hover:opacity-70 px-2 py-0.5 text-[11px] font-semibold text-white"
+                    className="inline-flex items-center gap-1 rounded-sm bg-brand hover:opacity-80 px-2 py-0.5 text-[11px] font-semibold text-white transition-opacity"
                     style={{ letterSpacing: "0.06em" }}
                   >
                     {code}
@@ -149,7 +146,7 @@ export function HeroSection({
                         e.stopPropagation();
                         removeCode(code);
                       }}
-                      className="flex items-center text-white/70 hover:text-white"
+                      className="flex items-center text-white/70 hover:text-white cursor-pointer"
                       aria-label={t("removeCode", { code })}
                     >
                       <X size={10} />
@@ -170,12 +167,12 @@ export function HeroSection({
                   className="flex-1 bg-transparent text-center text-xs font-mono text-neutral-700 placeholder:text-neutral-400 focus:outline-none disabled:opacity-50"
                   style={{
                     minWidth: 100,
-                    height: accessCodes.length === 0 ? 44 : 26,
+                    height: accessCodes.length === 0 ? 44 : 28,
                     letterSpacing:
                       accessCodes.length === 0 ? "0.2em" : "0.06em",
                     textAlign: accessCodes.length === 0 ? "center" : "left",
                   }}
-                  aria-label="Access card code"
+                  aria-label={t("accessCardCode")}
                 />
               </div>
 
@@ -186,33 +183,39 @@ export function HeroSection({
 
               {/* Multi-code hint */}
               {accessCodes.length > 0 && (
-                <p className="text-[10px] text-neutral-400">
+                <p className="text-[11px] text-neutral-400">
                   {t.rich("multiCodeHint", {
-                    bold: (chunks) => <strong>{chunks}</strong>,
+                    bold: (chunks) => (
+                      <strong className="font-semibold text-neutral-600">
+                        {chunks}
+                      </strong>
+                    ),
                   })}
                 </p>
               )}
             </div>
 
-            {/* VIEW GALLERY CTA */}
-            <Button
-              onClick={handleViewGallery}
-              disabled={!hasAnyCodes || isLoading}
-              className="mt-8 h-12 w-fit rounded-none bg-brand hover:opacity-70 px-8 text-xs font-semibold tracking-[0.2em] text-white hover:bg-[#274d8c] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer inline-flex items-center gap-2"
-            >
-              <span>{t("viewGallery")}</span>
-              {isLoading ? (
-                <Loader2 className="size-3.5 animate-spin" />
-              ) : (
-                <ArrowRight className="size-3.5" />
-              )}
-            </Button>
+            {/* VIEW GALLERY CTA Button */}
+            <div className="pt-2">
+              <Button
+                onClick={handleViewGallery}
+                disabled={!hasAnyCodes || isLoading}
+                className="h-12 w-fit rounded-none bg-brand hover:opacity-70 px-8 text-xs font-semibold tracking-widest text-white transition-all cursor-pointer inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span>{isLoading ? t("loading") : t("viewGallery")}</span>
+                {isLoading ? (
+                  <Loader2 className="size-3.5 animate-spin" />
+                ) : (
+                  <ArrowRight className="size-3.5" />
+                )}
+              </Button>
+            </div>
           </div>
         </div>
 
-        {/* ── RIGHT: Full-bleed photographer image ── */}
+        {/* ── RIGHT: Full-bleed photographer/hero image ── */}
         <div
-          className="hidden md:block relative h-100 w-full md:h-auto md:w-[48%] select-none"
+          className="hidden md:block relative h-96 w-full md:h-auto md:w-1/2 select-none"
           onContextMenu={(e) => e.preventDefault()}
         >
           {heroImageUrl && (
@@ -221,7 +224,9 @@ export function HeroSection({
               alt={t("imageAlt")}
               fill
               priority
-              sizes="(max-width: 768px) 100vw, 48vw"
+              draggable={false}
+              onDragStart={(e) => e.preventDefault()}
+              sizes="(max-width: 768px) 100vw, 50vw"
               onLoad={() => setIsImageReady(true)}
               className={`pointer-events-none object-contain object-center md:object-right transition-opacity duration-500 ease-out ${
                 isImageReady ? "opacity-100" : "opacity-0"
