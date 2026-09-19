@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import {
   X,
   Minus,
@@ -10,12 +11,12 @@ import {
   Loader2,
   Gift,
   Check,
-  Sparkles,
   Calendar,
   Palette,
   EyeOff,
   MessageSquare,
 } from "lucide-react";
+import sanitizeHtml from "sanitize-html";
 import { cn } from "@/lib/utils";
 import { GiftVoucherItem } from "../types/gift-vouchers";
 import { useCart } from "@/features/cart/hooks/useCart";
@@ -49,16 +50,18 @@ function GiftVoucherQuickViewModalContent({
   voucher: GiftVoucherItem;
   onClose: () => void;
 }) {
+  const t = useTranslations("GiftVouchers");
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState<number>(1);
   const [selectedLayoutId, setSelectedLayoutId] = useState<string | undefined>(
-    voucher.layouts?.[0]?.id
+    voucher.layouts?.[0]?.id,
   );
   const [personalMessage, setPersonalMessage] = useState<string>("");
   const [hideValue, setHideValue] = useState<boolean>(false);
   const [scheduledDate, setScheduledDate] = useState<string>("");
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [imageError, setImageError] = useState<boolean>(false);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -84,13 +87,39 @@ function GiftVoucherQuickViewModalContent({
   const savings = valueNum > priceNum ? valueNum - priceNum : 0;
 
   const previewUrl = voucher.preview?.url;
+  const showImage = Boolean(previewUrl && !imageError);
 
-  const cleanDescription = voucher.description
-    ? voucher.description.replace(/<[^>]*>?/gm, "").trim()
-    : "";
+  const sanitizedDescription = useMemo(() => {
+    if (!voucher.description) return "";
+    return sanitizeHtml(voucher.description, {
+      allowedTags: [
+        "b",
+        "i",
+        "em",
+        "strong",
+        "a",
+        "p",
+        "br",
+        "ul",
+        "ol",
+        "li",
+        "span",
+        "sub",
+        "sup",
+        "strike",
+        "u",
+      ],
+      allowedAttributes: {
+        a: ["href", "target", "rel"],
+        span: ["class", "style"],
+        p: ["class", "style"],
+      },
+    });
+  }, [voucher.description]);
 
   const handleDecrement = () => setQuantity((prev) => Math.max(1, prev - 1));
-  const handleIncrement = () => setQuantity((prev) => Math.min(9999, prev + 1));
+  const handleIncrement = () =>
+    setQuantity((prev) => Math.min(9999, prev + 1));
 
   const handleAddToCart = async () => {
     setIsAdding(true);
@@ -102,7 +131,9 @@ function GiftVoucherQuickViewModalContent({
         layoutId: selectedLayoutId || undefined,
         message: personalMessage.trim() || undefined,
         hideValue: hideValue || undefined,
-        sendAt: scheduledDate ? new Date(scheduledDate).toISOString() : undefined,
+        sendAt: scheduledDate
+          ? new Date(scheduledDate).toISOString()
+          : undefined,
       });
       setIsSuccess(true);
       setTimeout(() => {
@@ -115,7 +146,9 @@ function GiftVoucherQuickViewModalContent({
     }
   };
 
-  const selectedLayout = voucher.layouts?.find((l) => l.id === selectedLayoutId);
+  const selectedLayout = voucher.layouts?.find(
+    (l) => l.id === selectedLayoutId,
+  );
 
   return (
     <div
@@ -141,55 +174,31 @@ function GiftVoucherQuickViewModalContent({
         <div className="overflow-y-auto p-6 sm:p-8 flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 items-start">
           {/* Certificate Design / Preview & Layout Selector */}
           <div className="space-y-4">
-            <div className="relative aspect-4/3 w-full rounded-2xl overflow-hidden bg-linear-to-br from-amber-500/10 via-amber-500/5 to-purple-500/10 border border-amber-200/80 p-6 flex flex-col justify-between shadow-xs">
-              {previewUrl ? (
+            <div className="relative aspect-4/3 w-full rounded-2xl overflow-hidden bg-linear-to-br from-amber-500/15 via-orange-500/10 to-amber-600/20 border border-amber-200/80 p-6 flex flex-col justify-between shadow-xs">
+              {showImage ? (
                 <Image
-                  src={previewUrl}
+                  src={previewUrl!}
                   alt={voucher.title}
                   fill
                   sizes="(max-width: 768px) 100vw, 400px"
                   className="object-cover pointer-events-none"
                   draggable={false}
+                  onError={() => setImageError(true)}
                   onContextMenu={(e) => e.preventDefault()}
                 />
               ) : (
-                <>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="size-9 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-xs">
-                        <Gift className="size-5 stroke-[2]" />
-                      </div>
-                      <div>
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800">
-                          Official Voucher
-                        </span>
-                        <p className="text-xs font-semibold text-neutral-600">
-                          LumiPhoto Store
-                        </p>
-                      </div>
-                    </div>
-                    <Sparkles className="size-5 text-amber-500" />
+                /* Simple & Clean Placeholder */
+                <div className="flex flex-col items-center justify-center h-full text-center p-6 select-none">
+                  <div className="size-16 rounded-3xl bg-amber-500/10 border border-amber-200/60 text-amber-600 flex items-center justify-center mb-3 shadow-xs">
+                    <Gift className="size-8 stroke-[1.75]" />
                   </div>
-
-                  <div className="text-center py-4">
-                    <span className="text-xs font-semibold text-neutral-500 uppercase tracking-widest block mb-1">
-                      {hideValue ? "Gift Certificate" : "Gift Voucher Value"}
-                    </span>
-                    <span className="text-3xl sm:text-4xl font-black text-neutral-900 tracking-tight">
-                      {hideValue ? "Special Gift" : formattedValue}
-                    </span>
-                    {selectedLayout && (
-                      <span className="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-white/80 text-amber-900 border border-amber-200">
-                        Theme: {selectedLayout.name}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="flex items-center justify-between text-[11px] font-mono text-neutral-500 pt-2 border-t border-amber-200/60">
-                    <span>Redeemable Online</span>
-                    <span>Valid 12 Months</span>
-                  </div>
-                </>
+                  <span className="text-sm font-bold text-neutral-800 tracking-tight line-clamp-1">
+                    {voucher.title}
+                  </span>
+                  <span className="text-xs font-medium text-neutral-400 mt-1">
+                    {t("officialVoucher")}
+                  </span>
+                </div>
               )}
             </div>
 
@@ -199,10 +208,10 @@ function GiftVoucherQuickViewModalContent({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5 text-xs font-bold text-neutral-700">
                     <Palette className="size-3.5 text-brand" />
-                    <span>Choose Voucher Design</span>
+                    <span>{t("voucherDesign")}</span>
                   </div>
                   <span className="text-[10px] font-semibold text-neutral-400">
-                    {voucher.layouts.length} designs available
+                    {voucher.layouts.length} {t("includedDesigns")}
                   </span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -217,7 +226,7 @@ function GiftVoucherQuickViewModalContent({
                           "p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-1",
                           isSelected
                             ? "bg-brand/10 border-brand ring-2 ring-brand/20"
-                            : "bg-white border-neutral-200 hover:border-neutral-300"
+                            : "bg-white border-neutral-200 hover:border-neutral-300",
                         )}
                       >
                         <div className="flex items-center justify-between">
@@ -263,22 +272,24 @@ function GiftVoucherQuickViewModalContent({
               <div className="p-3.5 bg-linear-to-r from-amber-50 to-orange-50 rounded-2xl border border-amber-200/70 space-y-1">
                 <div className="flex items-baseline justify-between">
                   <span className="text-xs font-bold uppercase tracking-wider text-amber-900">
-                    Voucher Value
+                    {t("voucherValue")}
                   </span>
                   <span className="text-xl font-black text-amber-900">
                     {formattedValue}
                   </span>
                 </div>
                 <div className="flex items-baseline justify-between text-xs text-neutral-600">
-                  <span>Purchase Price:</span>
+                  <span>{t("purchasePrice")}:</span>
                   <span className="font-extrabold text-sm text-neutral-900">
                     {formattedPrice}
                   </span>
                 </div>
                 {savings > 0 && (
                   <div className="pt-1 border-t border-amber-200/60 flex items-center justify-between text-xs font-bold text-emerald-700">
-                    <span>You Save:</span>
-                    <span>€{savings.toFixed(2)} Bonus Value</span>
+                    <span>{t("youSave")}:</span>
+                    <span>
+                      €{savings.toFixed(2)} {t("bonusValue")}
+                    </span>
                   </div>
                 )}
               </div>
@@ -293,7 +304,7 @@ function GiftVoucherQuickViewModalContent({
                       className="flex items-center gap-1.5 text-xs font-bold text-neutral-700"
                     >
                       <MessageSquare className="size-3 text-neutral-500" />
-                      <span>Personal Message (Optional)</span>
+                      <span>{t("personalMessage")}</span>
                     </label>
                     <span className="text-[10px] text-neutral-400">
                       {personalMessage.length}/2000
@@ -305,7 +316,7 @@ function GiftVoucherQuickViewModalContent({
                     maxLength={2000}
                     value={personalMessage}
                     onChange={(e) => setPersonalMessage(e.target.value)}
-                    placeholder="Add a heartfelt note for the recipient..."
+                    placeholder={t("messagePlaceholder")}
                     className="w-full text-xs p-2.5 rounded-xl border border-neutral-200 focus:outline-hidden focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all placeholder:text-neutral-400 bg-neutral-50/50"
                   />
                 </div>
@@ -342,21 +353,32 @@ function GiftVoucherQuickViewModalContent({
                       />
                       <div className="flex items-center gap-1 text-[11px] font-semibold text-neutral-700">
                         <EyeOff className="size-3 text-neutral-500" />
-                        <span>Hide value on card</span>
+                        <span>{t("hideValue")}</span>
                       </div>
                     </label>
                   </div>
                 </div>
               </div>
 
-              {cleanDescription && (
-                <div className="pt-2 border-t border-neutral-100">
-                  <h4 className="text-[11px] font-bold text-neutral-700 uppercase tracking-wider mb-0.5">
-                    About this Voucher
+              {sanitizedDescription && (
+                <div className="pt-2 border-t border-neutral-100 space-y-1">
+                  <h4 className="text-[11px] font-bold text-neutral-700 uppercase tracking-wider">
+                    {t("aboutVoucher")}
                   </h4>
-                  <p className="text-xs text-neutral-600 leading-relaxed max-h-20 overflow-y-auto">
-                    {cleanDescription}
-                  </p>
+                  <div
+                    className={cn(
+                      "text-xs text-neutral-600 leading-relaxed max-h-36 overflow-y-auto pr-1",
+                      "prose prose-xs max-w-none dark:prose-invert",
+                      "[&_p]:mb-1.5 [&_p:last-child]:mb-0",
+                      "[&_strong]:font-semibold [&_strong]:text-neutral-800",
+                      "[&_em]:italic",
+                      "[&_ul]:list-disc [&_ul]:pl-4 [&_ul]:my-1 [&_ul]:space-y-0.5",
+                      "[&_ol]:list-decimal [&_ol]:pl-4 [&_ol]:my-1 [&_ol]:space-y-0.5",
+                      "[&_li]:text-neutral-600",
+                      "[&_a]:text-brand [&_a]:underline [&_a:hover]:opacity-80",
+                    )}
+                    dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
+                  />
                 </div>
               )}
             </div>

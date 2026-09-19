@@ -36,17 +36,6 @@ export function GiftVouchersContent() {
         {/* Header and Breadcrumb */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-200/80 pb-5">
           <div className="space-y-1">
-            <div className="flex items-center gap-2 text-xs text-neutral-500 font-medium">
-              <Link
-                href={`/${locale}`}
-                className="inline-flex items-center gap-1 hover:text-neutral-900 transition-colors"
-              >
-                <ArrowLeft className="size-3.5" />
-                <span>Home</span>
-              </Link>
-              <span className="text-neutral-300">/</span>
-              <span className="text-neutral-800 font-semibold">Gift Vouchers</span>
-            </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-neutral-900 tracking-tight">
               Gift Vouchers & Celebration Cards
             </h1>
@@ -88,7 +77,7 @@ export function GiftVouchersContent() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in duration-200">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 animate-in fade-in duration-200">
             {vouchers.map((voucher) => (
               <GiftVoucherCard
                 key={voucher.id}

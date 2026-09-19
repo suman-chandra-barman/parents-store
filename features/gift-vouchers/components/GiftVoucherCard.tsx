@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import {
   Minus,
   Plus,
@@ -10,13 +11,12 @@ import {
   Gift,
   Eye,
   Check,
-  Sparkles,
-  Palette,
   MessageSquare,
   EyeOff,
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
+import sanitizeHtml from "sanitize-html";
 import { cn } from "@/lib/utils";
 import { GiftVoucherItem } from "../types/gift-vouchers";
 import { useCart } from "@/features/cart/hooks/useCart";
@@ -26,17 +26,24 @@ export interface GiftVoucherCardProps {
   onQuickView?: (voucher: GiftVoucherItem) => void;
 }
 
-export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) {
+export function GiftVoucherCard({
+  voucher,
+  onQuickView,
+}: GiftVoucherCardProps) {
+  const t = useTranslations("GiftVouchers");
   const { addToCart } = useCart();
+
   const [quantity, setQuantity] = useState<number>(1);
   const [selectedLayoutId, setSelectedLayoutId] = useState<string | undefined>(
-    () => voucher.layouts?.[0]?.id
+    () => voucher.layouts?.[0]?.id,
   );
   const [personalMessage, setPersonalMessage] = useState<string>("");
   const [hideValue, setHideValue] = useState<boolean>(false);
   const [showPersonalize, setShowPersonalize] = useState<boolean>(false);
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [imageError, setImageError] = useState<boolean>(false);
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState<boolean>(false);
 
   const priceNum = parseFloat(voucher.price) || 0;
   const valueNum = parseFloat(voucher.value) || priceNum;
@@ -45,10 +52,36 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
   const savings = valueNum > priceNum ? valueNum - priceNum : 0;
 
   const previewUrl = voucher.preview?.url;
+  const showImage = Boolean(previewUrl && !imageError);
 
-  const cleanDescription = voucher.description
-    ? voucher.description.replace(/<[^>]*>?/gm, "").trim()
-    : "";
+  // Sanitize Rich Text HTML Description from backend editor
+  const sanitizedDescription = useMemo(() => {
+    if (!voucher.description) return "";
+    return sanitizeHtml(voucher.description, {
+      allowedTags: [
+        "b",
+        "i",
+        "em",
+        "strong",
+        "a",
+        "p",
+        "br",
+        "ul",
+        "ol",
+        "li",
+        "span",
+        "sub",
+        "sup",
+        "strike",
+        "u",
+      ],
+      allowedAttributes: {
+        a: ["href", "target", "rel"],
+        span: ["class", "style"],
+        p: ["class", "style"],
+      },
+    });
+  }, [voucher.description]);
 
   const handleDecrement = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -87,62 +120,53 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
     }
   };
 
-  const selectedLayout = voucher.layouts?.find((l) => l.id === selectedLayoutId) || voucher.layouts?.[0];
+  const selectedLayout =
+    voucher.layouts?.find((l) => l.id === selectedLayoutId) ||
+    voucher.layouts?.[0];
 
   return (
-    <div className="group relative bg-white border border-neutral-200/90 rounded-2xl p-4 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between">
-      {/* Top Details & Certificate Mockup */}
+    <div className="group relative bg-white border border-neutral-200/80 rounded-2xl p-4 shadow-xs hover:shadow-xl hover:border-neutral-300 transition-all duration-300 flex flex-col justify-between overflow-hidden">
+      {/* Top Details & Certificate Mockup / Preview */}
       <div className="space-y-3.5">
-        {/* Certificate Card Header / Mockup */}
-        <div className="relative aspect-4/3 w-full rounded-xl overflow-hidden bg-linear-to-br from-amber-500/10 via-amber-500/5 to-purple-500/10 border border-amber-200/80 p-4 flex flex-col justify-between">
-          {previewUrl ? (
+        {/* Certificate Card Header / Mockup Banner */}
+        <div className="relative aspect-4/3 w-full rounded-xl overflow-hidden bg-linear-to-br from-amber-500/15 via-orange-500/10 to-amber-600/20 border border-amber-200/80 p-3.5 sm:p-4 flex flex-col justify-between shadow-inner">
+          {showImage ? (
             <Image
-              src={previewUrl}
+              src={previewUrl!}
               alt={voucher.title}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-              className="object-cover pointer-events-none transition-transform duration-300 group-hover:scale-105"
+              className="object-cover pointer-events-none transition-transform duration-500 group-hover:scale-105"
               draggable={false}
+              onError={() => setImageError(true)}
               onContextMenu={(e) => e.preventDefault()}
             />
           ) : (
-            <>
-              <div className="flex items-center justify-between">
-                <div className="size-8 rounded-lg bg-amber-500 text-white flex items-center justify-center shadow-2xs">
-                  <Gift className="size-4 stroke-[2]" />
-                </div>
-                <Sparkles className="size-4 text-amber-500" />
+            /* Simple & Clean Placeholder */
+            <div className="flex flex-col items-center justify-center h-full text-center p-4 select-none">
+              <div className="size-12 rounded-2xl bg-amber-500/10 border border-amber-200/60 text-amber-600 flex items-center justify-center mb-2 shadow-2xs group-hover:scale-110 transition-transform duration-300">
+                <Gift className="size-6 stroke-[1.75]" />
               </div>
-
-              <div className="text-center py-2">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 block">
-                  {hideValue ? "Gift Certificate" : "Gift Voucher"}
-                </span>
-                <span className="text-2xl font-black text-neutral-900 tracking-tight">
-                  {hideValue ? "Special Gift" : formattedValue}
-                </span>
-                {selectedLayout && (
-                  <span className="inline-block mt-1 px-2 py-0.5 rounded-md text-[9px] font-bold bg-white/90 text-amber-900 border border-amber-200 shadow-2xs">
-                    Theme: {selectedLayout.name}
-                  </span>
-                )}
-              </div>
-
-              <div className="flex items-center justify-between text-[10px] font-mono text-neutral-500 pt-1.5 border-t border-amber-200/60">
-                <span>{hideValue ? "Value Hidden" : `Value: ${formattedValue}`}</span>
-                <span className="text-amber-800 font-bold">LumiPhoto</span>
-              </div>
-            </>
+              <span className="text-xs font-bold text-neutral-700 tracking-tight line-clamp-1">
+                {voucher.title}
+              </span>
+              <span className="text-[10px] font-medium text-neutral-400 mt-0.5">
+                {t("officialVoucher")}
+              </span>
+            </div>
           )}
 
           {/* Quick View Floating Button */}
           {onQuickView && (
             <button
               type="button"
-              onClick={() => onQuickView(voucher)}
-              className="absolute top-2.5 right-2.5 size-8 rounded-full bg-white/90 backdrop-blur-xs text-neutral-700 shadow-sm opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center justify-center hover:bg-white hover:text-neutral-900 cursor-pointer"
-              aria-label="Full Details & Preview"
-              title="Full Details & Preview"
+              onClick={(e) => {
+                e.stopPropagation();
+                onQuickView(voucher);
+              }}
+              className="absolute top-2.5 right-2.5 z-10 size-8 rounded-full bg-white/90 backdrop-blur-md text-neutral-700 shadow-sm opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center justify-center hover:bg-white hover:text-neutral-900 hover:scale-105 active:scale-95 cursor-pointer"
+              aria-label={t("fullDetailsPreview")}
+              title={t("fullDetailsPreview")}
             >
               <Eye className="size-4" />
             </button>
@@ -150,16 +174,16 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
 
           {/* Category Chip */}
           {voucher.category && (
-            <div className="absolute top-2.5 left-2.5">
-              <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold bg-white/95 text-amber-800 backdrop-blur-xs shadow-2xs border border-neutral-100">
+            <div className="absolute top-2.5 left-2.5 z-10">
+              <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-white/95 text-amber-900 backdrop-blur-md shadow-2xs border border-amber-100">
                 {voucher.category}
               </span>
             </div>
           )}
         </div>
 
-        {/* Voucher Info */}
-        <div className="space-y-2">
+        {/* Voucher Info & Rich Text Description */}
+        <div className="space-y-2.5">
           <h3
             className="text-base font-bold text-neutral-900 line-clamp-1 group-hover:text-brand transition-colors cursor-pointer"
             onClick={() => onQuickView?.(voucher)}
@@ -168,25 +192,53 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
             {voucher.title}
           </h3>
 
-          {cleanDescription && (
-            <p className="text-xs text-neutral-500 line-clamp-2 leading-relaxed">
-              {cleanDescription}
-            </p>
+          {/* Rich Text Editor HTML Description */}
+          {sanitizedDescription && (
+            <div className="space-y-1">
+              <div
+                className={cn(
+                  "text-xs text-neutral-600 leading-relaxed",
+                  "prose prose-xs max-w-none dark:prose-invert",
+                  "[&_p]:mb-1 [&_p:last-child]:mb-0",
+                  "[&_strong]:font-semibold [&_strong]:text-neutral-800",
+                  "[&_em]:italic",
+                  "[&_ul]:list-disc [&_ul]:pl-4 [&_ul]:my-1 [&_ul]:space-y-0.5",
+                  "[&_ol]:list-decimal [&_ol]:pl-4 [&_ol]:my-1 [&_ol]:space-y-0.5",
+                  "[&_li]:text-neutral-600",
+                  "[&_a]:text-brand [&_a]:underline [&_a:hover]:opacity-80",
+                  isDescriptionExpanded
+                    ? "max-h-48 overflow-y-auto pr-1"
+                    : "line-clamp-2 max-h-10 overflow-hidden",
+                )}
+                dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
+              />
+              {voucher.description && voucher.description.length > 90 && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsDescriptionExpanded((prev) => !prev);
+                  }}
+                  className="text-[11px] font-semibold text-brand hover:underline cursor-pointer inline-flex items-center gap-0.5"
+                >
+                  <span>
+                    {isDescriptionExpanded ? t("showLess") : t("readMore")}
+                  </span>
+                </button>
+              )}
+            </div>
           )}
 
-          {/* Layout Themes Selection on Card */}
+          {/* Layout Themes Selection */}
           {voucher.layouts && voucher.layouts.length > 0 && (
             <div className="space-y-1.5 pt-1.5 border-t border-neutral-100">
               <div className="flex items-center justify-between text-[10px] font-bold text-neutral-500 uppercase tracking-wider">
-                <span className="flex items-center gap-1">
-                  <Palette className="size-3 text-brand" />
-                  <span>Voucher Design</span>
-                </span>
+                <span>{t("voucherDesign")}</span>
                 <span className="text-neutral-400 font-normal normal-case">
                   {selectedLayout?.name}
                 </span>
               </div>
-              <div className="flex flex-wrap items-center gap-1">
+              <div className="flex flex-wrap items-center gap-1.5">
                 {voucher.layouts.map((layout) => {
                   const isSelected = selectedLayoutId === layout.id;
                   return (
@@ -198,10 +250,10 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
                         setSelectedLayoutId(layout.id);
                       }}
                       className={cn(
-                        "px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer border flex items-center gap-1",
+                        "px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer border flex items-center gap-1",
                         isSelected
                           ? "bg-brand text-white border-brand shadow-2xs"
-                          : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200 border-neutral-200"
+                          : "bg-neutral-50 text-neutral-700 hover:bg-neutral-100 border-neutral-200/80",
                       )}
                       title={layout.description || layout.name}
                     >
@@ -215,24 +267,24 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
           )}
 
           {/* Personalize Button Toggle (Message & Hide Value) */}
-          <div className="pt-1">
+          <div className="pt-0.5">
             <button
               type="button"
               onClick={() => setShowPersonalize((prev) => !prev)}
-              className="w-full py-1 px-2 rounded-lg bg-neutral-50 hover:bg-neutral-100 border border-neutral-200/80 text-[11px] font-semibold text-neutral-700 flex items-center justify-between transition-colors cursor-pointer"
+              className="w-full py-1.5 px-2.5 rounded-xl bg-neutral-50 hover:bg-neutral-100/90 border border-neutral-200/80 text-[11px] font-semibold text-neutral-700 flex items-center justify-between transition-colors cursor-pointer"
             >
               <span className="flex items-center gap-1.5">
-                <MessageSquare className="size-3 text-brand" />
-                <span>
+                <MessageSquare className="size-3.5 text-brand shrink-0" />
+                <span className="truncate">
                   {personalMessage || hideValue
-                    ? "Personalized Gift Active ✨"
-                    : "Add Personal Message / Options"}
+                    ? `✨ ${t("personalizedActive")}`
+                    : t("personalizeGift")}
                 </span>
               </span>
               {showPersonalize ? (
-                <ChevronUp className="size-3.5 text-neutral-400" />
+                <ChevronUp className="size-3.5 text-neutral-400 shrink-0" />
               ) : (
-                <ChevronDown className="size-3.5 text-neutral-400" />
+                <ChevronDown className="size-3.5 text-neutral-400 shrink-0" />
               )}
             </button>
 
@@ -242,7 +294,7 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
                 <div className="space-y-1">
                   <div className="flex items-center justify-between">
                     <label className="text-[10px] font-bold text-neutral-600">
-                      Personal Message
+                      {t("personalMessage")}
                     </label>
                     <span className="text-[9px] text-neutral-400">
                       {personalMessage.length}/2000
@@ -253,7 +305,7 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
                     maxLength={2000}
                     value={personalMessage}
                     onChange={(e) => setPersonalMessage(e.target.value)}
-                    placeholder="Write a message for the recipient..."
+                    placeholder={t("messagePlaceholder")}
                     className="w-full text-xs p-2 rounded-lg border border-neutral-200 bg-white focus:outline-hidden focus:border-brand focus:ring-1 focus:ring-brand/20 placeholder:text-neutral-400"
                   />
                 </div>
@@ -267,7 +319,7 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
                   />
                   <div className="flex items-center gap-1 text-[10px] font-semibold text-neutral-700">
                     <EyeOff className="size-3 text-neutral-500" />
-                    <span>Hide price/value on voucher card</span>
+                    <span>{t("hideValue")}</span>
                   </div>
                 </label>
               </div>
@@ -277,7 +329,7 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
       </div>
 
       {/* Bottom Pricing, Quantity & Add to Cart */}
-      <div className="pt-4 mt-3 border-t border-neutral-100 space-y-3">
+      <div className="pt-3.5 mt-3 border-t border-neutral-100 space-y-2.5">
         {/* Pricing & Savings */}
         <div className="flex items-baseline justify-between">
           <div>
@@ -285,14 +337,15 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
               {formattedPrice}
             </span>
             {savings > 0 && (
-              <span className="block text-[10px] font-semibold text-emerald-600">
-                Save €{savings.toFixed(2)} (Value {formattedValue})
+              <span className="block text-[10px] font-bold text-emerald-600">
+                {t("youSave")} €{savings.toFixed(2)} ({t("voucherValue")}{" "}
+                {formattedValue})
               </span>
             )}
           </div>
           {quantity > 1 && (
             <span className="text-xs font-semibold text-neutral-600">
-              Total: €{(priceNum * quantity).toFixed(2)}
+              {t("total")}: €{(priceNum * quantity).toFixed(2)}
             </span>
           )}
         </div>
@@ -300,12 +353,12 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
         {/* Actions row: Quantity selector + Add to Cart */}
         <div className="flex items-center gap-2">
           {/* Quantity Controls */}
-          <div className="flex items-center border border-neutral-200 rounded-lg px-1.5 py-1 bg-neutral-50/80 shrink-0">
+          <div className="flex items-center border border-neutral-200 rounded-xl px-1 py-0.5 bg-neutral-50 shrink-0">
             <button
               type="button"
               onClick={handleDecrement}
               disabled={quantity <= 1 || isAdding}
-              className="size-6 rounded-md flex items-center justify-center text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200/60 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              className="size-7 rounded-lg flex items-center justify-center text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200/60 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
               aria-label="Decrease quantity"
             >
               <Minus className="size-3" />
@@ -317,7 +370,7 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
               type="button"
               onClick={handleIncrement}
               disabled={quantity >= 9999 || isAdding}
-              className="size-6 rounded-md flex items-center justify-center text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200/60 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              className="size-7 rounded-lg flex items-center justify-center text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200/60 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
               aria-label="Increase quantity"
             >
               <Plus className="size-3" />
@@ -330,11 +383,11 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
             onClick={handleAddToCart}
             disabled={isAdding}
             className={cn(
-              "flex-1 py-2 px-3 rounded-lg font-semibold text-xs text-white shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer",
+              "flex-1 py-2 px-3 rounded-xl font-semibold text-xs text-white shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer",
               isSuccess
                 ? "bg-emerald-600 hover:bg-emerald-700"
                 : "bg-brand hover:opacity-90 active:scale-98",
-              "disabled:opacity-60 disabled:cursor-not-allowed"
+              "disabled:opacity-60 disabled:cursor-not-allowed",
             )}
           >
             {isAdding ? (
@@ -344,7 +397,7 @@ export function GiftVoucherCard({ voucher, onQuickView }: GiftVoucherCardProps) 
             ) : (
               <ShoppingBag className="size-3.5" />
             )}
-            <span>{isSuccess ? "Added" : "Add to Cart"}</span>
+            <span>{isSuccess ? t("added") : t("addToCart")}</span>
           </button>
         </div>
       </div>

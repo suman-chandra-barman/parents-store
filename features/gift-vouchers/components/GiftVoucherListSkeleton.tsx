@@ -4,8 +4,8 @@ import React from "react";
 
 export function GiftVoucherListSkeleton() {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {[1, 2, 3, 4, 5, 6].map((i) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
         <div
           key={i}
           className="bg-white rounded-2xl border border-neutral-200/80 p-4 shadow-xs flex flex-col space-y-4 animate-pulse"
