@@ -1,24 +1,43 @@
-import { sharedDtoSchema as _ } from '@/common/dto/sharedDtoSchema';
-import z from 'zod';
+import { z } from 'zod';
 
 /**
- * Mirrors the backend register DTO so the client and the server validate
- * registrations with the exact same rules.
+ * Zod validation schema for the Pre-Registration Form.
  */
 export const RegisterJobPreRegistrationFormSchema = z.object({
-  password: _.accessCodePassword,
+  /** Access code password */
+  password: z
+    .string()
+    .min(1, 'Password is required')
+    .trim(),
 
-  /** user name */
-  name: _.name({ field: 'name' }),
+  /** User full name */
+  name: z
+    .string()
+    .min(1, 'Name is required')
+    .max(100, 'Name cannot exceed 100 characters')
+    .trim(),
 
-  /** user email */
-  email: _.email({ trustCheck: false }).nullish(),
+  /** User email (optional or nullish) */
+  email: z
+    .string()
+    .trim()
+    .email('Invalid email address')
+    .nullish()
+    .or(z.literal('')),
 
-  /** user phone number */
-  phone: _.phone().nullish(),
+  /** User phone number (optional or nullish) */
+  phone: z
+    .string()
+    .trim()
+    .nullish()
+    .or(z.literal('')),
 
-  /** user group, must be one of the selectable groups of the form */
-  group: _.name({ field: 'group' }).nullish(),
+  /** User group, must be one of the selectable groups of the form */
+  group: z
+    .string()
+    .trim()
+    .nullish()
+    .or(z.literal('')),
 });
 
 /** Raw form values (what the user types, before parsing). */
