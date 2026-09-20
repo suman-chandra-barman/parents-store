@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, notFound } from "next/navigation";
 import { useLocale } from "next-intl";
 import Link from "next/link";
 import { RefreshCw, Loader2 } from "lucide-react";
@@ -10,7 +10,6 @@ import { useFavorites } from "@/features/access-cards/hooks/useFavorites";
 import { PhotoItem } from "../types/public-galleries";
 import { PublicGalleryHero } from "./PublicGalleryHero";
 import { PublicGalleryPasswordPrompt } from "./PublicGalleryPasswordPrompt";
-import { PublicGalleryJobPrompt } from "./PublicGalleryJobPrompt";
 import { PhotoCardItem } from "@/features/access-cards/components/PhotoCardItem";
 import { PhotoGridSkeleton } from "@/features/access-cards/components/PhotoGridSkeleton";
 import { PublicPhotoEmptyState } from "./PublicPhotoEmptyState";
@@ -50,9 +49,9 @@ export function PublicGalleriesContent() {
     [router, locale],
   );
 
-  // 1. If no Job ID is provided in URL, prompt the user for Job ID
+  // 1. If no Job ID is provided in URL, trigger not-found 404 page
   if (!jobId) {
-    return <PublicGalleryJobPrompt />;
+    notFound();
   }
 
   // 2. While checking password requirement status

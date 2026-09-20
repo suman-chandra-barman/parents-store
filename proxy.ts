@@ -36,7 +36,7 @@ export default function proxy(request: NextRequest) {
       COOKIE_KEYS.PREFERRED_HOME_ROUTE
     )?.value;
 
-    const validTargetRoute: EntryRoute =
+    let targetRoute: EntryRoute =
       savedRoute &&
       Object.values(ENTRY_ROUTES).includes(savedRoute as EntryRoute)
         ? (savedRoute as EntryRoute)
@@ -46,13 +46,16 @@ export default function proxy(request: NextRequest) {
     const redirectSearchParams = new URLSearchParams(request.nextUrl.search);
 
     // If target is Classic route and jobId is missing from URL, use remembered jobId
-    if (validTargetRoute === ENTRY_ROUTES.CLASSIC) {
+    if (targetRoute === ENTRY_ROUTES.CLASSIC) {
       if (!redirectSearchParams.has("jobId")) {
         const savedJobId = request.cookies.get(
           COOKIE_KEYS.LAST_CLASSIC_JOB_ID
         )?.value;
         if (savedJobId) {
           redirectSearchParams.set("jobId", savedJobId);
+        } else {
+          // Fallback to default route if no jobId is remembered
+          targetRoute = DEFAULT_ENTRY_ROUTE;
         }
       }
     }
@@ -62,7 +65,7 @@ export default function proxy(request: NextRequest) {
       : "";
 
     const redirectUrl = new URL(
-      `/${currentLocale}${validTargetRoute}${searchString}`,
+      `/${currentLocale}${targetRoute}${searchString}`,
       request.url
     );
 
@@ -88,19 +91,18 @@ export default function proxy(request: NextRequest) {
   );
 
   if (matchedEntry) {
-    response.cookies.set({
-      name: COOKIE_KEYS.PREFERRED_HOME_ROUTE,
-      value: matchedEntry,
-      path: "/",
-      maxAge: 60 * 60 * 24 * 365, // 1 year
-      sameSite: "lax",
-      httpOnly: false,
-    });
-
-    // If visiting Classic gallery with a jobId param, remember the jobId
+    // Only save classic route as preferred if a valid jobId is present
     if (matchedEntry === ENTRY_ROUTES.CLASSIC) {
       const currentJobId = searchParams.get("jobId");
       if (currentJobId) {
+        response.cookies.set({
+          name: COOKIE_KEYS.PREFERRED_HOME_ROUTE,
+          value: matchedEntry,
+          path: "/",
+          maxAge: 60 * 60 * 24 * 365, // 1 year
+          sameSite: "lax",
+          httpOnly: false,
+        });
         response.cookies.set({
           name: COOKIE_KEYS.LAST_CLASSIC_JOB_ID,
           value: currentJobId.trim(),
@@ -110,6 +112,15 @@ export default function proxy(request: NextRequest) {
           httpOnly: false,
         });
       }
+    } else {
+      response.cookies.set({
+        name: COOKIE_KEYS.PREFERRED_HOME_ROUTE,
+        value: matchedEntry,
+        path: "/",
+        maxAge: 60 * 60 * 24 * 365, // 1 year
+        sameSite: "lax",
+        httpOnly: false,
+      });
     }
   }
 
