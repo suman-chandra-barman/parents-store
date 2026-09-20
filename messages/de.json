@@ -253,8 +253,10 @@
     "giftVouchers": "Geschenkgutscheine"
   },
   "Cart": {
+    "title": "Warenkorb",
+    "subtitle": "Überprüfen Sie Ihre ausgewählten Fotoabzüge, Produkte und Gutscheine vor dem Bezahlen.",
     "emptyTitle": "Ihr Warenkorb ist leer",
-    "emptyDesc": "Sie haben noch keine Fotoabzüge, Produkte oder Geschenkgutscheine zu Ihrem Warenkorb hinzugefügt. Entdecken Sie Ihre Fotos und den Shop, um loszulegen!",
+    "emptyDesc": "Sie haben noch keine Fotoabzüge, Produkte oder Geschenkgutscheine zu Ihrem Warenkorb hinzugefügt.",
     "goToAccessCards": "Zugangskarten-Galerie",
     "goToPublicGalleries": "Offene Galerie",
     "explorePhotos": "Fotogalerien",

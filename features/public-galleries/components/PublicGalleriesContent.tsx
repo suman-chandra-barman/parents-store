@@ -2,22 +2,24 @@
 
 import React, { useState, useCallback } from "react";
 import { useRouter, notFound } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
-import { RefreshCw, Loader2 } from "lucide-react";
+import { Loader2, Images } from "lucide-react";
 import { usePublicGallery } from "../hooks/usePublicGallery";
 import { useFavorites } from "@/features/access-cards/hooks/useFavorites";
 import { PhotoItem } from "../types/public-galleries";
 import { PublicGalleryHero } from "./PublicGalleryHero";
 import { PublicGalleryPasswordPrompt } from "./PublicGalleryPasswordPrompt";
+import { ErrorState } from "@/components/common/ErrorState";
+import { EmptyState } from "@/components/common/EmptyState";
 import { PhotoCardItem } from "@/features/access-cards/components/PhotoCardItem";
 import { PhotoGridSkeleton } from "@/features/access-cards/components/PhotoGridSkeleton";
-import { PublicPhotoEmptyState } from "./PublicPhotoEmptyState";
 import { FullscreenPhotoViewer } from "@/features/access-cards/components/FullscreenPhotoViewer";
 
 export function PublicGalleriesContent() {
   const router = useRouter();
   const locale = useLocale();
+  const t = useTranslations("PublicGalleries");
 
   const {
     jobId,
@@ -66,7 +68,23 @@ export function PublicGalleriesContent() {
     );
   }
 
-  // 3. If password is required and gallery is not unlocked yet
+  // 3. Full-page error view if initial status check or gallery failed with no photos
+  if (error && photos.length === 0) {
+    return (
+      <ErrorState
+        variant="page"
+        title="Unable to Load Photo Gallery"
+        message="We couldn't retrieve the photos for this gallery. The link or Job ID may be invalid, expired, or temporarily unavailable."
+        rawError={error}
+        onRetry={refetch}
+        retryText="Try Again"
+        backHomeHref={`/${locale}`}
+        backHomeText="Back to Home"
+      />
+    );
+  }
+
+  // 4. If password is required and gallery is not unlocked yet
   if (isPasswordRequired === true && !isPasswordVerified) {
     return (
       <PublicGalleryPasswordPrompt
@@ -77,7 +95,7 @@ export function PublicGalleriesContent() {
     );
   }
 
-  // 4. Open Gallery (Password not required or successfully verified)
+  // 5. Open Gallery (Password not required or successfully verified)
   return (
     <main className="bg-background text-foreground transition-colors flex flex-col min-h-screen">
       {/* Public Gallery Hero */}
@@ -96,22 +114,13 @@ export function PublicGalleriesContent() {
           <div className="space-y-4">
             <PhotoGridSkeleton count={12} />
           </div>
-        ) : error && photos.length === 0 ? (
-          /* Error State */
-          <div className="py-16 text-center bg-white rounded-3xl border border-red-100 p-8 shadow-xs max-w-lg mx-auto space-y-4">
-            <p className="text-sm text-red-600 font-semibold">{error}</p>
-            <button
-              type="button"
-              onClick={() => refetch()}
-              className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-neutral-700 bg-neutral-100 hover:bg-neutral-200 transition-colors cursor-pointer"
-            >
-              <RefreshCw className="size-3.5" />
-              <span>Retry</span>
-            </button>
-          </div>
         ) : photos.length === 0 ? (
-          /* Empty State */
-          <PublicPhotoEmptyState />
+          /* Standardized Empty State */
+          <EmptyState
+            icon={<Images className="size-8 stroke-[1.5]" />}
+            title={t("noPhotosFound")}
+            description={t("noPhotosDesc")}
+          />
         ) : (
           /* Photo Masonry Grid */
           <div

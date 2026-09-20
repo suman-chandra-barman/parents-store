@@ -55,23 +55,21 @@ export function FavoritesContent() {
   );
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-background text-foreground pb-20">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 max-w-7xl">
-        {/* Page Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
+    <div className="min-h-[calc(100vh-4rem)] bg-neutral-50/50 py-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 space-y-6 max-w-7xl">
+        {/* Unified Standard Page Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-200/80 pb-5">
           <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-                {t("title")}
-              </h1>
-            </div>
-            <p className="text-xs sm:text-sm text-muted-foreground">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-neutral-900 tracking-tight">
+              {t("title")}
+            </h1>
+            <p className="text-xs sm:text-sm text-neutral-500">
               {t("subtitle")}
             </p>
           </div>
         </div>
 
-        {/* Toolbar & Action Bar (Single primary CTA) */}
+        {/* Toolbar & Action Bar (When items exist) */}
         {favoriteIds.length > 0 && (
           <FavoritesActionBar
             favoriteCount={favoriteIds.length}
@@ -84,7 +82,7 @@ export function FavoritesContent() {
           <FavoritesEmptyState />
         ) : (
           <div className="space-y-4">
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-neutral-500">
               {t("selectFormatHint")}
             </p>
 

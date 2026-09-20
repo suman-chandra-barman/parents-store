@@ -75,7 +75,7 @@
     "fullName": "Full Name",
     "fullNamePlaceholder": "Jane Doe",
     "emailAddress": "Email Address",
-    "emailPlaceholder": "jane@example.com",
+    "emailPlaceholder": "suman@example.com",
     "phoneNumber": "Phone Number",
     "optional": "Optional",
     "selectGroup": "Select Group Option",
@@ -253,8 +253,10 @@
     "giftVouchers": "Gift Vouchers"
   },
   "Cart": {
+    "title": "Shopping Cart",
+    "subtitle": "Review your selected photo prints, products, and gift vouchers before checkout.",
     "emptyTitle": "Your Cart is Empty",
-    "emptyDesc": "You haven't added any photo prints, merchandise, or gift vouchers to your cart yet. Explore your photos and store to get started!",
+    "emptyDesc": "You haven't added any photo prints, merchandise, or gift vouchers to your cart yet.",
     "goToAccessCards": "Access Card Gallery",
     "goToPublicGalleries": "Open Gallery",
     "explorePhotos": "Photo Galleries",
