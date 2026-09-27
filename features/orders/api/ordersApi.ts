@@ -5,6 +5,8 @@ import type {
   CreateOrderResponse,
   PriceListResponse,
   PriceListFormatItem,
+  InvoiceData,
+  InvoiceResponse,
 } from "../types/orders";
 
 export const ordersApi = baseApi.injectEndpoints({
@@ -58,6 +60,19 @@ export const ordersApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Orders", "Cart"],
     }),
+
+    getInvoiceByOrderSlug: builder.query<InvoiceData, string>({
+      query: (orderSlug) => ({
+        url: `/invoices/order/${encodeURIComponent(orderSlug)}`,
+        method: "GET",
+      }),
+      transformResponse: (response: InvoiceResponse) => {
+        return response?.data;
+      },
+      providesTags: (_result, _error, orderSlug) => [
+        { type: "Orders", id: orderSlug },
+      ],
+    }),
   }),
 });
 
@@ -68,5 +83,7 @@ export const {
   useLazyGetAllPriceListsQuery,
   useCreateOrderMutation,
   useCreateOrderFromCartMutation,
+  useGetInvoiceByOrderSlugQuery,
+  useLazyGetInvoiceByOrderSlugQuery,
 } = ordersApi;
 

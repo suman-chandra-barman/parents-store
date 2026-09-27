@@ -1,34 +1,36 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { useForm, type FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { useCart } from "@/features/cart/hooks/useCart";
-import { useCreateOrderFromCartMutation } from "../api/ordersApi";
+import {
+  useCreateOrderFromCartMutation,
+  useLazyGetInvoiceByOrderSlugQuery,
+} from "../api/ordersApi";
 import {
   CheckoutFormData,
   CheckoutFormSchema,
 } from "../schemas/checkout-schemas";
-import { OrderCreatedData, CreateOrderFromCartPayload } from "../types/orders";
+import { CreateOrderFromCartPayload } from "../types/orders";
 import { BillingInfoForm } from "./BillingInfoForm";
 import { PaymentMethodSelector } from "./PaymentMethodSelector";
 import { CheckoutSummaryCard } from "./CheckoutSummaryCard";
-import { OrderSuccessView } from "./OrderSuccessView";
 import { CheckoutSkeleton } from "./CheckoutSkeleton";
 import { parseErrorMessage } from "@/utils/parseErrorMessage";
 
 export function CheckoutContent() {
   const locale = useLocale();
+  const router = useRouter();
   const { cart, sessionId, isLoading: isCartLoading, refreshCart } = useCart();
   const [createOrderFromCart, { isLoading: isSubmitting }] =
     useCreateOrderFromCartMutation();
-  const [createdOrder, setCreatedOrder] = useState<OrderCreatedData | null>(
-    null,
-  );
+  const [getInvoice] = useLazyGetInvoiceByOrderSlugQuery();
 
   const form = useForm<CheckoutFormData>({
     resolver: zodResolver(CheckoutFormSchema),
@@ -154,19 +156,28 @@ export function CheckoutContent() {
       const response = await createOrderFromCart(payload).unwrap();
 
       if (response?.data) {
-        setCreatedOrder(response.data);
+        const orderSlug = response.data.slug;
         await refreshCart();
-        toast.success("Order created successfully! 🎉");
+        toast.success("Order created successfully");
+
+        if (orderSlug) {
+          try {
+            const invoice = await getInvoice(orderSlug).unwrap();
+            if (invoice?.media?.url) {
+              window.open(invoice.media.url, "_blank");
+            }
+          } catch (invoiceErr) {
+            console.error("Auto-open invoice error:", invoiceErr);
+          }
+        }
+
+        router.push(`/${locale}/photo-galleries/access-cards`);
       }
     } catch (err: unknown) {
       const msg = parseErrorMessage(err, "Failed to create order.");
       toast.error(msg);
     }
   };
-
-  if (createdOrder) {
-    return <OrderSuccessView orderData={createdOrder} />;
-  }
 
   if (isCartLoading) {
     return <CheckoutSkeleton />;

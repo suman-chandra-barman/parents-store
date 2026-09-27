@@ -108,3 +108,48 @@ export interface CreateOrderResponse {
   message: string;
   data?: OrderCreatedData;
 }
+
+export interface InvoiceMedia {
+  id: string;
+  url: string;
+  bytes?: string;
+  height?: number | null;
+  width?: number | null;
+  mimeType: string;
+  metadata?: {
+    originalName?: string;
+  };
+  type?: string;
+}
+
+export interface InvoiceOrderInfo {
+  id: number;
+  slug: string;
+}
+
+export interface InvoiceData {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt?: string | null;
+  tenantId: string;
+  jobId?: string | null;
+  orderId: number;
+  mediaId: string;
+  paymentMethod: string;
+  number: string;
+  currency: string;
+  totalPrice: string;
+  issuedAt: string;
+  dueAt: string;
+  media?: InvoiceMedia;
+  order?: InvoiceOrderInfo;
+}
+
+export interface InvoiceResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  traceId?: string;
+  data: InvoiceData;
+}
