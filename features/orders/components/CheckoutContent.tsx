@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { useCart } from "@/features/cart/hooks/useCart";
 import {
   useCreateOrderFromCartMutation,
-  useLazyGetInvoiceByOrderSlugQuery,
+  useCreateInvoiceMutation,
 } from "../api/ordersApi";
 import {
   CheckoutFormData,
@@ -28,9 +28,12 @@ export function CheckoutContent() {
   const locale = useLocale();
   const router = useRouter();
   const { cart, sessionId, isLoading: isCartLoading, refreshCart } = useCart();
-  const [createOrderFromCart, { isLoading: isSubmitting }] =
+  const [createOrderFromCart, { isLoading: isSubmittingOrder }] =
     useCreateOrderFromCartMutation();
-  const [getInvoice] = useLazyGetInvoiceByOrderSlugQuery();
+  const [createInvoice, { isLoading: isCreatingInvoice }] =
+    useCreateInvoiceMutation();
+
+  const isSubmitting = isSubmittingOrder || isCreatingInvoice;
 
   const form = useForm<CheckoutFormData>({
     resolver: zodResolver(CheckoutFormSchema),
@@ -158,16 +161,20 @@ export function CheckoutContent() {
       if (response?.data) {
         const orderSlug = response.data.slug;
         await refreshCart();
-        toast.success("Order created successfully");
+        toast.success("Order created successfully! 🎉");
 
         if (orderSlug) {
           try {
-            const invoice = await getInvoice(orderSlug).unwrap();
+            const invoice = await createInvoice({
+              orderSlug,
+              paymentMethod: "INVOICE",
+            }).unwrap();
+
             if (invoice?.media?.url) {
               window.open(invoice.media.url, "_blank");
             }
           } catch (invoiceErr) {
-            console.error("Auto-open invoice error:", invoiceErr);
+            console.error("Auto-create/open invoice error:", invoiceErr);
           }
         }
 

@@ -153,3 +153,18 @@ export interface InvoiceResponse {
   traceId?: string;
   data: InvoiceData;
 }
+
+export const INVOICE_PAYMENT_METHOD = {
+  INVOICE: "INVOICE",
+  PAYPAL: "PAYPAL",
+  STRIPE: "STRIPE",
+} as const;
+
+export type InvoicePaymentMethod =
+  (typeof INVOICE_PAYMENT_METHOD)[keyof typeof INVOICE_PAYMENT_METHOD];
+
+export interface CreateInvoicePayload {
+  orderSlug: string;
+  paymentMethod?: InvoicePaymentMethod;
+}
+

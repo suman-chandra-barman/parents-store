@@ -7,6 +7,7 @@ import type {
   PriceListFormatItem,
   InvoiceData,
   InvoiceResponse,
+  CreateInvoicePayload,
 } from "../types/orders";
 
 export const ordersApi = baseApi.injectEndpoints({
@@ -61,15 +62,16 @@ export const ordersApi = baseApi.injectEndpoints({
       invalidatesTags: ["Orders", "Cart"],
     }),
 
-    getInvoiceByOrderSlug: builder.query<InvoiceData, string>({
-      query: (orderSlug) => ({
+    createInvoice: builder.mutation<InvoiceData, CreateInvoicePayload>({
+      query: ({ orderSlug, paymentMethod = "INVOICE" }) => ({
         url: `/invoices/order/${encodeURIComponent(orderSlug)}`,
-        method: "GET",
+        method: "POST",
+        body: { paymentMethod },
       }),
       transformResponse: (response: InvoiceResponse) => {
         return response?.data;
       },
-      providesTags: (_result, _error, orderSlug) => [
+      invalidatesTags: (_result, _error, { orderSlug }) => [
         { type: "Orders", id: orderSlug },
       ],
     }),
@@ -83,7 +85,7 @@ export const {
   useLazyGetAllPriceListsQuery,
   useCreateOrderMutation,
   useCreateOrderFromCartMutation,
-  useGetInvoiceByOrderSlugQuery,
-  useLazyGetInvoiceByOrderSlugQuery,
+  useCreateInvoiceMutation,
 } = ordersApi;
+
 
