@@ -82,7 +82,7 @@ export function CreateOrderModal({
       firstName: "John",
       lastName: "Doe",
       companyName: "Acme Corp.",
-      country: "Germany",
+      country: "DE",
       state: "Berlin",
       city: "Berlin",
       zipCode: "10115",

@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { Loader2, Lock, Frame } from "lucide-react";
+import { Loader2,Frame, MoveRightIcon } from "lucide-react";
 import { useCart } from "@/features/cart/hooks/useCart";
 import { cn } from "@/lib/utils";
 
@@ -10,7 +10,9 @@ interface CheckoutSummaryCardProps {
   isSubmitting: boolean;
 }
 
-export function CheckoutSummaryCard({ isSubmitting }: CheckoutSummaryCardProps) {
+export function CheckoutSummaryCard({
+  isSubmitting,
+}: CheckoutSummaryCardProps) {
   const { cart } = useCart();
 
   const items = cart?.items || [];
@@ -31,7 +33,7 @@ export function CheckoutSummaryCard({ isSubmitting }: CheckoutSummaryCardProps) 
       </div>
 
       {/* Mini Items List */}
-      <div className="space-y-3 max-h-[280px] overflow-y-auto pr-1">
+      <div className="space-y-3 max-h-70 overflow-y-auto pr-1">
         {items.map((item) => {
           const photoUrl = item.photos?.[0]?.media?.url;
           return (
@@ -119,20 +121,16 @@ export function CheckoutSummaryCard({ isSubmitting }: CheckoutSummaryCardProps) 
         type="submit"
         disabled={isSubmitting || items.length === 0}
         className={cn(
-          "w-full py-3.5 px-6 rounded-xl font-semibold text-sm text-white bg-brand hover:opacity-90 active:scale-98 shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+          "w-full py-3.5 px-6 rounded-xl font-semibold text-sm text-white bg-brand hover:opacity-90 active:scale-98 shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed",
         )}
       >
+        <span>Place Order {formattedTotal}</span>
         {isSubmitting ? (
           <Loader2 className="size-4 animate-spin text-white" />
         ) : (
-          <Lock className="size-4" />
+          <MoveRightIcon className="size-4" />
         )}
-        <span>Place Order {formattedTotal}</span>
       </button>
-
-      <p className="text-[11px] text-center text-neutral-400">
-        🔒 Safe & Secure Checkout
-      </p>
     </div>
   );
 }

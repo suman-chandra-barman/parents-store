@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useLocale } from "next-intl";
 import { useForm, type FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { useCart } from "@/features/cart/hooks/useCart";
 import { useCreateOrderFromCartMutation } from "../api/ordersApi";
@@ -13,14 +13,12 @@ import {
   CheckoutFormData,
   CheckoutFormSchema,
 } from "../schemas/checkout-schemas";
-import {
-  OrderCreatedData,
-  CreateOrderFromCartPayload,
-} from "../types/orders";
+import { OrderCreatedData, CreateOrderFromCartPayload } from "../types/orders";
 import { BillingInfoForm } from "./BillingInfoForm";
 import { PaymentMethodSelector } from "./PaymentMethodSelector";
 import { CheckoutSummaryCard } from "./CheckoutSummaryCard";
 import { OrderSuccessView } from "./OrderSuccessView";
+import { CheckoutSkeleton } from "./CheckoutSkeleton";
 import { parseErrorMessage } from "@/utils/parseErrorMessage";
 
 export function CheckoutContent() {
@@ -29,7 +27,7 @@ export function CheckoutContent() {
   const [createOrderFromCart, { isLoading: isSubmitting }] =
     useCreateOrderFromCartMutation();
   const [createdOrder, setCreatedOrder] = useState<OrderCreatedData | null>(
-    null
+    null,
   );
 
   const form = useForm<CheckoutFormData>({
@@ -104,7 +102,8 @@ export function CheckoutContent() {
         ...(cleanEmail ? { email: cleanEmail } : {}),
         ...(cleanPhone ? { phone: cleanPhone } : {}),
         billingAddress: {
-          ...(data.billingAddress.gender && data.billingAddress.gender !== "NOT_SPECIFIED"
+          ...(data.billingAddress.gender &&
+          data.billingAddress.gender !== "NOT_SPECIFIED"
             ? { gender: data.billingAddress.gender }
             : {}),
           firstName: data.billingAddress.firstName.trim(),
@@ -123,10 +122,12 @@ export function CheckoutContent() {
             note: data.billingAddress.note?.trim() || "N/A",
           },
         },
-        ...(data.shipToDifferentAddress && data.deliveryAddress?.firstName?.trim()
+        ...(data.shipToDifferentAddress &&
+        data.deliveryAddress?.firstName?.trim()
           ? {
               deliveryAddress: {
-                ...(data.deliveryAddress.gender && data.deliveryAddress.gender !== "NOT_SPECIFIED"
+                ...(data.deliveryAddress.gender &&
+                data.deliveryAddress.gender !== "NOT_SPECIFIED"
                   ? { gender: data.deliveryAddress.gender }
                   : {}),
                 firstName: data.deliveryAddress.firstName.trim(),
@@ -141,8 +142,7 @@ export function CheckoutContent() {
                   state: data.deliveryAddress.state?.trim() || "",
                   city: data.deliveryAddress.city?.trim() || "",
                   zipCode: data.deliveryAddress.zipCode?.trim() || "",
-                  addressLine1:
-                    data.deliveryAddress.addressLine1?.trim() || "",
+                  addressLine1: data.deliveryAddress.addressLine1?.trim() || "",
                   note: data.deliveryAddress.note?.trim() || "N/A",
                 },
               },
@@ -169,38 +169,16 @@ export function CheckoutContent() {
   }
 
   if (isCartLoading) {
-    return (
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-24 flex flex-col items-center justify-center text-neutral-400">
-        <Loader2 className="size-8 animate-spin text-brand mb-3" />
-        <p className="text-sm font-medium">Preparing checkout...</p>
-      </div>
-    );
-  }
-
-  if (!cart || !cart.items || cart.items.length === 0) {
-    return (
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center max-w-md">
-        <h2 className="text-xl font-bold text-neutral-900 mb-2">
-          Your Cart is Empty
-        </h2>
-        <p className="text-sm text-neutral-500 mb-6">
-          Please add items to your cart before proceeding to checkout.
-        </p>
-        <Link
-          href={`/${locale}/cart`}
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white bg-brand hover:opacity-90 text-xs transition-all shadow-sm"
-        >
-          <ArrowLeft className="size-4" />
-          <span>View Cart</span>
-        </Link>
-      </div>
-    );
+    return <CheckoutSkeleton />;
   }
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-6xl space-y-6 animate-in fade-in duration-200">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-6xl space-y-6">
       {/* Top Header */}
-      <div className="flex items-center gap-3 border-b border-neutral-200/80 pb-4">
+      <div className="border-b border-neutral-200/80 pb-4">
+        <h1 className="text-xl sm:text-2xl font-bold text-neutral-900 tracking-tight">
+          Checkout
+        </h1>
         <Link
           href={`/${locale}/cart`}
           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 transition-colors"
@@ -208,10 +186,6 @@ export function CheckoutContent() {
           <ArrowLeft className="size-4" />
           <span>Back to Cart</span>
         </Link>
-        <span className="text-neutral-300">/</span>
-        <h1 className="text-xl sm:text-2xl font-bold text-neutral-900 tracking-tight">
-          Checkout
-        </h1>
       </div>
 
       <form onSubmit={form.handleSubmit(onSubmit, onInvalid)}>

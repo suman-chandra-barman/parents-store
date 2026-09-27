@@ -4,6 +4,8 @@ import React from "react";
 import { UseFormReturn } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { OrderCustomerFormData } from "../utils/order-schema";
+import { CountrySelect } from "@/components/ui/CountrySelect";
+import { StateSelect } from "@/components/ui/StateSelect";
 import { User, Phone, Mail, MapPin, FileText } from "lucide-react";
 
 interface OrderShippingStepProps {
@@ -20,8 +22,11 @@ export function OrderShippingStep({ form }: OrderShippingStepProps) {
   const t = useTranslations("Orders");
   const {
     register,
+    watch,
     formState: { errors },
   } = form;
+
+  const currentCountry = watch("country");
 
   return (
     <div className="space-y-5">
@@ -157,7 +162,13 @@ export function OrderShippingStep({ form }: OrderShippingStepProps) {
         </div>
         <div className="space-y-1">
           <label className={labelClass}>{t("state")} *</label>
-          <input type="text" {...register("state")} className={inputClass} />
+          <StateSelect
+            countryCode={currentCountry}
+            {...register("state")}
+            hasError={Boolean(errors.state)}
+            placeholder="State"
+            className="bg-muted/40 border-input text-foreground text-xs py-2.5 h-[38px]"
+          />
           {errors.state && (
             <p className="text-xs text-destructive mt-0.5">{errors.state.message}</p>
           )}
@@ -171,7 +182,11 @@ export function OrderShippingStep({ form }: OrderShippingStepProps) {
         </div>
         <div className="space-y-1">
           <label className={labelClass}>{t("country")} *</label>
-          <input type="text" {...register("country")} className={inputClass} />
+          <CountrySelect
+            {...register("country")}
+            hasError={Boolean(errors.country)}
+            className="bg-muted/40 border-input text-foreground text-xs py-2.5 h-[38px]"
+          />
           {errors.country && (
             <p className="text-xs text-destructive mt-0.5">{errors.country.message}</p>
           )}
