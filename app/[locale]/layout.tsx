@@ -10,16 +10,19 @@ import { fetchTenant } from "@/stores/useTenantStore";
 
 export default async function LocaleLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }) {
+  const { locale } = await params;
   const messages = await getMessages();
   const headersList = await headers();
   const host = headersList.get("host") || "";
   const tenant = await fetchTenant(host);
 
   return (
-    <NextIntlClientProvider messages={messages}>
+    <NextIntlClientProvider messages={messages} locale={locale}>
       <StoreProvider>
         <TenantProvider initialTenant={tenant}>
           <CartProvider>
