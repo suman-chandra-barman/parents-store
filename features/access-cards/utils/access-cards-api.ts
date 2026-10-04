@@ -47,6 +47,10 @@ export async function fetchAccessCardsGallery(
   }
 }
 
+function getMediaBaseUrl(): string {
+  return (env.mediaBaseUrl || env.baseUrl || "").trim().replace(/\/$/, "");
+}
+
 /**
  * Fetch photo preview blob and return an Object URL string using native fetch (response.blob()).
  * Caches results to prevent duplicate HTTP requests.
@@ -62,7 +66,7 @@ export async function fetchPhotoPreviewBlob(photoId: string): Promise<string> {
 
   const fetchPromise = (async () => {
     try {
-      const endpoint = `${env.mediaBaseUrl}/watermark-engine/preview-album-photos/${photoId}`;
+      const endpoint = `${getMediaBaseUrl()}/watermark-engine/preview-album-photos/${photoId}`;
       const response = await fetch(endpoint, {
         headers: {
           Accept: "image/*",
@@ -96,7 +100,7 @@ export function getPhotoDirectUrl(photoId: string): string {
   if (blobCache.has(photoId)) {
     return blobCache.get(photoId)!;
   }
-  return `${env.mediaBaseUrl}/watermark-engine/preview-album-photos/${photoId}`;
+  return `${getMediaBaseUrl()}/watermark-engine/preview-album-photos/${photoId}`;
 }
 
 /**

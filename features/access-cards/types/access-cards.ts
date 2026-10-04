@@ -45,14 +45,38 @@ export interface AccessCardsResponse {
   };
 }
 
+export interface AlbumSampleMediaMetadata {
+  originalName?: string;
+  [key: string]: unknown;
+}
+
+export interface AlbumSampleMedia {
+  id: string;
+  url: string;
+  bytes?: string | number;
+  height?: number;
+  width?: number;
+  mimeType?: string;
+  metadata?: AlbumSampleMediaMetadata;
+  type?: string;
+}
+
+export interface StatusAlbum {
+  name: string;
+  sample?: AlbumSampleMedia;
+}
+
+export interface TwoFactorStatusData {
+  isTwoFactorProtected: boolean;
+  albums?: StatusAlbum[];
+}
+
 export interface TwoFactorStatusResponse {
   success: boolean;
   statusCode: number;
   message: string;
   traceId?: string;
-  data: {
-    isTwoFactorProtected: boolean;
-  };
+  data: TwoFactorStatusData;
 }
 
 export interface TwoFactorVerifyResponse {

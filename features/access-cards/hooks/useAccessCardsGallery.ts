@@ -6,6 +6,7 @@ import {
   useLazyCheckTwoFactorStatusQuery,
   useLazyVerifyTwoFactorPasswordQuery,
 } from "../api/accessCardsApi";
+import type { TwoFactorStatusData } from "../types/access-cards";
 import { parseErrorMessage } from "@/utils/parseErrorMessage";
 import { useTenantStore } from "@/stores/useTenantStore";
 
@@ -36,10 +37,10 @@ export function useAccessCardsGallery() {
   });
 
   const check2FAStatus = useCallback(
-    async (inputPassword: string): Promise<boolean> => {
+    async (inputPassword: string): Promise<TwoFactorStatusData> => {
       const trimmed = inputPassword.trim();
       const res = await triggerCheck2FA(trimmed).unwrap();
-      return Boolean(res?.data?.isTwoFactorProtected);
+      return res.data;
     },
     [triggerCheck2FA],
   );
@@ -79,10 +80,13 @@ export function useAccessCardsGallery() {
       )
     : null;
 
+  const isQueryPending = Boolean(password) && !galleryResponse && !queryError;
+  const isOverallLoading = isGalleryLoading || isGalleryFetching || isQueryPending;
+
   return {
     password,
     isAuthenticated: Boolean(galleryResponse?.data),
-    isLoading: isGalleryLoading || isGalleryFetching,
+    isLoading: isOverallLoading,
     isChecking2FA,
     isVerifying2FA,
     isRefreshing: isGalleryFetching,

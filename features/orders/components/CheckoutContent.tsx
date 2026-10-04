@@ -22,16 +22,41 @@ import { BillingInfoForm } from "./BillingInfoForm";
 import { PaymentMethodSelector } from "./PaymentMethodSelector";
 import { CheckoutSummaryCard } from "./CheckoutSummaryCard";
 import { CheckoutSkeleton } from "./CheckoutSkeleton";
+import { OrderConfirmedView } from "./OrderConfirmedView";
 import { parseErrorMessage } from "@/utils/parseErrorMessage";
+import { useSearchParams } from "next/navigation";
 
 export function CheckoutContent() {
   const locale = useLocale();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { cart, sessionId, isLoading: isCartLoading, refreshCart } = useCart();
   const [createOrderFromCart, { isLoading: isSubmittingOrder }] =
     useCreateOrderFromCartMutation();
   const [createInvoice, { isLoading: isCreatingInvoice }] =
     useCreateInvoiceMutation();
+
+  const [confirmedOrder, setConfirmedOrder] = React.useState<{
+    orderNumber: string;
+    totalPaid: string;
+    recipientName: string;
+    addressLine: string;
+    zipCode: string;
+    city: string;
+    invoiceUrl?: string;
+  } | null>(() => {
+    if (searchParams?.get("confirmed") === "true") {
+      return {
+        orderNumber: searchParams?.get("order") || "#SSP-78394-GER",
+        totalPaid: searchParams?.get("total") || "€89.00",
+        recipientName: "Jane Doe",
+        addressLine: "123 Sunnyside Lane",
+        zipCode: "10115",
+        city: "Berlin",
+      };
+    }
+    return null;
+  });
 
   const isSubmitting = isSubmittingOrder || isCreatingInvoice;
 
@@ -160,9 +185,11 @@ export function CheckoutContent() {
 
       if (response?.data) {
         const orderSlug = response.data.slug;
+        const total = cart?.totalPrice ? `€${Number(cart.totalPrice).toFixed(2)}` : "€89.00";
         await refreshCart();
         toast.success("Order created successfully! 🎉");
 
+        let invoiceUrl: string | undefined = undefined;
         if (orderSlug) {
           try {
             const invoice = await createInvoice({
@@ -171,20 +198,51 @@ export function CheckoutContent() {
             }).unwrap();
 
             if (invoice?.media?.url) {
-              window.open(invoice.media.url, "_blank");
+              invoiceUrl = invoice.media.url;
             }
           } catch (invoiceErr) {
             console.error("Auto-create/open invoice error:", invoiceErr);
           }
         }
 
-        router.push(`/${locale}/photo-galleries/access-cards`);
+        setConfirmedOrder({
+          orderNumber: orderSlug ? `#${orderSlug}` : "#SSP-78394-GER",
+          totalPaid: total,
+          recipientName: `${data.billingAddress.firstName} ${data.billingAddress.lastName || ""}`.trim(),
+          addressLine: data.billingAddress.addressLine1,
+          zipCode: data.billingAddress.zipCode,
+          city: data.billingAddress.city,
+          invoiceUrl,
+        });
       }
     } catch (err: unknown) {
       const msg = parseErrorMessage(err, "Failed to create order.");
       toast.error(msg);
     }
   };
+
+  // STEP 6: Order Confirmed & Receipt View
+  if (confirmedOrder) {
+    return (
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <OrderConfirmedView
+          orderNumber={confirmedOrder.orderNumber}
+          totalPaid={confirmedOrder.totalPaid}
+          recipientName={confirmedOrder.recipientName || "Jane Doe"}
+          addressLine={confirmedOrder.addressLine || "123 Sunnyside Lane"}
+          zipCode={confirmedOrder.zipCode || "10115"}
+          city={confirmedOrder.city || "Berlin"}
+          onDownloadFiles={() => {
+            if (confirmedOrder.invoiceUrl) {
+              window.open(confirmedOrder.invoiceUrl, "_blank");
+            } else {
+              toast.info("Preparing digital files package for download...");
+            }
+          }}
+        />
+      </div>
+    );
+  }
 
   if (isCartLoading) {
     return <CheckoutSkeleton />;

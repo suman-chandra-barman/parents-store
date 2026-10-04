@@ -3,6 +3,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { Toaster } from "sonner";
 import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 import { CartProvider } from "@/features/cart/context/CartContext";
 import { TenantProvider } from "@/providers/TenantProvider";
 import StoreProvider from "@/providers/StoreProvider";
@@ -27,8 +28,11 @@ export default async function LocaleLayout({
         <TenantProvider initialTenant={tenant}>
           <CartProvider>
             <Toaster position="top-center" richColors closeButton />
-            <Navbar />
-            {children}
+            <div className="flex flex-col min-h-screen bg-[#FAF9F5]">
+              <Navbar />
+              <div className="flex-1">{children}</div>
+              <Footer />
+            </div>
           </CartProvider>
         </TenantProvider>
       </StoreProvider>
